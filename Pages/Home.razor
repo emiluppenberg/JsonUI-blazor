@@ -1,0 +1,43 @@
+﻿@page "/"
+@inject HttpClient httpClient
+@inject JsonBuilder jsonBuilder
+
+<PageTitle>Home</PageTitle>
+
+<div style="display: flex; flex-direction: row; width: 400px;">
+  <input type="text" @bind="url" />
+  <button @onclick="GetRequest"></button>
+</div>
+
+<div style="display: flex; flex-direction: column; width: 400px;">
+  @foreach (var k in model.Keys)
+  {
+    <button style="text-align: left;" @onclick="() => ToggleKey(k)">@($"{k}")</button>
+    <div style="display: hidden; flex-direction: column: width: 200px;" id="@(k)">
+      @foreach (var kvp in model[k])
+      {
+        <button>@($"{k}.{kvp.Key} - {kvp.Value}")</button>
+      }
+    </div>
+  }
+</div>
+
+@code {
+  string url = "";
+  Dictionary<string, Dictionary<string, string>> model = new();
+
+  async Task GetRequest()
+  {
+    HttpResponseMessage? response = await httpClient.GetAsync(url);
+    response.EnsureSuccessStatusCode();
+
+    var jsonContent = await response.Content.ReadAsStringAsync();
+    var result = jsonBuilder.CreateFromJson(jsonContent);
+    model = result is not null ? result : model;
+  }
+
+  void ToggleKey(string key)
+  {
+
+  }
+}
