@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@layer components {
+  .input-base {
+    @apply border rounded p-1 hover:bg-amber-100;
+  }
+
+  .button-base {
+    @apply border-4 border-black border-double text-white rounded p-1 bg-blue-400 hover:bg-blue-500;
+  }
+
+  .button-kvp {
+    @apply border rounded w-full bg-gray-400 hover:bg-gray-500 flex items-center divide-dotted divide-x h-[20px] mb-[2px];
+  }
+
+  .button-node {
+    @apply border rounded w-full bg-amber-400 hover:bg-amber-500 flex items-center divide-dotted divide-x h-[20px] mb-[2px];
+  }
+
+  .span-key {
+    @apply w-2/3 text-start font-medium truncate;
+  }
+
+  .span-value {
+    @apply w-1/3 text-start text-xs truncate;
+  }
+
+  .span-node {
+    @apply text-start font-medium truncate;
+  }
+
+  .node-col {
+    @apply flex flex-col relative w-40;
+  }
+
+  .node-container {
+    @apply w-auto h-auto flex items-start;
+  }
+}

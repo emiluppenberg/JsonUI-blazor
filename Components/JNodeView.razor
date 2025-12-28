@@ -1,22 +1,20 @@
 @using System.Threading.Tasks
-<div class="column h-auto w-25 position-relative" style="top:@(RowOffset* RowHeightPx)px;">
+<div class="node-col" style="top:@(RowOffset* RowHeightPx)px;">
 
   @foreach (var kvp in CurrentNode.KeyValues)
   {
-    <div class="row w-100">
-      <button class="border border-primary w-100 d-flex">
-        <span class="w-50 text-truncate">@kvp.Key</span>
-        <span class="w-50 text-truncate">@kvp.Value</span>
-      </button>
-    </div>
+    <button class="button-kvp">
+      <span class="span-key">@kvp.Key</span>
+      <span class="span-value">@kvp.Value</span>
+    </button>
   }
 
   @foreach (var child in CurrentNode.Children)
   {
-    <div class="row w-100">
-      <button class="btn btn-sm btn-primary"
-        @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">@child.Name</button>
-    </div>
+    <button class="button-node" @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
+      <span class="span-key">@child.Name</span>
+      <span class="span-value">@child.Type</span>
+    </button>
   }
 
 </div>
@@ -27,7 +25,7 @@
 }
 
 @code {
-  const int RowHeightPx = 30;
+  const int RowHeightPx = 22;
 
   [Parameter]
   public int RowOffset { get; set; }

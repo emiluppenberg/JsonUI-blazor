@@ -3,15 +3,21 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+public enum JNodeType
+{
+  Object, Array
+}
+
 public enum JNodeValue
 {
-  String, Number, Boolean, Null, Object, Array
+  String, Number, Boolean, Null
 }
 
 public class JNode(string lineageKey, string name, List<KeyValuePair<string, JNodeValue>> keyValues, JNode? parent)
 {
+  public JNodeType Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
   public string LineageKey { get; } = lineageKey;
-  public string Name { get; } = name;
+  public string Name { get; } = name.Replace("{}", null).Replace("[]", null);
   public List<KeyValuePair<string, JNodeValue>> KeyValues { get; } = keyValues;
   public List<JNode> Children { get; set; } = new();
   public JNode? Parent { get; set; } = parent;
