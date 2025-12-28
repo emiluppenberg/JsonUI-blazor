@@ -3,16 +3,29 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+public enum JNodeValue
+{
+  String, Number, Boolean, Null, Object, Array
+}
+
+public class JNode(string lineageKey, string name, List<KeyValuePair<string, JNodeValue>> keyValues)
+{
+  public string LineageKey { get; } = lineageKey;
+  public string Name { get; } = name;
+  public List<KeyValuePair<string, JNodeValue>> KeyValues { get; } = keyValues;
+  public List<JNode> Children { get; set; } = new();
+  public bool IsExpanded { get; set; }
+}
+
 public class JsonBuilder
 {
   private List<string> modelCurrentParents = new() { "Base" };
   private List<KeyValuePair<string, List<string>>> arrayCurrentParents = new();
-  private Dictionary<string, Dictionary<string, string>> model = new();
+  private Dictionary<string, Dictionary<string, JNodeValue>> model = new();
   private string debObj = "";
   private string debProp = "";
 
-  [DebuggerStepThrough]
-  public Dictionary<string, Dictionary<string, string>>? CreateFromJson(string rawContent)
+  public List<JNode>? CreateFromJson(string rawContent)
   {
     model = new();
     modelCurrentParents = new() { "Base" };
@@ -88,26 +101,21 @@ public class JsonBuilder
             continue;
           }
 
-          string value = "";
+          JNodeValue value = JNodeValue.Null;
 
           if (reader.TokenType == JsonTokenType.String)
           {
-            value = "string";
+            value = JNodeValue.String;
           }
 
           if (reader.TokenType == JsonTokenType.Number)
           {
-            value = "number";
+            value = JNodeValue.Number;
           }
 
           if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
           {
-            value = "boolean";
-          }
-
-          if (reader.TokenType == JsonTokenType.Null)
-          {
-            value = "null";
+            value = JNodeValue.Boolean;
           }
 
           string currentObject = "";
@@ -155,7 +163,7 @@ public class JsonBuilder
 
           if (!model.ContainsKey(currentObject))
           {
-            model.Add(currentObject, new Dictionary<string, string> { [currentProperty] = value });
+            model.Add(currentObject, new Dictionary<string, JNodeValue> { [currentProperty] = value });
           }
           else
           {
@@ -164,27 +172,43 @@ public class JsonBuilder
         }
       }
 
+      var result = new List<JNode>();
+      var childLookup = new Dictionary<string, List<JNode>>();
+
       foreach (var k in model.Keys)
       {
+        var lineage = k.Split('-');
+
+        var parentKey = String.Join("", lineage.Take(lineage.Length - 1));
+        var lineageKey = parentKey + lineage.Last();
+
+        var kvps = new List<KeyValuePair<string, JNodeValue>>();
+
         foreach (var kvp in model[k])
         {
-          Debug.WriteLine($"{k}.{kvp.Key} - {kvp.Value}");
+          kvps.Add(kvp);
         }
+
+        var jNode = new JNode(lineageKey, lineage.Last(), kvps);
+
+        childLookup.Add(lineageKey, new());
+
+        if (childLookup.TryGetValue(parentKey, out var parent))
+        {
+          parent.Add(jNode);
+        }
+
+        result.Add(jNode);
       }
 
-      return model;
+      result.ForEach(x => x.Children = childLookup[x.LineageKey]);
+      return result;
     }
     catch (Exception ex)
     {
-      Debug.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
-      Debug.WriteLine($"ERROR: {debObj}.{debProp}");
-      foreach (var k in model.Keys)
-      {
-        foreach (var kvp in model[k])
-        {
-          Debug.WriteLine($"{k}.{kvp.Key} - {kvp.Value}");
-        }
-      }
+      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+      Console.WriteLine($"ERROR: {debObj}.{debProp}");
+
       return null;
     }
   }

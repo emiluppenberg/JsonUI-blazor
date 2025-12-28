@@ -1,0 +1,50 @@
+<div class="column w-25">
+
+  @for (int i = 0; i < CurrentSeparator; i++)
+  {
+    <div class="row w-100">
+    </div>
+  }
+
+  @foreach (var kvp in CurrentNode.KeyValues)
+  {
+    <div class="row w-100">
+      <button class="btn btn-sm btn-secondary w-100 d-flex">
+        <span class="w-50 text-truncate">@kvp.Key</span>
+        <span class="w-50 text-truncate">@kvp.Value</span>
+      </button>
+    </div>
+  }
+
+  @foreach (var child in CurrentNode.Children)
+  {
+    <div class="row w-100">
+      <button class="btn btn-sm btn-primary"
+        @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">@child.Name</button>
+    </div>
+  }
+
+</div>
+
+@if (NextNode is not null && NextNode.IsExpanded)
+{
+  <JNodeView CurrentNode="NextNode" CurrentSeparator="NextSeparator" />
+}
+
+@code {
+  [Parameter]
+  public int CurrentSeparator { get; set; }
+  [Parameter]
+  public JNode CurrentNode { get; set; } = default!;
+
+  public int NextSeparator { get; set; }
+
+  public JNode? NextNode { get; set; } = null;
+
+  void ToggleNode(JNode node, int separator)
+  {
+    node.IsExpanded = !node.IsExpanded;
+    NextNode = node;
+    NextSeparator = separator + CurrentNode.KeyValues.Count;
+  }
+}

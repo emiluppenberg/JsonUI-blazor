@@ -1,30 +1,27 @@
 ﻿@page "/"
+@using JsonUI_blazor.Components
 @inject HttpClient httpClient
 @inject JsonBuilder jsonBuilder
 
 <PageTitle>Home</PageTitle>
+<div class="container">
 
-<div style="display: flex; flex-direction: row; width: 400px;">
-  <input type="text" @bind="url" />
-  <button @onclick="GetRequest"></button>
-</div>
+  <div>
+    <input type="text" @bind="url" class="form-control" />
+    <button class="form-control" @onclick="GetRequest">Get</button>
+  </div>
 
-<div style="display: flex; flex-direction: column; width: 400px;">
-  @foreach (var k in model.Keys)
-  {
-    <button style="text-align: left;" @onclick="() => ToggleKey(k)">@($"{k}")</button>
-    <div style="display: hidden; flex-direction: column: width: 200px;" id="@(k)">
-      @foreach (var kvp in model[k])
-      {
-        <button>@($"{k}.{kvp.Key} - {kvp.Value}")</button>
-      }
-    </div>
-  }
+  <div class="container p-0 m-0 bg-primary-subtle d-flex">
+    @if (jNodes?.Count > 0)
+    {
+      <JNodeView CurrentNode="jNodes[0]" />
+    }
+  </div>
 </div>
 
 @code {
-  string url = "";
-  Dictionary<string, Dictionary<string, string>> model = new();
+  string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
+  List<JNode> jNodes = new();
 
   async Task GetRequest()
   {
@@ -33,11 +30,6 @@
 
     var jsonContent = await response.Content.ReadAsStringAsync();
     var result = jsonBuilder.CreateFromJson(jsonContent);
-    model = result is not null ? result : model;
-  }
-
-  void ToggleKey(string key)
-  {
-
+    jNodes = result is not null ? result : jNodes;
   }
 }
