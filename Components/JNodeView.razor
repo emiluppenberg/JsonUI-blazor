@@ -1,15 +1,10 @@
-<div class="column w-25">
-
-  @for (int i = 0; i < CurrentSeparator; i++)
-  {
-    <div class="row w-100">
-    </div>
-  }
+@using System.Threading.Tasks
+<div class="column h-auto w-25 position-relative" style="top:@(RowOffset* RowHeightPx)px;">
 
   @foreach (var kvp in CurrentNode.KeyValues)
   {
     <div class="row w-100">
-      <button class="btn btn-sm btn-secondary w-100 d-flex">
+      <button class="border border-primary w-100 d-flex">
         <span class="w-50 text-truncate">@kvp.Key</span>
         <span class="w-50 text-truncate">@kvp.Value</span>
       </button>
@@ -28,23 +23,31 @@
 
 @if (NextNode is not null && NextNode.IsExpanded)
 {
-  <JNodeView CurrentNode="NextNode" CurrentSeparator="NextSeparator" />
+  <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" OnNodeToggled="PassOnNodeToggled" />
 }
 
 @code {
+  const int RowHeightPx = 30;
+
   [Parameter]
-  public int CurrentSeparator { get; set; }
+  public int RowOffset { get; set; }
   [Parameter]
   public JNode CurrentNode { get; set; } = default!;
+  [Parameter]
+  public EventCallback<JNode> OnNodeToggled { get; set; }
 
-  public int NextSeparator { get; set; }
+  public int NextRowOffset { get; set; }
 
   public JNode? NextNode { get; set; } = null;
 
-  void ToggleNode(JNode node, int separator)
+  async Task ToggleNode(JNode node, int nodeIndex)
   {
     node.IsExpanded = !node.IsExpanded;
     NextNode = node;
-    NextSeparator = separator + CurrentNode.KeyValues.Count;
+    NextRowOffset = RowOffset + CurrentNode.KeyValues.Count + nodeIndex;
+
+    await OnNodeToggled.InvokeAsync(node);
   }
+
+  async Task PassOnNodeToggled(JNode newNode) => await OnNodeToggled.InvokeAsync(newNode);
 }

@@ -8,12 +8,13 @@ public enum JNodeValue
   String, Number, Boolean, Null, Object, Array
 }
 
-public class JNode(string lineageKey, string name, List<KeyValuePair<string, JNodeValue>> keyValues)
+public class JNode(string lineageKey, string name, List<KeyValuePair<string, JNodeValue>> keyValues, JNode? parent)
 {
   public string LineageKey { get; } = lineageKey;
   public string Name { get; } = name;
   public List<KeyValuePair<string, JNodeValue>> KeyValues { get; } = keyValues;
   public List<JNode> Children { get; set; } = new();
+  public JNode? Parent { get; set; } = parent;
   public bool IsExpanded { get; set; }
 }
 
@@ -189,7 +190,7 @@ public class JsonBuilder
           kvps.Add(kvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), kvps);
+        var jNode = new JNode(lineageKey, lineage.Last(), kvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
 
         childLookup.Add(lineageKey, new());
 

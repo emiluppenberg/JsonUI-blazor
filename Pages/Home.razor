@@ -11,10 +11,10 @@
     <button class="form-control" @onclick="GetRequest">Get</button>
   </div>
 
-  <div class="container p-0 m-0 bg-primary-subtle d-flex">
+  <div class="container p-0 m-0 bg-primary-subtle d-flex align-items-start">
     @if (jNodes?.Count > 0)
     {
-      <JNodeView CurrentNode="jNodes[0]" />
+      <JNodeView CurrentNode="jNodes[0]" OnNodeToggled="HandleNodeToggled" />
     }
   </div>
 </div>
@@ -22,6 +22,7 @@
 @code {
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
   List<JNode> jNodes = new();
+  JNode? activeNode;
 
   async Task GetRequest()
   {
@@ -31,5 +32,38 @@
     var jsonContent = await response.Content.ReadAsStringAsync();
     var result = jsonBuilder.CreateFromJson(jsonContent);
     jNodes = result is not null ? result : jNodes;
+  }
+
+  void HandleNodeToggled(JNode newNode)
+  {
+    if (newNode == activeNode)
+    {
+      activeNode = activeNode.Parent;
+      return;
+    }
+
+    JNode iteratingNode;
+
+    if (activeNode is not null)
+    {
+      iteratingNode = activeNode;
+      iteratingNode.IsExpanded = false;
+
+      while (iteratingNode.Parent is not null)
+      {
+        iteratingNode = iteratingNode.Parent;
+        iteratingNode.IsExpanded = false;
+      }
+    }
+
+    activeNode = newNode;
+    iteratingNode = activeNode;
+    iteratingNode.IsExpanded = true;
+
+    while (iteratingNode.Parent is not null)
+    {
+      iteratingNode = iteratingNode.Parent;
+      iteratingNode.IsExpanded = true;
+    }
   }
 }
