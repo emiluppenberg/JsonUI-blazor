@@ -3,7 +3,7 @@
     "tailwindcss": "^4.1.18"
   },
   "scripts": {
-    "tailwind:build": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --minify",
-    "tailwind:watch": "tailwindcss -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --watch"
+    "tailwind:build": "tailwindcss -c ./tailwind.config.js -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --minify",
+    "tailwind:watch": "tailwindcss -c ./tailwind.config.js -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --watch"
   }
 }

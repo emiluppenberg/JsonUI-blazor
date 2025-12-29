@@ -1,9 +1,9 @@
 @using System.Threading.Tasks
-<div class="node-col" style="top:@(RowOffset* RowHeightPx)px;">
+<div class="transition-column node-col" style="top:@(RowOffset* RowHeightPx)px;">
 
   @foreach (var kvp in CurrentNode.KeyValues)
   {
-    <button class="button-kvp">
+    <button @key="kvp" class="transition-kvp button-kvp">
       <span class="span-key">@kvp.Key</span>
       <span class="span-value">@kvp.Value</span>
     </button>
@@ -11,9 +11,10 @@
 
   @foreach (var child in CurrentNode.Children)
   {
-    <button class="button-node" @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-      <span class="span-key">@child.Name</span>
-      <span class="span-value">@child.Type</span>
+    <button @key="child" class="transition-node @ButtonNodeClass(child)"
+      @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
+      <span class="@SpanNodeNameClass(child)">@child.Name</span>
+      <span class="@SpanNodeTypeClass(child)">@child.Type</span>
     </button>
   }
 
@@ -40,12 +41,17 @@
 
   async Task ToggleNode(JNode node, int nodeIndex)
   {
-    node.IsExpanded = !node.IsExpanded;
     NextNode = node;
-    NextRowOffset = RowOffset + CurrentNode.KeyValues.Count + nodeIndex;
+    NextRowOffset = 1 + RowOffset + CurrentNode.KeyValues.Count + nodeIndex;
 
     await OnNodeToggled.InvokeAsync(node);
   }
 
   async Task PassOnNodeToggled(JNode newNode) => await OnNodeToggled.InvokeAsync(newNode);
+
+  private string ButtonNodeClass(JNode node) => node.IsExpanded ? "button-node-expanded" : "button-node";
+
+  private string SpanNodeNameClass(JNode node) => node.IsExpanded ? "span-node-name-expanded" : "span-key";
+
+  private string SpanNodeTypeClass(JNode node) => node.IsExpanded ? "span-node-type-expanded" : "span-value";
 }

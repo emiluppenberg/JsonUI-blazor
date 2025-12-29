@@ -9,6 +9,7 @@
   <div>
     <input type="text" @bind="url" class="input-base" />
     <button class="button-base" @onclick="GetRequest">Get</button>
+    <button class="button-base" @onclick="LoadJson">Load</button>
   </div>
 
   <div class="node-container">
@@ -23,6 +24,12 @@
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
   List<JNode> jNodes = new();
   JNode? activeNode;
+
+  async Task LoadJson()
+  {
+    var json = await httpClient.GetStringAsync("j.json");
+    jNodes = jsonBuilder.CreateFromJson(json)!;
+  }
 
   async Task GetRequest()
   {
@@ -57,13 +64,13 @@
     }
 
     activeNode = newNode;
+    activeNode.IsExpanded = !activeNode.IsExpanded;
     iteratingNode = activeNode;
-    iteratingNode.IsExpanded = true;
 
     while (iteratingNode.Parent is not null)
     {
       iteratingNode = iteratingNode.Parent;
-      iteratingNode.IsExpanded = true;
+      iteratingNode.IsExpanded = activeNode.IsExpanded;
     }
   }
 }
