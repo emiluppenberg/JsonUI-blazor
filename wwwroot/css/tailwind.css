@@ -38,11 +38,11 @@
   }
 
   .node-col {
-    @apply flex flex-col relative w-40 overflow-visible;
+    @apply flex flex-col w-40;
   }
 
   .node-container {
-    @apply w-auto h-auto flex items-start;
+    @apply w-auto max-h-screen overflow-y-auto flex items-start;
   }
 
   .transition-column {

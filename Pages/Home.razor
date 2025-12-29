@@ -4,8 +4,7 @@
 @inject JsonBuilder jsonBuilder
 
 <PageTitle>Home</PageTitle>
-<div class="w-screen h-auto">
-
+<div>
   <div>
     <input type="text" @bind="url" class="input-base" />
     <button class="button-base" @onclick="GetRequest">Get</button>
@@ -23,7 +22,6 @@
 @code {
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
   List<JNode> jNodes = new();
-  JNode? activeNode;
 
   async Task LoadJson()
   {
@@ -43,34 +41,21 @@
 
   void HandleNodeToggled(JNode newNode)
   {
-    if (newNode == activeNode)
+    var toggleTo = !newNode.IsExpanded;
+    jNodes.ForEach(n => n.IsExpanded = false);
+
+    newNode.IsExpanded = toggleTo;
+
+    if (newNode.Parent is not null)
     {
-      activeNode = activeNode.Parent;
-      return;
-    }
+      var iteratingNode = newNode;
 
-    JNode iteratingNode;
-
-    if (activeNode is not null)
-    {
-      iteratingNode = activeNode;
-      iteratingNode.IsExpanded = false;
-
-      while (iteratingNode.Parent is not null)
+      do
       {
         iteratingNode = iteratingNode.Parent;
-        iteratingNode.IsExpanded = false;
+        iteratingNode.IsExpanded = true;
       }
-    }
-
-    activeNode = newNode;
-    activeNode.IsExpanded = !activeNode.IsExpanded;
-    iteratingNode = activeNode;
-
-    while (iteratingNode.Parent is not null)
-    {
-      iteratingNode = iteratingNode.Parent;
-      iteratingNode.IsExpanded = activeNode.IsExpanded;
+      while (iteratingNode.Parent is not null);
     }
   }
 }
