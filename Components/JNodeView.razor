@@ -1,5 +1,14 @@
+@inject IJSRuntime js
 @using System.Threading.Tasks
-<div class="transition-column node-col" style="top: @(RowOffset* RowHeightPx)px;">
+
+<div class="transition-column node-col"
+  style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
+
+  <div @ref="_sentinel"></div>
+  <button class="button-node-sticky" @onclick="() => ToggleScroll()" style="@GetStickyStyle()">
+    <span class="span-key @(!IsSticky && CurrentNode.Name is not "Base" ? "w-5/6" : "")">@CurrentNode.Name</span>
+    <span class="span-value @(!IsSticky && CurrentNode.Name is not "Base" ? "w-1/6" : "")">@CurrentNode.Type</span>
+  </button>
 
   @foreach (var kvp in CurrentNode.KeyValues)
   {
@@ -11,10 +20,10 @@
 
   @foreach (var child in CurrentNode.Children)
   {
-    <button @key="child" class="transition-node @ButtonNodeClass(child)"
+    <button @key="child" class="transition-node button-node @(child.IsExpanded ? "scale-x-0" : "")"
       @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-      <span class="@SpanNodeNameClass(child)">@child.Name</span>
-      <span class="@SpanNodeTypeClass(child)">@child.Type</span>
+      <span class="@(child.IsExpanded ? "hidden" : "span-key")">@child.Name</span>
+      <span class="@(child.IsExpanded ? "hidden" : "span-value")">@child.Type</span>
     </button>
   }
 
@@ -22,36 +31,71 @@
 
 @if (NextNode is not null && NextNode.IsExpanded)
 {
-  <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" OnNodeToggled="PassOnNodeToggled" />
+  <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
+    OnNodeToggled="PassOnNodeToggled" />
 }
 
 @code {
-  const int RowHeightPx = 22;
-
+  [Parameter]
+  public int ContainerHeight { get; set; }
   [Parameter]
   public int RowOffset { get; set; }
   [Parameter]
   public JNode CurrentNode { get; set; } = default!;
   [Parameter]
   public EventCallback<JNode> OnNodeToggled { get; set; }
+  private bool IsSticky { get; set; }
+
 
   public int NextRowOffset { get; set; }
-
   public JNode? NextNode { get; set; } = null;
+
+  private ElementReference _sentinel;
+  private IJSObjectReference? _observerHandle;
+  private DotNetObjectReference<JNodeView>? _dotNetRef;
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      _dotNetRef = DotNetObjectReference.Create(this);
+
+      _observerHandle = await js.InvokeAsync<IJSObjectReference>("createStickyObserver", _sentinel, _dotNetRef);
+    }
+  }
+
+  [JSInvokable]
+  public void OnStickyStateChanged(bool isSticky)
+  {
+    IsSticky = isSticky;
+    InvokeAsync(StateHasChanged);
+  }
 
   async Task ToggleNode(JNode node, int nodeIndex)
   {
     NextNode = node;
-    NextRowOffset = 1 + RowOffset + CurrentNode.KeyValues.Count + nodeIndex;
+    NextRowOffset = RowOffset + CurrentNode.KeyValues.Count + (nodeIndex + 1);
 
     await OnNodeToggled.InvokeAsync(node);
   }
 
-  async Task PassOnNodeToggled(JNode newNode) => await OnNodeToggled.InvokeAsync(newNode);
+  async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
-  private string ButtonNodeClass(JNode node) => node.IsExpanded ? "button-node-expanded" : "button-node";
+  async Task PassOnNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
 
-  private string SpanNodeNameClass(JNode node) => node.IsExpanded ? "span-node-name-expanded" : "span-key";
-
-  private string SpanNodeTypeClass(JNode node) => node.IsExpanded ? "span-node-type-expanded" : "span-value";
+  string GetStickyStyle()
+  {
+    if (CurrentNode.Name is "Base")
+    {
+      return "";
+    }
+    if (IsSticky)
+    {
+      return $"width: {General.ColWidthPx}px;";
+    }
+    else
+    {
+      return $"transform: translateX(-{General.ColWidthPx}px); width: {General.ColWidthPx * 2}px;";
+    }
+  }
 }

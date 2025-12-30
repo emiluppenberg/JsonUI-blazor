@@ -4,24 +4,23 @@
 @inject JsonBuilder jsonBuilder
 
 <PageTitle>Home</PageTitle>
-<div>
-  <div>
-    <input type="text" @bind="url" class="input-base" />
-    <button class="button-base" @onclick="GetRequest">Get</button>
-    <button class="button-base" @onclick="LoadJson">Load</button>
-  </div>
+<div class="menu">
+  <input type="text" @bind="url" class="input-base" />
+  <button class="button-base" @onclick="GetRequest">Get</button>
+  <button class="button-base" @onclick="LoadJson">Load</button>
+</div>
 
-  <div class="node-container">
-    @if (jNodes?.Count > 0)
-    {
-      <JNodeView CurrentNode="jNodes[0]" OnNodeToggled="HandleNodeToggled" />
-    }
-  </div>
+<div class="node-container" id="node-container">
+  @if (jNodes?.Count > 0)
+  {
+    <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled" />
+  }
 </div>
 
 @code {
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
   List<JNode> jNodes = new();
+  int nodeContainerHeight;
 
   async Task LoadJson()
   {
@@ -39,12 +38,13 @@
     jNodes = result is not null ? result : jNodes;
   }
 
-  void HandleNodeToggled(JNode newNode)
+  async Task HandleNodeToggled(JNode newNode)
   {
     var toggleTo = !newNode.IsExpanded;
     jNodes.ForEach(n => n.IsExpanded = false);
 
     newNode.IsExpanded = toggleTo;
+    nodeContainerHeight = (newNode.KeyValues.Count + newNode.Children.Count) * General.RowHeightPx;
 
     if (newNode.Parent is not null)
     {
@@ -54,8 +54,12 @@
       {
         iteratingNode = iteratingNode.Parent;
         iteratingNode.IsExpanded = true;
+        nodeContainerHeight += (iteratingNode.KeyValues.Count + iteratingNode.Children.Count) * General.RowHeightPx;
       }
       while (iteratingNode.Parent is not null);
     }
+
+    nodeContainerHeight += 500;
+    await InvokeAsync(StateHasChanged);
   }
 }
