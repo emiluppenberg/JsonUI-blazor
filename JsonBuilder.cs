@@ -13,33 +13,37 @@ public enum JNodeValue
   String, Number, Boolean, Null
 }
 
-public class JNode(string lineageKey, string name, List<KeyValuePair<string, JNodeValue>> keyValues, JNode? parent)
+public record JNodeKvp(KeyValuePair<string, JNodeValue> kvp)
+{
+  public KeyValuePair<string, JNodeValue> Kvp { get; set; } = kvp;
+  public bool IsSelected { get; set; }
+}
+
+public class JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
 {
   public JNodeType Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
   public string LineageKey { get; } = lineageKey;
   public string Name { get; } = name.Replace("{}", null).Replace("[]", null);
-  public List<KeyValuePair<string, JNodeValue>> KeyValues { get; } = keyValues;
+  public List<JNodeKvp> KeyValues { get; } = keyValues;
   public List<JNode> Children { get; set; } = new();
   public JNode? Parent { get; set; } = parent;
   public bool IsExpanded { get; set; }
 }
 
-public class JsonBuilder
+public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
 {
-  private List<string> modelCurrentParents = new() { "Base" };
-  private List<KeyValuePair<string, List<string>>> arrayCurrentParents = new();
-  private Dictionary<string, Dictionary<string, JNodeValue>> model = new();
-  private string debObj = "";
-  private string debProp = "";
+  public string Name { get; set; } = name;
+  public string Code { get; set; } = "";
+  public List<KeyValuePair<string, string>> Kvps { get; } = kvps;
+}
 
-  public List<JNode>? CreateFromJson(string rawContent)
+public static class JNodeBuilder
+{
+  public static List<JNode>? CreateFromJson(string rawContent)
   {
-    model = new();
-    modelCurrentParents = new() { "Base" };
-    arrayCurrentParents = new();
-
-    debObj = "";
-    debProp = "";
+    var model = new Dictionary<string, Dictionary<string, JNodeValue>>();
+    var modelCurrentParents = new List<string>() { "Base" };
+    var arrayCurrentParents = new List<KeyValuePair<string, List<string>>>();
 
     var isArray = false;
     var bytes = Encoding.UTF8.GetBytes(rawContent);
@@ -165,9 +169,6 @@ public class JsonBuilder
             }
           }
 
-          debObj = currentObject;
-          debProp = currentProperty;
-
           if (!model.ContainsKey(currentObject))
           {
             model.Add(currentObject, new Dictionary<string, JNodeValue> { [currentProperty] = value });
@@ -189,14 +190,15 @@ public class JsonBuilder
         var parentKey = String.Join("", lineage.Take(lineage.Length - 1));
         var lineageKey = parentKey + lineage.Last();
 
-        var kvps = new List<KeyValuePair<string, JNodeValue>>();
+        var jNodeKvps = new List<JNodeKvp>();
 
         foreach (var kvp in model[k])
         {
-          kvps.Add(kvp);
+          var jNodeKvp = new JNodeKvp(kvp);
+          jNodeKvps.Add(jNodeKvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), kvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
+        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
 
         childLookup.Add(lineageKey, new());
 
@@ -214,9 +216,101 @@ public class JsonBuilder
     catch (Exception ex)
     {
       Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
-      Console.WriteLine($"ERROR: {debObj}.{debProp}");
-
       return null;
+    }
+  }
+
+  public static string JNodesToCSharp(List<JNode> jNodes)
+  {
+    try
+    {
+      var classes = new Dictionary<string, JNodeClass>();
+
+      foreach (var jn in jNodes)
+      {
+        var kvps = jn.KeyValues
+          .Where(x => x.IsSelected)
+          .Select(x => x.Kvp)
+          .ToList();
+
+        if (kvps.Count > 0)
+        {
+          var _kvps = kvps.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString().ToLower())).ToList();
+
+          if (classes.TryGetValue(jn.Name, out var jnc))
+          {
+            foreach (var kvp in _kvps)
+            {
+              if (!jnc.Kvps.Any(x => x.Key == kvp.Key))
+              {
+                jnc.Kvps.Add(kvp);
+              }
+            }
+          }
+
+          if (!classes.TryGetValue(jn.Name, out var _))
+          {
+            var newJnc = new JNodeClass(jn.Name, _kvps);
+            classes.Add(jn.Name, newJnc);
+          }
+        }
+      }
+
+      foreach (var kvp in classes)
+      {
+        var sharedNodes = jNodes.Where(x => x.Name == kvp.Key && x.KeyValues.Any(_x => _x.IsSelected)).ToList();
+
+        foreach (var jn in sharedNodes)
+        {
+          var iteratingNode = jn;
+
+          while (iteratingNode.Parent is not null)
+          {
+            var previousNode = iteratingNode;
+            iteratingNode = iteratingNode.Parent;
+
+            var dataType = previousNode.Type == JNodeType.Array ? $"List<{previousNode.Name}>" : $"{previousNode.Name}";
+
+            if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
+            {
+              parentJnc.Kvps.Add(new KeyValuePair<string, string>($"_{previousNode.Name}", dataType));
+            }
+
+            if (!classes.TryGetValue(iteratingNode.Name, out var _))
+            {
+              var _kvps = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>($"_{previousNode.Name}", dataType) };
+              var newJnc = new JNodeClass(iteratingNode.Name, _kvps);
+            }
+          }
+        }
+      }
+
+      var cs = "";
+
+      foreach (var kvp in classes)
+      {
+        var jnc = kvp.Value;
+
+        var code =
+        $"public class {jnc.Name} \n" +
+        $"{{\n";
+
+        foreach (var jKvp in jnc.Kvps)
+        {
+          var dataType = jKvp.Value;
+          var propName = jKvp.Key;
+          code += $"  public {dataType} {propName} {{ get; set; }}\n";
+        }
+
+        cs += code + $"}}\n\n";
+      }
+
+      return cs;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+      return "";
     }
   }
 }

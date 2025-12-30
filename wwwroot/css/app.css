@@ -12,6 +12,7 @@
     --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-yellow-200: oklch(94.5% 0.129 101.54);
     --color-yellow-300: oklch(90.5% 0.182 98.111);
+    --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-gray-300: oklch(87.2% 0.01 258.338);
@@ -993,7 +994,7 @@
       }
     }
   }
-  .button-kvp {
+  .button-jkvp {
     margin-bottom: 2px;
     display: flex;
     height: 20px;
@@ -1016,6 +1017,32 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-gray-400);
+      }
+    }
+  }
+  .button-jkvp-selected {
+    margin-bottom: 2px;
+    display: flex;
+    height: 20px;
+    width: 100%;
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+    border-radius: 0.25rem;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    background-color: var(--color-blue-300);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-blue-400);
       }
     }
   }
@@ -1106,6 +1133,11 @@
     align-items: flex-start;
     overflow-y: auto;
   }
+  .code {
+    max-height: 300px;
+    width: 100%;
+    overflow-y: auto;
+  }
   .menu {
     width: 100%;
     flex-shrink: 0;
@@ -1117,7 +1149,7 @@
     --tw-duration: 150ms;
     transition-duration: 150ms;
   }
-  .transition-kvp {
+  .transition-jkvp {
     transition-property: all;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));

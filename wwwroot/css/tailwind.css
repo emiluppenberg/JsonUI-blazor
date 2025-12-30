@@ -9,8 +9,12 @@
     @apply border-4 border-black border-double text-white rounded p-1 bg-blue-400 hover:bg-blue-500;
   }
 
-  .button-kvp {
+  .button-jkvp {
     @apply border rounded w-full bg-gray-300 hover:bg-gray-400 flex items-center divide-dotted divide-x h-[20px] mb-[2px];
+  }
+
+  .button-jkvp-selected {
+    @apply border rounded w-full bg-blue-300 hover:bg-blue-400 flex items-center divide-dotted divide-x h-[20px] mb-[2px];
   }
 
   .button-node {
@@ -37,6 +41,10 @@
     @apply flex-1 overflow-y-auto flex items-start;
   }
 
+  .code {
+    @apply w-full max-h-[300px] overflow-y-auto;
+  }
+
   .menu {
     @apply w-full shrink-0;
   }
@@ -45,7 +53,7 @@
     @apply transition-all duration-150;
   }
 
-  .transition-kvp {
+  .transition-jkvp {
     @apply transition-all duration-150;
   }
 

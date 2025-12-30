@@ -10,11 +10,12 @@
     <span class="span-value @(!IsSticky && CurrentNode.Name is not "Base" ? "w-1/6" : "")">@CurrentNode.Type</span>
   </button>
 
-  @foreach (var kvp in CurrentNode.KeyValues)
+  @foreach (var jKvp in CurrentNode.KeyValues)
   {
-    <button @key="kvp" class="transition-kvp button-kvp">
-      <span class="span-key">@kvp.Key</span>
-      <span class="span-value">@kvp.Value</span>
+    <button @key="jKvp" class="transition-jkvp @(jKvp.IsSelected ? "button-jkvp-selected" : "button-jkvp")"
+      @onclick="() => SelectKvp(jKvp)">
+      <span class="span-key">@jKvp.Kvp.Key</span>
+      <span class="span-value">@jKvp.Kvp.Value</span>
     </button>
   }
 
@@ -77,6 +78,11 @@
     NextRowOffset = RowOffset + CurrentNode.KeyValues.Count + (nodeIndex + 1);
 
     await OnNodeToggled.InvokeAsync(node);
+  }
+
+  void SelectKvp(JNodeKvp jKvp)
+  {
+    jKvp.IsSelected = !jKvp.IsSelected;
   }
 
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);

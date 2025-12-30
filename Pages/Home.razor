@@ -1,13 +1,12 @@
 ﻿@page "/"
 @using JsonUI_blazor.Components
 @inject HttpClient httpClient
-@inject JsonBuilder jsonBuilder
 
 <PageTitle>Home</PageTitle>
 <div class="menu">
   <input type="text" @bind="url" class="input-base" />
   <button class="button-base" @onclick="GetRequest">Get</button>
-  <button class="button-base" @onclick="LoadJson">Load</button>
+  <button class="button-base" @onclick="Read">Read</button>
 </div>
 
 <div class="node-container" id="node-container">
@@ -17,15 +16,18 @@
   }
 </div>
 
+<pre class="code">@_code</pre>
+
 @code {
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
+  string _code = "";
   List<JNode> jNodes = new();
   int nodeContainerHeight;
 
-  async Task LoadJson()
+  protected override async Task OnInitializedAsync()
   {
     var json = await httpClient.GetStringAsync("j.json");
-    jNodes = jsonBuilder.CreateFromJson(json)!;
+    jNodes = JNodeBuilder.CreateFromJson(json)!;
   }
 
   async Task GetRequest()
@@ -34,7 +36,7 @@
     response.EnsureSuccessStatusCode();
 
     var jsonContent = await response.Content.ReadAsStringAsync();
-    var result = jsonBuilder.CreateFromJson(jsonContent);
+    var result = JNodeBuilder.CreateFromJson(jsonContent);
     jNodes = result is not null ? result : jNodes;
   }
 
@@ -61,5 +63,13 @@
 
     nodeContainerHeight += 500;
     await InvokeAsync(StateHasChanged);
+  }
+
+  void Read()
+  {
+    Console.Clear();
+    var cs = JNodeBuilder.JNodesToCSharp(jNodes);
+    Console.WriteLine(cs);
+    _code = cs;
   }
 }
