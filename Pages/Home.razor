@@ -3,23 +3,26 @@
 @inject HttpClient httpClient
 
 <PageTitle>Home</PageTitle>
+
 <div class="menu">
   <input type="text" @bind="url" class="input-base" />
-  <button class="button-base" @onclick="GetRequest">Get</button>
-  <button class="button-base" @onclick="Read">Read</button>
+  <button class="button-base" @onclick="FetchRequest">Fetch</button>
 </div>
 
-<div class="node-container" id="node-container">
-  @if (jNodes?.Count > 0)
-  {
-    <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled" />
-  }
-</div>
+<div class="app-container">
+  <div class="node-container" id="node-container">
+    @if (jNodes?.Count > 0)
+    {
+      <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled"
+        OnKvpSelected="HandleKvpSelected" />
+    }
+  </div>
 
-<pre class="code">@_code</pre>
+  <pre class="code">@_code</pre>
+</div>
 
 @code {
-  string url = "https://lldev.thespacedevs.com/2.3.0/launches/eea43b3f-eddc-437a-ada5-8e23286f1eef/";
+  string url = "https://lldev.thespacedevs.com/2.3.0/launches/58e080d1-90cd-42ac-8152-9f56fc580f8d/";
   string _code = "";
   List<JNode> jNodes = new();
   int nodeContainerHeight;
@@ -30,14 +33,21 @@
     jNodes = JNodeBuilder.CreateFromJson(json)!;
   }
 
-  async Task GetRequest()
+  async Task FetchRequest()
   {
-    HttpResponseMessage? response = await httpClient.GetAsync(url);
-    response.EnsureSuccessStatusCode();
+    try
+    {
+      HttpResponseMessage? response = await httpClient.GetAsync(url);
+      response.EnsureSuccessStatusCode();
 
-    var jsonContent = await response.Content.ReadAsStringAsync();
-    var result = JNodeBuilder.CreateFromJson(jsonContent);
-    jNodes = result is not null ? result : jNodes;
+      var jsonContent = await response.Content.ReadAsStringAsync();
+      var result = JNodeBuilder.CreateFromJson(jsonContent);
+      jNodes = result is not null ? result : jNodes;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+    }
   }
 
   async Task HandleNodeToggled(JNode newNode)
@@ -65,11 +75,8 @@
     await InvokeAsync(StateHasChanged);
   }
 
-  void Read()
+  void HandleKvpSelected()
   {
-    Console.Clear();
-    var cs = JNodeBuilder.JNodesToCSharp(jNodes);
-    Console.WriteLine(cs);
-    _code = cs;
+    _code = JNodeBuilder.JNodesToCSharp(jNodes);
   }
 }

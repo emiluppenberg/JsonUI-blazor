@@ -12,6 +12,7 @@
     --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-yellow-200: oklch(94.5% 0.129 101.54);
     --color-yellow-300: oklch(90.5% 0.182 98.111);
+    --color-blue-100: oklch(93.2% 0.032 255.585);
     --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-blue-500: oklch(62.3% 0.214 259.815);
@@ -1127,16 +1128,25 @@
     width: calc(var(--spacing) * 40);
     flex-direction: column;
   }
+  .app-container {
+    display: flex;
+    flex: 1;
+    overflow-y: auto;
+  }
   .node-container {
     display: flex;
+    width: calc(3/5 * 100%);
     flex: 1;
     align-items: flex-start;
     overflow-y: auto;
   }
   .code {
-    max-height: 300px;
-    width: 100%;
+    width: calc(2/5 * 100%);
     overflow-y: auto;
+    background-color: var(--color-blue-100);
+    padding: calc(var(--spacing) * 5);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
   }
   .menu {
     width: 100%;

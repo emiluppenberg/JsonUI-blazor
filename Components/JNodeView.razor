@@ -33,7 +33,7 @@
 @if (NextNode is not null && NextNode.IsExpanded)
 {
   <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
-    OnNodeToggled="PassOnNodeToggled" />
+    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" />
 }
 
 @code {
@@ -45,8 +45,10 @@
   public JNode CurrentNode { get; set; } = default!;
   [Parameter]
   public EventCallback<JNode> OnNodeToggled { get; set; }
-  private bool IsSticky { get; set; }
+  [Parameter]
+  public EventCallback OnKvpSelected { get; set; }
 
+  private bool IsSticky { get; set; }
 
   public int NextRowOffset { get; set; }
   public JNode? NextNode { get; set; } = null;
@@ -76,18 +78,19 @@
   {
     NextNode = node;
     NextRowOffset = RowOffset + CurrentNode.KeyValues.Count + (nodeIndex + 1);
-
     await OnNodeToggled.InvokeAsync(node);
   }
 
-  void SelectKvp(JNodeKvp jKvp)
+  async Task SelectKvp(JNodeKvp jKvp)
   {
     jKvp.IsSelected = !jKvp.IsSelected;
+    await OnKvpSelected.InvokeAsync();
   }
 
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
-  async Task PassOnNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
+  async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
+  async Task ForwardKvpSelected() => await OnKvpSelected.InvokeAsync();
 
   string GetStickyStyle()
   {

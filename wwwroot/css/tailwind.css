@@ -37,12 +37,16 @@
     @apply flex flex-col relative w-40;
   }
 
+  .app-container {
+    @apply flex flex-1 overflow-y-auto;
+  }
+
   .node-container {
-    @apply flex-1 overflow-y-auto flex items-start;
+    @apply flex-1 overflow-y-auto flex items-start w-3/5;
   }
 
   .code {
-    @apply w-full max-h-[300px] overflow-y-auto;
+    @apply p-5 bg-blue-100 w-2/5 overflow-y-auto text-xs;
   }
 
   .menu {

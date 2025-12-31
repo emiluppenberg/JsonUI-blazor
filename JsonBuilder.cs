@@ -8,6 +8,16 @@ public enum JNodeType
   Object, Array
 }
 
+public class Rocket
+{
+  public int Id { get; set; }
+}
+
+public class Base
+{
+  public Rocket Rocket { get; set; } = new();
+}
+
 public enum JNodeValue
 {
   String, Number, Boolean, Null
@@ -231,16 +241,16 @@ public static class JNodeBuilder
         var kvps = jn.KeyValues
           .Where(x => x.IsSelected)
           .Select(x => x.Kvp)
+          .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString().ToLower()))
           .ToList();
 
         if (kvps.Count > 0)
         {
-          var _kvps = kvps.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString().ToLower())).ToList();
-
           if (classes.TryGetValue(jn.Name, out var jnc))
           {
-            foreach (var kvp in _kvps)
+            foreach (var kvp in kvps)
             {
+              // TODO - Handle case when same key has been selected multiple times and some has a null value 
               if (!jnc.Kvps.Any(x => x.Key == kvp.Key))
               {
                 jnc.Kvps.Add(kvp);
@@ -250,36 +260,35 @@ public static class JNodeBuilder
 
           if (!classes.TryGetValue(jn.Name, out var _))
           {
-            var newJnc = new JNodeClass(jn.Name, _kvps);
+            var newJnc = new JNodeClass(jn.Name, kvps);
             classes.Add(jn.Name, newJnc);
           }
-        }
-      }
 
-      foreach (var kvp in classes)
-      {
-        var sharedNodes = jNodes.Where(x => x.Name == kvp.Key && x.KeyValues.Any(_x => _x.IsSelected)).ToList();
-
-        foreach (var jn in sharedNodes)
-        {
-          var iteratingNode = jn;
-
-          while (iteratingNode.Parent is not null)
+          if (jn.Parent is not null)
           {
-            var previousNode = iteratingNode;
-            iteratingNode = iteratingNode.Parent;
+            var iteratingNode = jn;
 
-            var dataType = previousNode.Type == JNodeType.Array ? $"List<{previousNode.Name}>" : $"{previousNode.Name}";
-
-            if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
+            while (iteratingNode.Parent is not null)
             {
-              parentJnc.Kvps.Add(new KeyValuePair<string, string>($"_{previousNode.Name}", dataType));
-            }
+              var previousNode = iteratingNode;
+              iteratingNode = iteratingNode.Parent;
 
-            if (!classes.TryGetValue(iteratingNode.Name, out var _))
-            {
-              var _kvps = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>($"_{previousNode.Name}", dataType) };
-              var newJnc = new JNodeClass(iteratingNode.Name, _kvps);
+              var dataType = previousNode.Type == JNodeType.Array ? $"List<{previousNode.Name}>" : $"{previousNode.Name}";
+
+              if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
+              {
+                if (!parentJnc.Kvps.Any(x => x.Key == $"{previousNode.Name}" && x.Value == dataType))
+                {
+                  parentJnc.Kvps.Add(new KeyValuePair<string, string>($"{previousNode.Name}", dataType));
+                }
+              }
+
+              if (!classes.TryGetValue(iteratingNode.Name, out var _))
+              {
+                var _kvps = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>($"{previousNode.Name}", dataType) };
+                var newJnc = new JNodeClass(iteratingNode.Name, _kvps);
+                classes.Add(iteratingNode.Name, newJnc);
+              }
             }
           }
         }
