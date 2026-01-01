@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
@@ -8,24 +9,9 @@ public enum JNodeType
   Object, Array
 }
 
-public class Rocket
+public record JNodeKvp(KeyValuePair<string, string> kvp)
 {
-  public int Id { get; set; }
-}
-
-public class Base
-{
-  public Rocket Rocket { get; set; } = new();
-}
-
-public enum JNodeValue
-{
-  String, Number, Boolean, Null
-}
-
-public record JNodeKvp(KeyValuePair<string, JNodeValue> kvp)
-{
-  public KeyValuePair<string, JNodeValue> Kvp { get; set; } = kvp;
+  public KeyValuePair<string, string> Kvp { get; set; } = kvp;
   public bool IsSelected { get; set; }
 }
 
@@ -47,11 +33,22 @@ public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
   public List<KeyValuePair<string, string>> Kvps { get; } = kvps;
 }
 
+public enum CollectionAs
+{
+  List, IEnumerable, ICollection, Array
+}
+
+public struct CSharpOptions()
+{
+  public CollectionAs PrimitiveArrayAs { get; set; }
+  public CollectionAs ObjectArrayAs { get; set; }
+}
+
 public static class JNodeBuilder
 {
   public static List<JNode>? CreateFromJson(string rawContent)
   {
-    var model = new Dictionary<string, Dictionary<string, JNodeValue>>();
+    var model = new Dictionary<string, Dictionary<string, string>>();
     var modelCurrentParents = new List<string>() { "Base" };
     var arrayCurrentParents = new List<KeyValuePair<string, List<string>>>();
 
@@ -122,72 +119,105 @@ public static class JNodeBuilder
             continue;
           }
 
-          JNodeValue value = JNodeValue.Null;
+          var value = "null";
 
           if (reader.TokenType == JsonTokenType.String)
           {
-            value = JNodeValue.String;
+            value = "string";
           }
 
           if (reader.TokenType == JsonTokenType.Number)
           {
-            value = JNodeValue.Number;
+            value = "int";
           }
 
           if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
           {
-            value = JNodeValue.Boolean;
+            value = "bool";
           }
 
-          string currentObject = "";
+          string? currentObject = null;
 
           if (!isArray)
           {
             currentObject = modelCurrentParents.Count() > 1 ?
-              string.Join("{}-", modelCurrentParents) + currentObject + "{}" :
+              string.Join("{}-", modelCurrentParents) + "{}" :
               modelCurrentParents.Last() + "{}";
           }
 
           if (isArray)
           {
-            var nestedArrayIndex = arrayCurrentParents.Count() - 1;
-            var currentLevel = arrayCurrentParents[nestedArrayIndex];
-            var currentObjectIndex = arrayCurrentParents[nestedArrayIndex].Value.Count() - 1;
-            var currentArrayLineageIndex = currentLevel.Value.IndexOf(currentLevel.Key);
-            var lineageDiff = currentObjectIndex - currentArrayLineageIndex;
-            var isNestedObject = currentObjectIndex > currentLevel.Value.IndexOf(currentLevel.Key);
-
-            var arrayKeys = arrayCurrentParents.Select(x => { return x.Key; }).ToArray();
-
-            for (int i = 0; i <= currentObjectIndex; i++)
-            {
-              var lineageName = arrayKeys.Any(x => x == currentLevel.Value[i]) ?
-                currentLevel.Value[i] + "[]" :
-                currentLevel.Value[i] + "{}";
-
-              currentObject += (i < currentObjectIndex) ?
-                lineageName + "-" :
-                lineageName;
-            }
-
-            if (model.ContainsKey(currentObject))
-            {
-              if (model[currentObject].ContainsKey(currentProperty))
-              {
-                continue;
-              }
-            }
+            currentObject = BuildArrayObjectString(model, arrayCurrentParents, currentProperty);
           }
+
+          if (string.IsNullOrEmpty(currentObject))
+          {
+            continue;
+          }
+
+          Console.WriteLine($"{currentObject}.{currentProperty}");
 
           if (!model.ContainsKey(currentObject))
           {
-            model.Add(currentObject, new Dictionary<string, JNodeValue> { [currentProperty] = value });
+            model.Add(currentObject, new Dictionary<string, string> { [currentProperty] = value });
+          }
+          else
+          {
+            model[currentObject].Add(currentProperty, value);
+          }
+
+          continue;
+        }
+
+        if (
+          isArray && reader.TokenType == JsonTokenType.String ||
+          isArray && reader.TokenType == JsonTokenType.Number ||
+          isArray && reader.TokenType == JsonTokenType.True ||
+          isArray && reader.TokenType == JsonTokenType.False)
+        {
+          var value = "null";
+
+          if (reader.TokenType == JsonTokenType.String)
+          {
+            value = "string";
+          }
+
+          if (reader.TokenType == JsonTokenType.Number)
+          {
+            value = "int";
+          }
+
+          if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
+          {
+            value = "bool";
+          }
+
+          string? currentObject = null;
+          var currentProperty = arrayCurrentParents.Last().Key;
+
+          currentObject = BuildArrayObjectString(model, arrayCurrentParents, currentProperty);
+
+          if (string.IsNullOrEmpty(currentObject))
+          {
+            continue;
+          }
+
+          var lineage = currentObject.Split('-');
+          currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
+          value += "[]";
+
+          Console.WriteLine($"primitive: {currentObject}.{currentProperty}");
+
+          if (model[currentObject].ContainsKey(currentProperty))
+          {
+            continue;
           }
           else
           {
             model[currentObject].Add(currentProperty, value);
           }
         }
+
       }
 
       var result = new List<JNode>();
@@ -230,7 +260,45 @@ public static class JNodeBuilder
     }
   }
 
-  public static string JNodesToCSharp(List<JNode> jNodes)
+  private static string? BuildArrayObjectString(
+    Dictionary<string, Dictionary<string, string>> model,
+    List<KeyValuePair<string, List<string>>> arrayCurrentParents,
+    string currentProperty
+  )
+  {
+    var currentObject = "";
+    var nestedArrayIndex = arrayCurrentParents.Count() - 1;
+    var currentLevel = arrayCurrentParents[nestedArrayIndex];
+    var currentObjectIndex = arrayCurrentParents[nestedArrayIndex].Value.Count() - 1;
+    var currentArrayLineageIndex = currentLevel.Value.IndexOf(currentLevel.Key);
+    var lineageDiff = currentObjectIndex - currentArrayLineageIndex;
+    var isNestedObject = currentObjectIndex > currentLevel.Value.IndexOf(currentLevel.Key);
+
+    var arrayKeys = arrayCurrentParents.Select(x => { return x.Key; }).ToArray();
+
+    for (int i = 0; i <= currentObjectIndex; i++)
+    {
+      var lineageName = arrayKeys.Any(x => x == currentLevel.Value[i]) ?
+        currentLevel.Value[i] + "[]" :
+        currentLevel.Value[i] + "{}";
+
+      currentObject += (i < currentObjectIndex) ?
+        lineageName + "-" :
+        lineageName;
+    }
+
+    if (model.ContainsKey(currentObject))
+    {
+      if (model[currentObject].ContainsKey(currentProperty))
+      {
+        return null;
+      }
+    }
+
+    return currentObject;
+  }
+
+  public static string JNodesToCSharp(List<JNode> jNodes, CSharpOptions options)
   {
     try
     {
@@ -241,11 +309,18 @@ public static class JNodeBuilder
         var kvps = jn.KeyValues
           .Where(x => x.IsSelected)
           .Select(x => x.Kvp)
-          .Select(x => new KeyValuePair<string, string>(x.Key, x.Value.ToString().ToLower()))
           .ToList();
 
         if (kvps.Count > 0)
         {
+          for (int i = 0; i < kvps.Count; i++)
+          {
+            if (kvps[i].Value.Contains("[]"))
+            {
+              kvps[i] = new KeyValuePair<string, string>(kvps[i].Key, ConfigureCollection(kvps[i].Value, options));
+            }
+          }
+
           if (classes.TryGetValue(jn.Name, out var jnc))
           {
             foreach (var kvp in kvps)
@@ -273,7 +348,8 @@ public static class JNodeBuilder
               var previousNode = iteratingNode;
               iteratingNode = iteratingNode.Parent;
 
-              var dataType = previousNode.Type == JNodeType.Array ? $"List<{previousNode.Name}>" : $"{previousNode.Name}";
+              var isPrimitiveArray = previousNode.Name.Contains("[]");
+              var dataType = previousNode.Type == JNodeType.Array ? ConfigureCollection(previousNode.Name, options) : $"{previousNode.Name}";
 
               if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
               {
@@ -321,5 +397,30 @@ public static class JNodeBuilder
       Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
       return "";
     }
+  }
+
+  private static string ConfigureCollection(string arrayType, CSharpOptions options)
+  {
+    var isPrimitive = arrayType.Contains("[]");
+    var collection = isPrimitive ? options.PrimitiveArrayAs : options.ObjectArrayAs;
+    arrayType = isPrimitive ? arrayType.Replace("[]", "") : arrayType;
+
+    switch (collection)
+    {
+      case CollectionAs.List:
+        arrayType = $"List<{arrayType}>";
+        break;
+      case CollectionAs.IEnumerable:
+        arrayType = $"IEnumerable<{arrayType}>";
+        break;
+      case CollectionAs.ICollection:
+        arrayType = $"ICollection<{arrayType}>";
+        break;
+      case CollectionAs.Array:
+        arrayType = $"{arrayType}[]";
+        break;
+    }
+
+    return arrayType;
   }
 }

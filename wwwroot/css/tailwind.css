@@ -50,7 +50,19 @@
   }
 
   .menu {
-    @apply w-full shrink-0;
+    @apply flex w-full shrink-0;
+  }
+
+  .options-collection {
+    @apply flex flex-col w-40 mx-1;
+  }
+
+  .options-collection-label {
+    @apply text-sm text-center;
+  }
+
+  .options-collection-select {
+    @apply bg-blue-400;
   }
 
   .transition-column {

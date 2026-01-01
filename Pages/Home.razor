@@ -7,6 +7,24 @@
 <div class="menu">
   <input type="text" @bind="url" class="input-base" />
   <button class="button-base" @onclick="FetchRequest">Fetch</button>
+  <div class="options-collection">
+    <label class="options-collection-label">Object arrays as:</label>
+    <select class="options-collection-select" @bind="ObjectArrayAs">
+      @foreach (var o in collectionOptions)
+      {
+        <option value="@o">@o.ToString()</option>
+      }
+    </select>
+  </div>
+  <div class="options-collection">
+    <label class="options-collection-label">Primitive arrays as:</label>
+    <select class="options-collection-select" @bind="PrimitiveArrayAs">
+      @foreach (var o in collectionOptions)
+      {
+        <option value="@o">@o.ToString()</option>
+      }
+    </select>
+  </div>
 </div>
 
 <div class="app-container">
@@ -14,7 +32,7 @@
     @if (jNodes?.Count > 0)
     {
       <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled"
-        OnKvpSelected="HandleKvpSelected" />
+        OnKvpSelected="RenderCode" />
     }
   </div>
 
@@ -25,7 +43,28 @@
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/58e080d1-90cd-42ac-8152-9f56fc580f8d/";
   string _code = "";
   List<JNode> jNodes = new();
+  Array collectionOptions = Enum.GetValues<CollectionAs>();
   int nodeContainerHeight;
+
+  private CSharpOptions csOptions;
+  public CollectionAs ObjectArrayAs
+  {
+    get => csOptions.ObjectArrayAs;
+    set
+    {
+      csOptions.ObjectArrayAs = value;
+      RenderCode();
+    }
+  }
+  public CollectionAs PrimitiveArrayAs
+  {
+    get => csOptions.PrimitiveArrayAs;
+    set
+    {
+      csOptions.PrimitiveArrayAs = value;
+      RenderCode();
+    }
+  }
 
   protected override async Task OnInitializedAsync()
   {
@@ -75,8 +114,8 @@
     await InvokeAsync(StateHasChanged);
   }
 
-  void HandleKvpSelected()
+  void RenderCode()
   {
-    _code = JNodeBuilder.JNodesToCSharp(jNodes);
+    _code = JNodeBuilder.JNodesToCSharp(jNodes, csOptions);
   }
 }

@@ -9,7 +9,13 @@
     "id": 4,
     "name": "Launch Failure",
     "abbrev": "Failure",
-    "description": "Either the launch vehicle did not reach orbit, or the payload(s) failed to separate."
+    "description": "Either the launch vehicle did not reach orbit, or the payload(s) failed to separate.",
+    "additionalImages": [
+      "https://images.metmuseum.org/CRDImages/ad/original/134854.jpg",
+      "https://images.metmuseum.org/CRDImages/ad/original/137108.jpg",
+      "https://images.metmuseum.org/CRDImages/ad/original/135938.jpg",
+      "https://images.metmuseum.org/CRDImages/ad/original/134849.jpg"
+    ]
   },
   "last_updated": "2025-01-23T13:12:56Z",
   "net": "2024-12-27T01:03:31Z",
@@ -51,7 +57,8 @@
         "alpha_2_code": "CN",
         "alpha_3_code": "CHN",
         "nationality_name": "Chinese",
-        "nationality_name_composed": "Sino"
+        "nationality_name_composed": "Sino",
+        "loremipsum": [1, 2, 3, 4]
       }
     ],
     "description": "CAS Space is a spin-off company from the Chinese Academy of Sciences (CAS) that is operating and plans to operate various launch vehicles of the Zhongke series.",

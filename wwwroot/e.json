@@ -1,29 +1,89 @@
 {
-  "departments": [
-    { "departmentId": 1, "displayName": "American Decorative Arts" },
-    { "departmentId": 3, "displayName": "Ancient West Asian Art" },
-    { "departmentId": 4, "displayName": "Arms and Armor" },
+  "objectID": 230,
+  "isHighlight": false,
+  "accessionNumber": "45.105",
+  "accessionYear": "1945",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ad/original/DP105063.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ad/web-large/DP105063.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ad/original/134854.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/137108.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/135938.jpg",
+    "https://images.metmuseum.org/CRDImages/ad/original/134849.jpg"
+  ],
+  "constituents": [
     {
-      "departmentId": 5,
-      "displayName": "Arts of Africa, Oceania, and the Americas"
-    },
-    { "departmentId": 6, "displayName": "Asian Art" },
-    { "departmentId": 7, "displayName": "The Cloisters" },
-    { "departmentId": 8, "displayName": "The Costume Institute" },
-    { "departmentId": 9, "displayName": "Drawings and Prints" },
-    { "departmentId": 10, "displayName": "Egyptian Art" },
-    { "departmentId": 11, "displayName": "European Paintings" },
+      "constituentID": 1114,
+      "role": "Maker",
+      "name": "Attributed to Samuel McIntire",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500023295",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q370420",
+      "gender": "",
+      "additionalImages": [
+        "https://images.metmuseum.org/CRDImages/ad/original/134854.jpg",
+        "https://images.metmuseum.org/CRDImages/ad/original/137108.jpg",
+        "https://images.metmuseum.org/CRDImages/ad/original/135938.jpg",
+        "https://images.metmuseum.org/CRDImages/ad/original/134849.jpg"
+      ]
+    }
+  ],
+  "department": "The American Wing",
+  "objectName": "Armchair",
+  "title": "Armchair",
+  "culture": "American",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Maker",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Samuel McIntire",
+  "artistDisplayBio": "1757–1811",
+  "artistSuffix": "",
+  "artistAlphaSort": "McIntire, Samuel",
+  "artistNationality": "American",
+  "artistBeginDate": "1757",
+  "artistEndDate": "1811",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q370420",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500023295",
+  "objectDate": "1801",
+  "objectBeginDate": 1801,
+  "objectEndDate": 1801,
+  "medium": "Mahogany, birch, white pine",
+  "dimensions": "32 1/2 x 21 x 18 in. (82.6 x 53.3 x 45.7 cm)",
+  "measurements": [
     {
-      "departmentId": 12,
-      "displayName": "European Sculpture and Decorative Arts"
-    },
-    { "departmentId": 13, "displayName": "Greek and Roman Art" },
-    { "departmentId": 14, "displayName": "Islamic Art" },
-    { "departmentId": 15, "displayName": "The Robert Lehman Collection" },
-    { "departmentId": 16, "displayName": "The Libraries" },
-    { "departmentId": 17, "displayName": "Medieval Art" },
-    { "departmentId": 18, "displayName": "Musical Instruments" },
-    { "departmentId": 19, "displayName": "Photographs" },
-    { "departmentId": 21, "displayName": "Modern Art" }
-  ]
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 45.7,
+        "Height": 82.5502,
+        "Width": 53.3
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1945",
+  "geographyType": "Made in",
+  "city": "Salem",
+  "state": "Massachusetts",
+  "county": "",
+  "country": "United States",
+  "region": "New England",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/230",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83560005",
+  "isTimelineWork": true,
+  "GalleryNumber": ""
 }
