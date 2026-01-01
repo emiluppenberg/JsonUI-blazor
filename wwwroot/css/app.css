@@ -1155,18 +1155,21 @@
     width: 100%;
     flex-shrink: 0;
   }
-  .options-collection {
+  .options {
     margin-inline: calc(var(--spacing) * 1);
     display: flex;
     width: calc(var(--spacing) * 40);
     flex-direction: column;
   }
-  .options-collection-label {
+  .options-label {
     text-align: center;
     font-size: var(--text-sm);
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
-  .options-collection-select {
+  .options-select {
+    background-color: var(--color-blue-400);
+  }
+  .options-checkbox {
     background-color: var(--color-blue-400);
   }
   .transition-column {

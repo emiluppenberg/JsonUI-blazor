@@ -15,22 +15,94 @@ public record JNodeKvp(KeyValuePair<string, string> kvp)
   public bool IsSelected { get; set; }
 }
 
-public class JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
+public class JNode
 {
-  public JNodeType Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
-  public string LineageKey { get; } = lineageKey;
-  public string Name { get; } = name.Replace("{}", null).Replace("[]", null);
-  public List<JNodeKvp> KeyValues { get; } = keyValues;
-  public List<JNode> Children { get; set; } = new();
-  public JNode? Parent { get; set; } = parent;
+  public JNodeType Type;
+  public string LineageKey { get; }
+  public string Name { get; }
+  public List<JNodeKvp> KeyValues { get; }
+  public List<JNode> Children { get; set; }
+  public JNode? Parent { get; set; }
   public bool IsExpanded { get; set; }
+
+  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
+  {
+    Name = name.Replace("{}", null).Replace("[]", null);
+    Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
+    LineageKey = lineageKey;
+    KeyValues = keyValues;
+    Children = new();
+    Parent = parent;
+  }
 }
 
 public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
 {
   public string Name { get; set; } = name;
-  public string Code { get; set; } = "";
   public List<KeyValuePair<string, string>> Kvps { get; } = kvps;
+
+  public string GetClassName(CSharpOptions options)
+  {
+    var name = this.Name;
+    name = options.UsePascalCase ?
+      Regex.Replace(name, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+      name.ToLower();
+
+    return $"public class {name} {Environment.NewLine}" +
+       $"{{{Environment.NewLine}";
+  }
+
+  public string GetProperty(int i, CSharpOptions options)
+  {
+    var datatype = this.Kvps[i].Value;
+    var propName = this.Kvps[i].Key;
+    var jsonAnnotation = $"  [JsonProperty(\"{propName}\")]{Environment.NewLine}";
+
+    var isNestedObject = datatype.Replace("[]", "") == propName;
+    var isArray = datatype.Contains("[]");
+
+    propName = options.UsePascalCase ?
+      Regex.Replace(propName, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+      this.Kvps[i].Key.ToLower();
+
+    datatype = isNestedObject ?
+      propName :
+      datatype;
+
+    datatype = isArray ? this.ConfigureCollection(datatype, options) : datatype;
+
+    var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
+    var newLine = options.UsePascalCase && i != this.Kvps.Count - 1 ? Environment.NewLine : "";
+
+    return options.UsePascalCase ?
+      jsonAnnotation + propLine + newLine :
+      propLine;
+  }
+
+  private string ConfigureCollection(string arrayType, CSharpOptions options)
+  {
+    var isPrimitive = arrayType.Contains("[]");
+    var collection = isPrimitive ? options.PrimitiveArrayAs : options.ObjectArrayAs;
+    arrayType = isPrimitive ? arrayType.Replace("[]", "") : arrayType;
+
+    switch (collection)
+    {
+      case CollectionAs.List:
+        arrayType = $"List<{arrayType}>";
+        break;
+      case CollectionAs.IEnumerable:
+        arrayType = $"IEnumerable<{arrayType}>";
+        break;
+      case CollectionAs.ICollection:
+        arrayType = $"ICollection<{arrayType}>";
+        break;
+      case CollectionAs.Array:
+        arrayType = $"{arrayType}[]";
+        break;
+    }
+
+    return arrayType;
+  }
 }
 
 public enum CollectionAs
@@ -40,6 +112,7 @@ public enum CollectionAs
 
 public struct CSharpOptions()
 {
+  public bool UsePascalCase { get; set; }
   public CollectionAs PrimitiveArrayAs { get; set; }
   public CollectionAs ObjectArrayAs { get; set; }
 }
@@ -93,8 +166,7 @@ public static class JNodeBuilder
 
         if (reader.TokenType == JsonTokenType.PropertyName)
         {
-          string? currentProperty = Regex.Replace(reader.GetString()!, @"(?:^|_)([a-z])",
-            match => match.Groups[1].Value.ToUpper());
+          var currentProperty = reader.GetString()!;
 
           reader.Read();
 
@@ -313,13 +385,13 @@ public static class JNodeBuilder
 
         if (kvps.Count > 0)
         {
-          for (int i = 0; i < kvps.Count; i++)
-          {
-            if (kvps[i].Value.Contains("[]"))
-            {
-              kvps[i] = new KeyValuePair<string, string>(kvps[i].Key, ConfigureCollection(kvps[i].Value, options));
-            }
-          }
+          // for (int i = 0; i < kvps.Count; i++)
+          // {
+          //   if (kvps[i].Value.Contains("[]"))
+          //   {
+          //     kvps[i] = new KeyValuePair<string, string>(kvps[i].Key, ConfigureCollection(kvps[i].Value, options));
+          //   }
+          // }
 
           if (classes.TryGetValue(jn.Name, out var jnc))
           {
@@ -348,8 +420,7 @@ public static class JNodeBuilder
               var previousNode = iteratingNode;
               iteratingNode = iteratingNode.Parent;
 
-              var isPrimitiveArray = previousNode.Name.Contains("[]");
-              var dataType = previousNode.Type == JNodeType.Array ? ConfigureCollection(previousNode.Name, options) : $"{previousNode.Name}";
+              var dataType = previousNode.Type == JNodeType.Array ? $"{previousNode.Name}[]" : $"{previousNode.Name}";
 
               if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
               {
@@ -376,18 +447,14 @@ public static class JNodeBuilder
       {
         var jnc = kvp.Value;
 
-        var code =
-        $"public class {jnc.Name} \n" +
-        $"{{\n";
+        var code = jnc.GetClassName(options);
 
-        foreach (var jKvp in jnc.Kvps)
+        for (int i = 0; i < jnc.Kvps.Count; i++)
         {
-          var dataType = jKvp.Value;
-          var propName = jKvp.Key;
-          code += $"  public {dataType} {propName} {{ get; set; }}\n";
+          code += jnc.GetProperty(i, options);
         }
 
-        cs += code + $"}}\n\n";
+        cs += code + $"}}{Environment.NewLine}{Environment.NewLine}";
       }
 
       return cs;
@@ -397,30 +464,5 @@ public static class JNodeBuilder
       Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
       return "";
     }
-  }
-
-  private static string ConfigureCollection(string arrayType, CSharpOptions options)
-  {
-    var isPrimitive = arrayType.Contains("[]");
-    var collection = isPrimitive ? options.PrimitiveArrayAs : options.ObjectArrayAs;
-    arrayType = isPrimitive ? arrayType.Replace("[]", "") : arrayType;
-
-    switch (collection)
-    {
-      case CollectionAs.List:
-        arrayType = $"List<{arrayType}>";
-        break;
-      case CollectionAs.IEnumerable:
-        arrayType = $"IEnumerable<{arrayType}>";
-        break;
-      case CollectionAs.ICollection:
-        arrayType = $"ICollection<{arrayType}>";
-        break;
-      case CollectionAs.Array:
-        arrayType = $"{arrayType}[]";
-        break;
-    }
-
-    return arrayType;
   }
 }

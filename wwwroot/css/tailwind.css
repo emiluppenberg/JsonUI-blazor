@@ -53,15 +53,19 @@
     @apply flex w-full shrink-0;
   }
 
-  .options-collection {
+  .options {
     @apply flex flex-col w-40 mx-1;
   }
 
-  .options-collection-label {
+  .options-label {
     @apply text-sm text-center;
   }
 
-  .options-collection-select {
+  .options-select {
+    @apply bg-blue-400;
+  }
+
+  .options-checkbox {
     @apply bg-blue-400;
   }
 

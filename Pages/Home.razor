@@ -7,23 +7,27 @@
 <div class="menu">
   <input type="text" @bind="url" class="input-base" />
   <button class="button-base" @onclick="FetchRequest">Fetch</button>
-  <div class="options-collection">
-    <label class="options-collection-label">Object arrays as:</label>
-    <select class="options-collection-select" @bind="ObjectArrayAs">
+  <div class="options">
+    <label class="options-label">Object arrays as:</label>
+    <select class="options-select" @bind="ObjectArrayAs">
       @foreach (var o in collectionOptions)
       {
         <option value="@o">@o.ToString()</option>
       }
     </select>
   </div>
-  <div class="options-collection">
-    <label class="options-collection-label">Primitive arrays as:</label>
-    <select class="options-collection-select" @bind="PrimitiveArrayAs">
+  <div class="options">
+    <label class="options-label">Primitive arrays as:</label>
+    <select class="options-select" @bind="PrimitiveArrayAs">
       @foreach (var o in collectionOptions)
       {
         <option value="@o">@o.ToString()</option>
       }
     </select>
+  </div>
+  <div class="options">
+    <label class="options-label">PascalCase</label>
+    <input class="options-checkbox" type="checkbox" @bind="UsePascalCase" />
   </div>
 </div>
 
@@ -62,6 +66,15 @@
     set
     {
       csOptions.PrimitiveArrayAs = value;
+      RenderCode();
+    }
+  }
+  public bool UsePascalCase
+  {
+    get => csOptions.UsePascalCase;
+    set
+    {
+      csOptions.UsePascalCase = value;
       RenderCode();
     }
   }
