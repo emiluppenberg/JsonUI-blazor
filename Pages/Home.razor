@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using JsonUI_blazor.Components
+@using static General
 @inject HttpClient httpClient
 
 <PageTitle>Home</PageTitle>
@@ -8,26 +9,21 @@
   <input type="text" @bind="url" class="input-base" />
   <button class="button-base" @onclick="FetchRequest">Fetch</button>
   <div class="options">
-    <label class="options-label">Object arrays as:</label>
-    <select class="options-select" @bind="ObjectArrayAs">
-      @foreach (var o in collectionOptions)
+    <label class="options-label">Default collection</label>
+    <select class="options-select" @bind="DefaultCollection">
+      @foreach (var o in General.GetCollectionOptions())
       {
         <option value="@o">@o.ToString()</option>
       }
     </select>
   </div>
   <div class="options">
-    <label class="options-label">Primitive arrays as:</label>
-    <select class="options-select" @bind="PrimitiveArrayAs">
-      @foreach (var o in collectionOptions)
-      {
-        <option value="@o">@o.ToString()</option>
-      }
-    </select>
-  </div>
-  <div class="options">
-    <label class="options-label">PascalCase</label>
+    <label class="options-label">Use pascalcase</label>
     <input class="options-checkbox" type="checkbox" @bind="UsePascalCase" />
+  </div>
+  <div class="options">
+    <label class="options-label">Default to nullable</label>
+    <input class="options-checkbox" type="checkbox" @bind="DefaultNullable" />
   </div>
 </div>
 
@@ -47,25 +43,17 @@
   string url = "https://lldev.thespacedevs.com/2.3.0/launches/58e080d1-90cd-42ac-8152-9f56fc580f8d/";
   string _code = "";
   List<JNode> jNodes = new();
-  Array collectionOptions = Enum.GetValues<CollectionAs>();
   int nodeContainerHeight;
 
   private CSharpOptions csOptions;
-  public CollectionAs ObjectArrayAs
+  public CollectionType DefaultCollection
   {
-    get => csOptions.ObjectArrayAs;
+    get => csOptions.DefaultCollection;
     set
     {
-      csOptions.ObjectArrayAs = value;
-      RenderCode();
-    }
-  }
-  public CollectionAs PrimitiveArrayAs
-  {
-    get => csOptions.PrimitiveArrayAs;
-    set
-    {
-      csOptions.PrimitiveArrayAs = value;
+      csOptions.DefaultCollection = value;
+      jNodes.ForEach(x => x.SetNodeCollectionAs(value));
+      jNodes.ForEach(x => x.SetKvpsCollectionAs(value));
       RenderCode();
     }
   }
@@ -78,11 +66,23 @@
       RenderCode();
     }
   }
+  public bool DefaultNullable
+  {
+    get => csOptions.DefaultNullable;
+    set
+    {
+      csOptions.DefaultNullable = value;
+      jNodes.ForEach(x => x.SetNullable(value));
+      RenderCode();
+    }
+  }
 
   protected override async Task OnInitializedAsync()
   {
     var json = await httpClient.GetStringAsync("j.json");
-    jNodes = JNodeBuilder.CreateFromJson(json)!;
+    jNodes = JNodeBuilder.CreateFromJson(json, csOptions)!;
+    jNodes.ForEach(x => x.SetKvpsCollectionAs(DefaultCollection));
+    jNodes.ForEach(x => x.SetNodeCollectionAs(DefaultCollection));
   }
 
   async Task FetchRequest()
@@ -93,7 +93,7 @@
       response.EnsureSuccessStatusCode();
 
       var jsonContent = await response.Content.ReadAsStringAsync();
-      var result = JNodeBuilder.CreateFromJson(jsonContent);
+      var result = JNodeBuilder.CreateFromJson(jsonContent, csOptions);
       jNodes = result is not null ? result : jNodes;
     }
     catch (Exception ex)

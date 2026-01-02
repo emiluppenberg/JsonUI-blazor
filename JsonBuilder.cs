@@ -2,17 +2,56 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using static General;
 
-public enum JNodeType
+public record JNodeKvp
 {
-  Object, Array
-}
-
-public record JNodeKvp(KeyValuePair<string, string> kvp)
-{
-  public KeyValuePair<string, string> Kvp { get; set; } = kvp;
+  public KeyValuePair<string, string> Kvp { get; set; }
   public bool IsSelected { get; set; }
+  public bool Nullable { get; set; }
+  public bool Nested { get; set; } = false;
+  public CollectionType? CollectionAs { get; set; }
+
+  public JNodeKvp(KeyValuePair<string, string> kvp)
+  {
+    Kvp = kvp;
+    CollectionAs = kvp.Value.Contains("[]") ? CollectionType.Array : null;
+  }
+
+  public JNodeKvp(JNode node)
+  {
+    var datatype = node.Type == JNodeType.Array ? $"{node.Name}[]" : node.Name;
+    Kvp = new KeyValuePair<string, string>(node.Name, datatype);
+    Nested = node.Parent is not null;
+    Nullable = node.Nullable;
+    CollectionAs = node.CollectionAs;
+  }
+
+  public string GetKvpDatatype(CSharpOptions options)
+  {
+    var datatype = this.Kvp.Value;
+
+    datatype = options.UsePascalCase && Nested ?
+      Regex.Replace(datatype, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+      datatype.ToLower();
+
+    datatype = Nullable ? $"{datatype}?" : datatype;
+    datatype = CollectionAs is not null ? ConfigureCollection(datatype, CollectionAs.Value) : datatype;
+    datatype = Nullable && CollectionAs is not null ? $"{datatype}?" : datatype;
+
+    return datatype;
+  }
+
+  public string GetKvpName(CSharpOptions options)
+  {
+    return options.UsePascalCase ?
+      Regex.Replace(this.Kvp.Key, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+      this.Kvp.Key.ToLower();
+  }
+
+  public bool IsArray() => CollectionAs is not null;
 }
 
 public class JNode
@@ -24,8 +63,10 @@ public class JNode
   public List<JNode> Children { get; set; }
   public JNode? Parent { get; set; }
   public bool IsExpanded { get; set; }
+  public bool Nullable { get; set; }
+  public CollectionType? CollectionAs { get; set; }
 
-  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
+  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent, CSharpOptions options)
   {
     Name = name.Replace("{}", null).Replace("[]", null);
     Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
@@ -33,17 +74,42 @@ public class JNode
     KeyValues = keyValues;
     Children = new();
     Parent = parent;
+    Nullable = options.DefaultNullable;
+    CollectionAs = Type == JNodeType.Array ? CollectionType.Array : null;
+  }
+
+  public void SetNullable(bool nullable)
+  {
+    this.Nullable = nullable;
+    this.KeyValues.ForEach(x => x.Nullable = nullable);
+  }
+
+  public void SetNodeCollectionAs(CollectionType collectionAs)
+  {
+    if (this.CollectionAs is not null)
+    {
+      this.CollectionAs = collectionAs;
+    }
+  }
+
+  public void SetKvpsCollectionAs(CollectionType collectionAs)
+  {
+    this.KeyValues
+      .Where(x => x.CollectionAs is not null)
+      .ToList()
+      .ForEach(x => x.CollectionAs = collectionAs);
   }
 }
 
-public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
+public record JNodeClass(string name, List<JNodeKvp> kvps)
 {
   public string Name { get; set; } = name;
-  public List<KeyValuePair<string, string>> Kvps { get; } = kvps;
+  public List<JNodeKvp> Kvps { get; } = kvps;
 
   public string GetClassName(CSharpOptions options)
   {
     var name = this.Name;
+
     name = options.UsePascalCase ?
       Regex.Replace(name, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
       name.ToLower();
@@ -54,22 +120,9 @@ public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
 
   public string GetProperty(int i, CSharpOptions options)
   {
-    var datatype = this.Kvps[i].Value;
-    var propName = this.Kvps[i].Key;
-    var jsonAnnotation = $"  [JsonProperty(\"{propName}\")]{Environment.NewLine}";
-
-    var isNestedObject = datatype.Replace("[]", "") == propName;
-    var isArray = datatype.Contains("[]");
-
-    propName = options.UsePascalCase ?
-      Regex.Replace(propName, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
-      this.Kvps[i].Key.ToLower();
-
-    datatype = isNestedObject ?
-      propName :
-      datatype;
-
-    datatype = isArray ? this.ConfigureCollection(datatype, options) : datatype;
+    var datatype = this.Kvps[i].GetKvpDatatype(options);
+    var propName = this.Kvps[i].GetKvpName(options);
+    var jsonAnnotation = $"  [JsonProperty(\"{this.Kvps[i].Kvp.Key}\")]{Environment.NewLine}";
 
     var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
     var newLine = options.UsePascalCase && i != this.Kvps.Count - 1 ? Environment.NewLine : "";
@@ -78,48 +131,11 @@ public record JNodeClass(string name, List<KeyValuePair<string, string>> kvps)
       jsonAnnotation + propLine + newLine :
       propLine;
   }
-
-  private string ConfigureCollection(string arrayType, CSharpOptions options)
-  {
-    var isPrimitive = arrayType.Contains("[]");
-    var collection = isPrimitive ? options.PrimitiveArrayAs : options.ObjectArrayAs;
-    arrayType = isPrimitive ? arrayType.Replace("[]", "") : arrayType;
-
-    switch (collection)
-    {
-      case CollectionAs.List:
-        arrayType = $"List<{arrayType}>";
-        break;
-      case CollectionAs.IEnumerable:
-        arrayType = $"IEnumerable<{arrayType}>";
-        break;
-      case CollectionAs.ICollection:
-        arrayType = $"ICollection<{arrayType}>";
-        break;
-      case CollectionAs.Array:
-        arrayType = $"{arrayType}[]";
-        break;
-    }
-
-    return arrayType;
-  }
-}
-
-public enum CollectionAs
-{
-  List, IEnumerable, ICollection, Array
-}
-
-public struct CSharpOptions()
-{
-  public bool UsePascalCase { get; set; }
-  public CollectionAs PrimitiveArrayAs { get; set; }
-  public CollectionAs ObjectArrayAs { get; set; }
 }
 
 public static class JNodeBuilder
 {
-  public static List<JNode>? CreateFromJson(string rawContent)
+  public static List<JNode>? CreateFromJson(string rawContent, CSharpOptions options)
   {
     var model = new Dictionary<string, Dictionary<string, string>>();
     var modelCurrentParents = new List<string>() { "Base" };
@@ -227,8 +243,6 @@ public static class JNodeBuilder
             continue;
           }
 
-          Console.WriteLine($"{currentObject}.{currentProperty}");
-
           if (!model.ContainsKey(currentObject))
           {
             model.Add(currentObject, new Dictionary<string, string> { [currentProperty] = value });
@@ -310,7 +324,7 @@ public static class JNodeBuilder
           jNodeKvps.Add(jNodeKvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
+        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey), options);
 
         childLookup.Add(lineageKey, new());
 
@@ -378,36 +392,27 @@ public static class JNodeBuilder
 
       foreach (var jn in jNodes)
       {
-        var kvps = jn.KeyValues
+        var jnKvps = jn.KeyValues
           .Where(x => x.IsSelected)
-          .Select(x => x.Kvp)
           .ToList();
 
-        if (kvps.Count > 0)
+        if (jnKvps.Count > 0)
         {
-          // for (int i = 0; i < kvps.Count; i++)
-          // {
-          //   if (kvps[i].Value.Contains("[]"))
-          //   {
-          //     kvps[i] = new KeyValuePair<string, string>(kvps[i].Key, ConfigureCollection(kvps[i].Value, options));
-          //   }
-          // }
-
           if (classes.TryGetValue(jn.Name, out var jnc))
           {
-            foreach (var kvp in kvps)
+            foreach (var jnk in jnKvps)
             {
               // TODO - Handle case when same key has been selected multiple times and some has a null value 
-              if (!jnc.Kvps.Any(x => x.Key == kvp.Key))
+              if (!jnc.Kvps.Any(x => x.Kvp.Key == jnk.Kvp.Key))
               {
-                jnc.Kvps.Add(kvp);
+                jnc.Kvps.Add(jnk);
               }
             }
           }
 
           if (!classes.TryGetValue(jn.Name, out var _))
           {
-            var newJnc = new JNodeClass(jn.Name, kvps);
+            var newJnc = new JNodeClass(jn.Name, jnKvps);
             classes.Add(jn.Name, newJnc);
           }
 
@@ -420,20 +425,18 @@ public static class JNodeBuilder
               var previousNode = iteratingNode;
               iteratingNode = iteratingNode.Parent;
 
-              var dataType = previousNode.Type == JNodeType.Array ? $"{previousNode.Name}[]" : $"{previousNode.Name}";
-
               if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
               {
-                if (!parentJnc.Kvps.Any(x => x.Key == $"{previousNode.Name}" && x.Value == dataType))
+                if (!parentJnc.Kvps.Any(x => x.Kvp.Key == previousNode.Name))
                 {
-                  parentJnc.Kvps.Add(new KeyValuePair<string, string>($"{previousNode.Name}", dataType));
+                  parentJnc.Kvps.Add(new JNodeKvp(previousNode));
                 }
               }
 
               if (!classes.TryGetValue(iteratingNode.Name, out var _))
               {
-                var _kvps = new List<KeyValuePair<string, string>>() { new KeyValuePair<string, string>($"{previousNode.Name}", dataType) };
-                var newJnc = new JNodeClass(iteratingNode.Name, _kvps);
+                var _jnKvps = new List<JNodeKvp>() { new JNodeKvp(previousNode) };
+                var newJnc = new JNodeClass(iteratingNode.Name, _jnKvps);
                 classes.Add(iteratingNode.Name, newJnc);
               }
             }

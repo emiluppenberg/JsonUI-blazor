@@ -10,13 +10,32 @@
     <span class="span-value @(!IsSticky && CurrentNode.Name is not "Base" ? "w-1/6" : "")">@CurrentNode.Type</span>
   </button>
 
-  @foreach (var jKvp in CurrentNode.KeyValues)
+  @foreach (var jnKvp in CurrentNode.KeyValues)
   {
-    <button @key="jKvp" class="transition-jkvp @(jKvp.IsSelected ? "button-jkvp-selected" : "button-jkvp")"
-      @onclick="() => SelectKvp(jKvp)">
-      <span class="span-key">@jKvp.Kvp.Key</span>
-      <span class="span-value">@jKvp.Kvp.Value</span>
-    </button>
+    <div class="transition-kvp @(GetKvpClass(jnKvp))">
+      <button @key="jnKvp" class="transition-kvp @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
+        @onclick='async () => await SetKvp("selected", jnKvp)'>
+        <span class="span-key">@jnKvp.Kvp.Key</span>
+        <span class="span-value">@jnKvp.Kvp.Value</span>
+      </button>
+      @if (jnKvp.IsSelected)
+      {
+        <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
+          <label class="kvp-option-label">Nullable</label>
+          <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
+        </button>
+        @if (jnKvp.IsArray())
+        {
+          <select class="kvp-option-select" @bind="jnKvp.CollectionAs"
+            @bind:after='async () => await SetKvp("collection", jnKvp)'>
+            @foreach (var o in General.GetCollectionOptions())
+            {
+              <option value="@o">@o.ToString()</option>
+            }
+          </select>
+        }
+      }
+    </div>
   }
 
   @foreach (var child in CurrentNode.Children)
@@ -81,10 +100,22 @@
     await OnNodeToggled.InvokeAsync(node);
   }
 
-  async Task SelectKvp(JNodeKvp jKvp)
+  async Task SetKvp(string action, JNodeKvp jnKvp)
   {
-    jKvp.IsSelected = !jKvp.IsSelected;
-    await OnKvpSelected.InvokeAsync();
+    if (action == "selected")
+    {
+      jnKvp.IsSelected = !jnKvp.IsSelected;
+      await OnKvpSelected.InvokeAsync();
+    }
+    if (action == "nullable")
+    {
+      jnKvp.Nullable = !jnKvp.Nullable;
+      await OnKvpSelected.InvokeAsync();
+    }
+    if (action == "collection")
+    {
+      await OnKvpSelected.InvokeAsync();
+    }
   }
 
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
@@ -105,6 +136,22 @@
     else
     {
       return $"transform: translateX(-{General.ColWidthPx}px); width: {General.ColWidthPx * 2}px;";
+    }
+  }
+
+  string GetKvpClass(JNodeKvp kvp)
+  {
+    if (kvp.IsSelected && kvp.IsArray())
+    {
+      return "div-kvp-selected-arr";
+    }
+    if (kvp.IsSelected && !kvp.IsArray())
+    {
+      return "div-kvp-selected-obj";
+    }
+    else
+    {
+      return "div-kvp";
     }
   }
 }
