@@ -32,6 +32,7 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
+    --col-w: 10rem;
   }
 }
 @layer base {
@@ -1053,32 +1054,26 @@
     }
   }
   .div-kvp {
-    margin-bottom: 2px;
+    margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
-    height: 20px;
+    height: calc(var(--spacing) * 5);
     width: 100%;
   }
   .div-kvp-selected-obj {
-    margin-bottom: 2px;
+    margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
-    height: 20px;
-    width: calc(var(--spacing) * 60);
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
+    height: calc(var(--spacing) * 5);
+    width: calc(5rem + var(--col-w));
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
   .div-kvp-selected-arr {
-    margin-bottom: 2px;
+    margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
-    height: 20px;
-    width: calc(var(--spacing) * 80);
+    height: calc(var(--spacing) * 5);
+    width: calc(10rem + var(--col-w));
     border-style: var(--tw-border-style);
     border-width: 1px;
-  }
-  .kvp-option {
-    display: flex;
-    width: calc(var(--spacing) * 20);
   }
   .kvp-option-label {
     width: calc(var(--spacing) * 15);
@@ -1111,12 +1106,12 @@
     }
   }
   .kvp-option-select {
-    display: flex;
     width: calc(var(--spacing) * 20);
     align-items: center;
     border-style: var(--tw-border-style);
     border-width: 1px;
     background-color: var(--color-blue-300);
+    text-align: center;
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-blue-400);
@@ -1124,9 +1119,9 @@
     }
   }
   .button-node {
-    margin-bottom: 2px;
+    margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
-    height: 20px;
+    height: calc(var(--spacing) * 5);
     width: 100%;
     --tw-scale-x: 100%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
@@ -1151,14 +1146,77 @@
       }
     }
   }
-  .button-node-sticky {
+  .div-sticky-inactive {
     position: sticky;
     top: calc(var(--spacing) * 0);
     z-index: 50;
-    margin-bottom: 2px;
+    margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
-    height: 20px;
-    width: 100%;
+    height: calc(var(--spacing) * 5);
+    width: calc(var(--col-w) * 2);
+    --tw-translate-x: calc(var(--col-w) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    align-items: center;
+  }
+  .div-sticky-inactive-selected-obj {
+    position: sticky;
+    top: calc(var(--spacing) * 0);
+    z-index: 50;
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(5rem + var(--col-w) * 2);
+    --tw-translate-x: calc(var(--col-w) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    align-items: center;
+  }
+  .div-sticky-inactive-selected-arr {
+    position: sticky;
+    top: calc(var(--spacing) * 0);
+    z-index: 50;
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(10rem + var(--col-w) * 2);
+    --tw-translate-x: calc(var(--col-w) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    align-items: center;
+  }
+  .div-sticky-active {
+    position: sticky;
+    top: calc(var(--spacing) * 0);
+    z-index: 50;
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: var(--col-w);
+    align-items: center;
+  }
+  .div-sticky-active-selected-obj {
+    position: sticky;
+    top: calc(var(--spacing) * 0);
+    z-index: 50;
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(5rem + var(--col-w));
+    align-items: center;
+  }
+  .div-sticky-active-selected-arr {
+    position: sticky;
+    top: calc(var(--spacing) * 0);
+    z-index: 50;
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(10rem + var(--col-w));
+    align-items: center;
+  }
+  .button-sticky-inactive {
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(var(--col-w) * 2);
     align-items: center;
     :where(& > :not(:last-child)) {
       --tw-divide-x-reverse: 0;
@@ -1171,6 +1229,86 @@
       border-style: dotted;
     }
     border-radius: 0.25rem;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    background-color: var(--color-yellow-200);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-300);
+      }
+    }
+  }
+  .button-sticky-inactive-selected {
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: calc(var(--col-w) * 2);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    background-color: var(--color-yellow-200);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-300);
+      }
+    }
+  }
+  .button-sticky-active {
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: var(--col-w);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+    border-radius: 0.25rem;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    background-color: var(--color-yellow-200);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-300);
+      }
+    }
+  }
+  .button-sticky-active-selected {
+    margin-bottom: calc(var(--spacing) * 0.5);
+    display: flex;
+    height: calc(var(--spacing) * 5);
+    width: var(--col-w);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
     border-style: var(--tw-border-style);
     border-width: 1px;
     background-color: var(--color-yellow-200);
@@ -1441,6 +1579,21 @@
   inherits: false;
   initial-value: 0;
 }
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-font-weight {
   syntax: "*";
   inherits: false;
@@ -1491,6 +1644,9 @@
       --tw-drop-shadow-size: initial;
       --tw-ease: initial;
       --tw-divide-x-reverse: 0;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
       --tw-font-weight: initial;
       --tw-duration: initial;
     }

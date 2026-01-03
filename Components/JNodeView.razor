@@ -5,10 +5,29 @@
   style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
 
   <div @ref="_sentinel"></div>
-  <button class="button-node-sticky" @onclick="() => ToggleScroll()" style="@GetStickyStyle()">
-    <span class="span-key @(!IsSticky && CurrentNode.Name is not "Base" ? "w-5/6" : "")">@CurrentNode.Name</span>
-    <span class="span-value @(!IsSticky && CurrentNode.Name is not "Base" ? "w-1/6" : "")">@CurrentNode.Type</span>
-  </button>
+  <div class="@GetDivStickyClass()">
+    <button class="@GetButtonStickyClass()" @onclick="() => ToggleScroll()">
+      <span class="span-key @(!IsSticky && CurrentNode.Name is not "Base" ? "w-5/6" : "")">@CurrentNode.Name</span>
+      <span class="span-value @(!IsSticky && CurrentNode.Name is not "Base" ? "w-1/6" : "")">@CurrentNode.Type</span>
+    </button>
+    @if (AnyChildSelected && CurrentNode.Name is not "Base")
+    {
+      <button class="kvp-option-button" @onclick='async () => await SetNode("nullable")'>
+        <label class="kvp-option-label">Nullable</label>
+        <input class="kvp-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
+      </button>
+      @if (CurrentNode.Type == General.JNodeType.Array)
+      {
+        <select class="kvp-option-select" @bind="CurrentNode.CollectionAs"
+          @bind:after='async () => await SetNode("collection")'>
+          @foreach (var o in General.GetCollectionOptions())
+          {
+            <option value="@o">@o.ToString()</option>
+          }
+        </select>
+      }
+    }
+  </div>
 
   @foreach (var jnKvp in CurrentNode.KeyValues)
   {
@@ -68,6 +87,7 @@
   public EventCallback OnKvpSelected { get; set; }
 
   private bool IsSticky { get; set; }
+  private bool AnyChildSelected { get; set; }
 
   public int NextRowOffset { get; set; }
   public JNode? NextNode { get; set; } = null;
@@ -118,24 +138,80 @@
     }
   }
 
+  async Task SetNode(string action)
+  {
+    if (action == "nullable")
+    {
+      CurrentNode.Nullable = !CurrentNode.Nullable;
+      await OnKvpSelected.InvokeAsync();
+    }
+    if (action == "collection")
+    {
+      await OnKvpSelected.InvokeAsync();
+    }
+  }
+
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
   async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
   async Task ForwardKvpSelected() => await OnKvpSelected.InvokeAsync();
 
-  string GetStickyStyle()
+  string GetDivStickyClass()
   {
+    AnyChildSelected = CurrentNode.AnyChildSelected();
+    var isArray = CurrentNode.Type == General.JNodeType.Array;
+
     if (CurrentNode.Name is "Base")
     {
-      return "";
+      return "div-sticky-active";
     }
-    if (IsSticky)
+    if (IsSticky && !AnyChildSelected)
     {
-      return $"width: {General.ColWidthPx}px;";
+      return "div-sticky-active";
+    }
+    if (IsSticky && AnyChildSelected && isArray)
+    {
+      return "div-sticky-active-selected-arr";
+    }
+    if (IsSticky && AnyChildSelected && !isArray)
+    {
+      return "div-sticky-active-selected-obj";
+    }
+    if (!IsSticky && AnyChildSelected && isArray)
+    {
+      return "div-sticky-inactive-selected-arr";
+    }
+    if (!IsSticky && AnyChildSelected && !isArray)
+    {
+      return "div-sticky-inactive-selected-obj";
+    }
+    if (!IsSticky && !AnyChildSelected)
+    {
+      return "div-sticky-inactive";
     }
     else
     {
-      return $"transform: translateX(-{General.ColWidthPx}px); width: {General.ColWidthPx * 2}px;";
+      return "div-sticky-inactive";
+    }
+  }
+
+  string GetButtonStickyClass()
+  {
+    if (CurrentNode.Name is "Base" || IsSticky && !AnyChildSelected)
+    {
+      return "button-sticky-active";
+    }
+    if (IsSticky && AnyChildSelected)
+    {
+      return "button-sticky-active-selected";
+    }
+    if (!IsSticky && AnyChildSelected)
+    {
+      return "button-sticky-inactive-selected";
+    }
+    else
+    {
+      return "button-sticky-inactive";
     }
   }
 
