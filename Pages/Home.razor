@@ -83,6 +83,7 @@
     jNodes = JNodeBuilder.CreateFromJson(json, csOptions)!;
     jNodes.ForEach(x => x.SetKvpsCollectionAs(DefaultCollection));
     jNodes.ForEach(x => x.SetNodeCollectionAs(DefaultCollection));
+    nodeContainerHeight = (jNodes[0].KeyValues.Count + jNodes[0].Children.Count) * General.RowHeightPx;
   }
 
   async Task FetchRequest()
@@ -123,7 +124,6 @@
       while (iteratingNode.Parent is not null);
     }
 
-    nodeContainerHeight += 500;
     await InvokeAsync(StateHasChanged);
   }
 

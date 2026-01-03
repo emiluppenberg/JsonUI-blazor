@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --col-w: 10rem;
+  --cw: 10rem;
+  --ncw: 9.75rem;
 }
 
 @layer components {
@@ -9,36 +10,80 @@
     @apply border rounded p-1 hover:bg-amber-100;
   }
 
+  .button-node {
+    @apply scale-x-100 border rounded w-full bg-amber-400 hover:bg-amber-500 flex items-center divide-dotted divide-x h-5 mb-0.5;
+  }
+
   .button-base {
     @apply border-4 border-black border-double text-white rounded p-1 bg-blue-400 hover:bg-blue-500;
   }
 
+  .button-sticky-inactive {
+    @apply border rounded w-[calc(var(--cw)*2)] h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-inactive-selected {
+    @apply border rounded-l w-[calc(var(--cw)*2)] h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-active {
+    @apply border rounded w-(--cw) h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-active-selected {
+    @apply border rounded-l w-(--cw) h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+  }
+
   .button-kvp {
-    @apply border rounded min-w-40 max-w-40 h-full bg-gray-300 hover:bg-gray-400 flex items-center divide-dotted divide-x overflow-hidden;
+    @apply border rounded w-(--ncw) h-full bg-gray-300 hover:bg-gray-400 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply border rounded-l min-w-40 max-w-40 h-full bg-blue-300 hover:bg-blue-400 flex items-center divide-dotted divide-x overflow-hidden;
+    @apply border rounded-l w-(--ncw) h-full bg-blue-300 hover:bg-blue-400 flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
-    @apply flex w-full h-5 mb-0.5;
+    @apply flex w-(--ncw) h-5 mb-0.5 overflow-hidden;
   }
 
   .div-kvp-selected-obj {
-    @apply border flex w-[calc(5rem+var(--col-w))] h-5 mb-0.5;
+    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-3 hover:outline-white rounded;
   }
 
   .div-kvp-selected-arr {
-    @apply border flex w-[calc(10rem+var(--col-w))] h-5 mb-0.5;
+    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-3 hover:outline-white rounded;
+  }
+
+  .div-sticky-inactive {
+    @apply sticky top-1 z-50 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+  }
+
+  .div-sticky-inactive-selected-obj {
+    @apply sticky top-1 z-50 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+  }
+
+  .div-sticky-inactive-selected-arr {
+    @apply sticky top-1 z-50 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+  }
+
+  .div-sticky-active {
+    @apply sticky top-1 z-40 w-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+  }
+
+  .div-sticky-active-selected-obj {
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-3 hover:outline-white rounded w-[calc(5rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
+  }
+
+  .div-sticky-active-selected-arr {
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-3 hover:outline-white rounded w-[calc(10rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
   }
 
   .kvp-option-label {
-    @apply text-xs text-center w-15;
+    @apply text-xs font-medium text-center w-15;
   }
 
   .kvp-option-button {
-    @apply border flex w-20 items-center bg-blue-300 hover:bg-blue-400;
+    @apply border flex h-full w-20 items-center bg-blue-300 hover:bg-blue-400;
   }
 
   .kvp-option-checkbox {
@@ -46,63 +91,47 @@
   }
 
   .kvp-option-select {
-    @apply border w-20 text-center items-center bg-blue-300 hover:bg-blue-400;
+    @apply border w-20 h-full text-xs font-medium text-center bg-blue-300 hover:bg-blue-400;
   }
 
-  .button-node {
-    @apply scale-x-100 border rounded w-full bg-amber-400 hover:bg-amber-500 flex items-center divide-dotted divide-x h-5 mb-0.5;
+  .sticky-option-label {
+    @apply text-xs font-medium text-center w-15;
   }
 
-  .div-sticky-inactive {
-    @apply sticky top-0 z-50 w-[calc(var(--col-w)*2)] -translate-x-(--col-w) flex items-center h-5 mb-0.5;
+  .sticky-option-button {
+    @apply border flex h-full w-20 items-center bg-yellow-200 hover:bg-yellow-300;
   }
 
-  .div-sticky-inactive-selected-obj {
-    @apply sticky top-0 z-50 w-[calc(5rem+var(--col-w)*2)] -translate-x-(--col-w) flex items-center h-5 mb-0.5;
+  .sticky-option-checkbox {
+    @apply w-5 h-full pointer-events-none bg-yellow-200 hover:bg-yellow-300;
   }
 
-  .div-sticky-inactive-selected-arr {
-    @apply sticky top-0 z-50 w-[calc(10rem+var(--col-w)*2)] -translate-x-(--col-w) flex items-center h-5 mb-0.5;
+  .sticky-option-select {
+    @apply border w-20 h-full text-xs font-medium text-center bg-yellow-200 hover:bg-yellow-300;
   }
 
-  .div-sticky-active {
-    @apply sticky top-0 z-50 w-(--col-w) flex items-center h-5 mb-0.5;
+  .div-count {
+    @apply w-6 h-full flex items-center justify-center rounded bg-white opacity-50;
   }
 
-  .div-sticky-active-selected-obj {
-    @apply sticky top-0 z-50 w-[calc(5rem+var(--col-w))] flex items-center h-5 mb-0.5;
-  }
-
-  .div-sticky-active-selected-arr {
-    @apply sticky top-0 z-50 w-[calc(10rem+var(--col-w))] flex items-center h-5 mb-0.5;
-  }
-
-  .button-sticky-inactive {
-    @apply border rounded w-[calc(var(--col-w)*2)] bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
-  }
-
-  .button-sticky-inactive-selected {
-    @apply border rounded-l w-[calc(var(--col-w)*2)] bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
-  }
-
-  .button-sticky-active {
-    @apply border rounded w-(--col-w) bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
-  }
-
-  .button-sticky-active-selected {
-    @apply border rounded-l w-(--col-w) bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
+  .span-count {
+    @apply px-1 text-xs font-light text-black;
   }
 
   .span-key {
-    @apply w-2/3 text-start font-medium truncate;
+    @apply px-1 flex-1 h-full text-start text-xs font-bold truncate;
   }
 
   .span-value {
-    @apply w-1/3 text-start text-xs truncate;
+    @apply px-1 w-12 h-full text-start text-xs italic truncate;
   }
 
   .node-col {
-    @apply flex flex-col relative w-40 overflow-visible;
+    @apply pt-1 flex flex-col relative w-40 overflow-visible;
+  }
+
+  .node-col-container {
+    @apply ps-1 flex flex-col;
   }
 
   .app-container {
@@ -110,7 +139,7 @@
   }
 
   .node-container {
-    @apply flex-1 overflow-y-auto flex items-start w-3/5;
+    @apply max-h-150 flex-1 overflow-y-auto flex items-start w-3/5;
   }
 
   .code {
@@ -142,10 +171,18 @@
   }
 
   .transition-kvp {
-    @apply transition-all duration-150;
+    @apply transition-all duration-50;
+  }
+
+  .transition-sticky {
+    @apply transition-all duration-50;
   }
 
   .transition-node {
     @apply transition-all duration-150;
+  }
+
+  .sentinel {
+    @apply mt-1;
   }
 }

@@ -46,14 +46,9 @@ public class JNode
       .ForEach(x => x.CollectionAs = collectionAs);
   }
 
-  public bool AnyChildSelected()
+  public int TotalNestedSelected()
   {
-    var isSelected = this.KeyValues.Any(x => x.IsSelected);
-    if (isSelected) return isSelected;
-
-    var anySelected = this.Children.Select(x => x.AnyChildSelected());
-    if (anySelected.Any(x => x == true)) return true;
-
-    return false;
+    return this.KeyValues.Count(x => x.IsSelected) +
+           this.Children.Sum(x => x.TotalNestedSelected());
   }
 }

@@ -165,8 +165,6 @@ public static class JNodeBuilder
           currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
           value += "[]";
 
-          Console.WriteLine($"primitive: {currentObject}.{currentProperty}");
-
           if (model[currentObject].ContainsKey(currentProperty))
           {
             continue;
