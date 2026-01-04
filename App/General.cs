@@ -1,3 +1,5 @@
+public record KvpSelectedArgs(JNode node, bool selected);
+
 public static class General
 {
   public const int RowHeightPx = 22;

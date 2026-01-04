@@ -32,7 +32,7 @@
     @if (jNodes?.Count > 0)
     {
       <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled"
-        OnKvpSelected="RenderCode" />
+        OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" />
     }
   </div>
 
@@ -54,7 +54,7 @@
       csOptions.DefaultCollection = value;
       jNodes.ForEach(x => x.SetNodeCollectionAs(value));
       jNodes.ForEach(x => x.SetKvpsCollectionAs(value));
-      RenderCode();
+      HandleRenderCode();
     }
   }
   public bool UsePascalCase
@@ -63,7 +63,7 @@
     set
     {
       csOptions.UsePascalCase = value;
-      RenderCode();
+      HandleRenderCode();
     }
   }
   public bool DefaultNullable
@@ -73,7 +73,7 @@
     {
       csOptions.DefaultNullable = value;
       jNodes.ForEach(x => x.SetNullable(value));
-      RenderCode();
+      HandleRenderCode();
     }
   }
 
@@ -127,7 +127,22 @@
     await InvokeAsync(StateHasChanged);
   }
 
-  void RenderCode()
+  async Task HandleKvpSelected(KvpSelectedArgs args)
+  {
+    args.node.TotalNestedSelected += args.selected ? 1 : -1;
+
+    var iteratingNode = args.node;
+
+    while (iteratingNode.Parent is not null)
+    {
+      iteratingNode = iteratingNode.Parent;
+      iteratingNode.TotalNestedSelected += args.selected ? 1 : -1;
+    }
+
+    await InvokeAsync(StateHasChanged);
+  }
+
+  void HandleRenderCode()
   {
     _code = JNodeBuilder.JNodesToCSharp(jNodes, csOptions);
   }

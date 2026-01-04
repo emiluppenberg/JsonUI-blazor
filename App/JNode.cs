@@ -11,6 +11,7 @@ public class JNode
   public bool IsExpanded { get; set; }
   public bool Nullable { get; set; }
   public CollectionType? CollectionAs { get; set; }
+  public int TotalNestedSelected { get; set; }
 
   public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent, CSharpOptions options)
   {
@@ -44,11 +45,5 @@ public class JNode
       .Where(x => x.CollectionAs is not null)
       .ToList()
       .ForEach(x => x.CollectionAs = collectionAs);
-  }
-
-  public int TotalNestedSelected()
-  {
-    return this.KeyValues.Count(x => x.IsSelected) +
-           this.Children.Sum(x => x.TotalNestedSelected());
   }
 }

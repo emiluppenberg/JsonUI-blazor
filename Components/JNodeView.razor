@@ -7,9 +7,16 @@
   <div class="sentinel" @ref="_sentinel"></div>
   <div class="@GetDivStickyClass()">
     <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)">
-      <div class="@(AnyNestedSelected ? "div-count" : "hidden")">
-        <span class="span-count">@TotalNestedSelected</span>
-      </div>
+      @if (AnyNestedSelected)
+      {
+        <div class="div-count">
+          <span class="span-count">@CurrentNode.TotalNestedSelected</span>
+        </div>
+      }
+      @if (!AnyNestedSelected)
+      {
+        <div class="div-count-hidden"></div>
+      }
       <span class="span-key">@CurrentNode.Name</span>
       <span class="span-value">@CurrentNode.Type</span>
     </button>
@@ -38,9 +45,16 @@
     {
       <button @key="child" class="transition-node button-node @(child.IsExpanded ? "scale-x-0" : "")"
         @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-        <div class="@(child.TotalNestedSelected() > 0 ? "div-count" : "hidden")">
-          <span class="span-count">@child.TotalNestedSelected()</span>
-        </div>
+        @if (child.TotalNestedSelected > 0)
+        {
+          <div class="div-count">
+            <span class="span-count">@child.TotalNestedSelected</span>
+          </div>
+        }
+        @if (child.TotalNestedSelected < 1)
+        {
+          <div class="div-count-hidden"></div>
+        }
         <span class="@(child.IsExpanded ? "hidden" : "span-key")">@child.Name</span>
         <span class="@(child.IsExpanded ? "hidden" : "span-value")">@child.Type</span>
       </button>
@@ -80,7 +94,7 @@
 @if (NextNode is not null && NextNode.IsExpanded)
 {
   <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
-    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" />
+    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" OnRenderCode="ForwardRenderCode" />
 }
 
 @code {
@@ -93,11 +107,13 @@
   [Parameter]
   public EventCallback<JNode> OnNodeToggled { get; set; }
   [Parameter]
-  public EventCallback OnKvpSelected { get; set; }
+  public EventCallback<KvpSelectedArgs> OnKvpSelected { get; set; }
+  [Parameter]
+  public EventCallback OnRenderCode { get; set; }
+
 
   private bool IsSticky { get; set; }
-  private bool AnyNestedSelected { get; set; }
-  private int TotalNestedSelected { get; set; }
+  private bool AnyNestedSelected { get => CurrentNode.TotalNestedSelected > 0; }
 
   public int NextRowOffset { get; set; }
   public JNode? NextNode { get; set; } = null;
@@ -111,7 +127,6 @@
     if (firstRender)
     {
       _dotNetRef = DotNetObjectReference.Create(this);
-
       _observerHandle = await js.InvokeAsync<IJSObjectReference>("createStickyObserver", _sentinel, _dotNetRef);
     }
   }
@@ -135,16 +150,18 @@
     if (action == "selected")
     {
       jnKvp.IsSelected = !jnKvp.IsSelected;
-      await OnKvpSelected.InvokeAsync();
+      var args = new KvpSelectedArgs(CurrentNode, jnKvp.IsSelected);
+      await OnKvpSelected.InvokeAsync(args);
+      await OnRenderCode.InvokeAsync();
     }
     if (action == "nullable")
     {
       jnKvp.Nullable = !jnKvp.Nullable;
-      await OnKvpSelected.InvokeAsync();
+      await OnRenderCode.InvokeAsync();
     }
     if (action == "collection")
     {
-      await OnKvpSelected.InvokeAsync();
+      await OnRenderCode.InvokeAsync();
     }
   }
 
@@ -153,23 +170,22 @@
     if (action == "nullable")
     {
       CurrentNode.Nullable = !CurrentNode.Nullable;
-      await OnKvpSelected.InvokeAsync();
+      await OnRenderCode.InvokeAsync();
     }
     if (action == "collection")
     {
-      await OnKvpSelected.InvokeAsync();
+      await OnRenderCode.InvokeAsync();
     }
   }
 
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
   async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
-  async Task ForwardKvpSelected() => await OnKvpSelected.InvokeAsync();
+  async Task ForwardKvpSelected(KvpSelectedArgs args) => await OnKvpSelected.InvokeAsync(args);
+  async Task ForwardRenderCode() => await OnRenderCode.InvokeAsync();
 
   string GetDivStickyClass()
   {
-    TotalNestedSelected = CurrentNode.TotalNestedSelected();
-    AnyNestedSelected = TotalNestedSelected > 0 ? true : false;
     var isArray = CurrentNode.Type == General.JNodeType.Array;
 
     if (CurrentNode.Name is "Base")

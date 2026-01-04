@@ -11,35 +11,35 @@
   }
 
   .button-node {
-    @apply scale-x-100 border rounded w-full bg-amber-400 hover:bg-amber-500 flex items-center divide-dotted divide-x h-5 mb-0.5;
+    @apply scale-x-100 border rounded w-full bg-orange-200 hover:bg-orange-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
   }
 
   .button-base {
-    @apply border-4 border-black border-double text-white rounded p-1 bg-blue-400 hover:bg-blue-500;
+    @apply border-4 border-black border-double text-white rounded p-1 bg-sky-300 hover:bg-sky-500;
   }
 
   .button-sticky-inactive {
-    @apply border rounded w-[calc(var(--cw)*2)] h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+    @apply border rounded w-[calc(var(--cw)*2)] h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-inactive-selected {
-    @apply border rounded-l w-[calc(var(--cw)*2)] h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+    @apply border rounded-l w-[calc(var(--cw)*2)] h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active {
-    @apply border rounded w-(--cw) h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+    @apply border rounded w-(--cw) h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active-selected {
-    @apply border rounded-l w-(--cw) h-full bg-yellow-200 hover:bg-yellow-300 flex items-center divide-dotted divide-x;
+    @apply border rounded-l w-(--cw) h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp {
-    @apply border rounded w-(--ncw) h-full bg-gray-300 hover:bg-gray-400 flex items-center divide-dotted divide-x;
+    @apply border rounded w-(--ncw) h-full bg-gray-200 hover:bg-gray-300 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply border rounded-l w-(--ncw) h-full bg-blue-300 hover:bg-blue-400 flex items-center divide-dotted divide-x;
+    @apply border rounded-l w-(--ncw) h-full bg-sky-200 hover:bg-sky-300 flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
@@ -47,11 +47,11 @@
   }
 
   .div-kvp-selected-obj {
-    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-3 hover:outline-white rounded;
+    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-200 rounded;
   }
 
   .div-kvp-selected-arr {
-    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-3 hover:outline-white rounded;
+    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-200 rounded;
   }
 
   .div-sticky-inactive {
@@ -71,11 +71,11 @@
   }
 
   .div-sticky-active-selected-obj {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-3 hover:outline-white rounded w-[calc(5rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded w-[calc(5rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-active-selected-arr {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-3 hover:outline-white rounded w-[calc(10rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded w-[calc(10rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
   }
 
   .kvp-option-label {
@@ -83,15 +83,15 @@
   }
 
   .kvp-option-button {
-    @apply border flex h-full w-20 items-center bg-blue-300 hover:bg-blue-400;
+    @apply border flex h-full w-20 items-center bg-sky-200 hover:bg-sky-300;
   }
 
   .kvp-option-checkbox {
-    @apply w-5 h-full pointer-events-none bg-blue-300 hover:bg-blue-400;
+    @apply w-5 h-full pointer-events-none bg-sky-200 hover:bg-sky-300;
   }
 
   .kvp-option-select {
-    @apply border w-20 h-full text-xs font-medium text-center bg-blue-300 hover:bg-blue-400;
+    @apply border w-20 h-full text-xs font-medium text-center bg-sky-200 hover:bg-sky-300;
   }
 
   .sticky-option-label {
@@ -99,23 +99,27 @@
   }
 
   .sticky-option-button {
-    @apply border flex h-full w-20 items-center bg-yellow-200 hover:bg-yellow-300;
+    @apply border flex h-full w-20 items-center bg-yellow-100 hover:bg-yellow-200;
   }
 
   .sticky-option-checkbox {
-    @apply w-5 h-full pointer-events-none bg-yellow-200 hover:bg-yellow-300;
+    @apply w-5 h-full pointer-events-none bg-yellow-100 hover:bg-yellow-200;
   }
 
   .sticky-option-select {
-    @apply border w-20 h-full text-xs font-medium text-center bg-yellow-200 hover:bg-yellow-300;
+    @apply border w-20 h-full text-xs font-medium text-center bg-yellow-100 hover:bg-yellow-200;
   }
 
   .div-count {
-    @apply w-6 h-full flex items-center justify-center rounded bg-white opacity-50;
+    @apply w-4 h-full flex items-center justify-center bg-white/40;
+  }
+
+  .div-count-hidden {
+    @apply w-4 h-full opacity-100;
   }
 
   .span-count {
-    @apply px-1 text-xs font-light text-black;
+    @apply px-1 text-xs font-medium font-mono text-sky-900;
   }
 
   .span-key {
@@ -143,7 +147,7 @@
   }
 
   .code {
-    @apply p-5 bg-blue-100 w-2/5 overflow-y-auto text-xs;
+    @apply p-5 bg-sky-100 w-2/5 overflow-y-auto text-xs;
   }
 
   .menu {
@@ -159,11 +163,11 @@
   }
 
   .options-select {
-    @apply bg-blue-400;
+    @apply bg-sky-300;
   }
 
   .options-checkbox {
-    @apply bg-blue-400;
+    @apply bg-sky-300;
   }
 
   .transition-column {
