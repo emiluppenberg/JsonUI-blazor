@@ -16,6 +16,7 @@
     --color-sky-100: oklch(95.1% 0.026 236.824);
     --color-sky-200: oklch(90.1% 0.058 230.902);
     --color-sky-300: oklch(82.8% 0.111 230.318);
+    --color-sky-400: oklch(74.6% 0.16 232.661);
     --color-sky-500: oklch(68.5% 0.169 237.323);
     --color-sky-900: oklch(39.1% 0.09 240.876);
     --color-gray-200: oklch(92.8% 0.006 264.531);
@@ -1190,7 +1191,8 @@
     height: calc(var(--spacing) * 5);
     width: calc(5rem + var(--ncw));
     overflow: hidden;
-    border-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -1204,7 +1206,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        outline-color: var(--color-sky-200);
+        outline-color: var(--color-sky-400);
       }
     }
   }
@@ -1214,7 +1216,8 @@
     height: calc(var(--spacing) * 5);
     width: calc(10rem + var(--ncw));
     overflow: hidden;
-    border-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -1228,7 +1231,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        outline-color: var(--color-sky-200);
+        outline-color: var(--color-sky-400);
       }
     }
   }
@@ -1238,6 +1241,7 @@
     z-index: 50;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: calc(var(--cw) * 2);
     --tw-translate-x: calc(var(--cw) * -1);
@@ -1251,6 +1255,7 @@
     z-index: 50;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: calc(5rem + var(--cw) * 2);
     --tw-translate-x: calc(var(--cw) * -1);
@@ -1264,6 +1269,7 @@
     z-index: 50;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: calc(10rem + var(--cw) * 2);
     --tw-translate-x: calc(var(--cw) * -1);
@@ -1277,6 +1283,7 @@
     z-index: 40;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: var(--cw);
     align-items: center;
@@ -1288,11 +1295,13 @@
     z-index: 40;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: calc(5rem + var(--cw));
     align-items: center;
     overflow: hidden;
-    border-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -1316,11 +1325,13 @@
     z-index: 40;
     margin-bottom: calc(var(--spacing) * 0.5);
     display: flex;
+    max-height: calc(var(--spacing) * 5);
     min-height: calc(var(--spacing) * 5);
     width: calc(10rem + var(--cw));
     align-items: center;
     overflow: hidden;
-    border-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -1354,6 +1365,7 @@
     border-style: var(--tw-border-style);
     border-width: 1px;
     background-color: var(--color-sky-200);
+    padding-block: calc(var(--spacing) * 0.5);
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-sky-300);
@@ -1401,9 +1413,11 @@
     height: 100%;
     width: calc(var(--spacing) * 20);
     align-items: center;
+    justify-content: center;
     border-style: var(--tw-border-style);
     border-width: 1px;
     background-color: var(--color-yellow-100);
+    padding-block: calc(var(--spacing) * 0.5);
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-yellow-200);
@@ -1499,7 +1513,7 @@
   .node-col-container {
     display: flex;
     flex-direction: column;
-    padding-inline-start: calc(var(--spacing) * 1);
+    padding-left: calc(var(--spacing) * 1);
   }
   .app-container {
     display: flex;
@@ -1573,7 +1587,7 @@
     transition-duration: 150ms;
   }
   .sentinel {
-    margin-top: calc(var(--spacing) * 1);
+    height: calc(var(--spacing) * 0);
   }
 }
 @property --tw-scale-x {

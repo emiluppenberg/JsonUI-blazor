@@ -47,35 +47,35 @@
   }
 
   .div-kvp-selected-obj {
-    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-200 rounded;
+    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-400 rounded-l;
   }
 
   .div-kvp-selected-arr {
-    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-200 rounded;
+    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-400 rounded-l;
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-50 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-50 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-inactive-selected-obj {
-    @apply sticky top-1 z-50 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-50 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-inactive-selected-arr {
-    @apply sticky top-1 z-50 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-50 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-active {
-    @apply sticky top-1 z-40 w-(--cw) flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 w-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-active-selected-obj {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded w-[calc(5rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded-l w-[calc(5rem+var(--cw))] flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-active-selected-arr {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded w-[calc(10rem+var(--cw))] flex items-center min-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded-l w-[calc(10rem+var(--cw))] flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .kvp-option-label {
@@ -83,7 +83,7 @@
   }
 
   .kvp-option-button {
-    @apply border flex h-full w-20 items-center bg-sky-200 hover:bg-sky-300;
+    @apply border py-0.5 flex h-full w-20 items-center bg-sky-200 hover:bg-sky-300;
   }
 
   .kvp-option-checkbox {
@@ -99,7 +99,7 @@
   }
 
   .sticky-option-button {
-    @apply border flex h-full w-20 items-center bg-yellow-100 hover:bg-yellow-200;
+    @apply border py-0.5 flex h-full w-20 items-center justify-center bg-yellow-100 hover:bg-yellow-200;
   }
 
   .sticky-option-checkbox {
@@ -135,7 +135,7 @@
   }
 
   .node-col-container {
-    @apply ps-1 flex flex-col;
+    @apply pl-1 flex flex-col;
   }
 
   .app-container {
@@ -187,6 +187,6 @@
   }
 
   .sentinel {
-    @apply mt-1;
+    @apply h-0;
   }
 }
