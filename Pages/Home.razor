@@ -6,57 +6,88 @@
 <PageTitle>Home</PageTitle>
 
 <div class="menu">
-  <input type="text" @bind="url" class="input-base" />
-  <button class="button-base" @onclick="FetchRequest">Fetch</button>
-  <div class="options">
-    <label class="options-label">Default collection</label>
-    <select class="options-select" @bind="DefaultCollection">
-      @foreach (var o in General.GetCollectionOptions())
-      {
-        <option value="@o">@o.ToString()</option>
-      }
-    </select>
+
+  <div class="json-menu">
+
+    <div class="json-option">
+      <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadUrl()">Load from
+        URL</button>
+    </div>
+
+    <div class="json-option">
+      <button class="transition-gen @(LoadingText ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadText()">Load from
+        TEXT</button>
+    </div>
+
+    <div class="json-option relative">
+      <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
+        <textarea class="load-textarea" @bind="Json"></textarea>
+        <div class="load-buttons-row">
+          <button class="button-load" @onclick="() => LoadJson(Json)">OK</button>
+          <button class="button-load" @onclick="() => { LoadingText = false; }">Cancel</button>
+        </div>
+      </div>
+
+      <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
+        <input type="text" @bind="Url" class="load-input" />
+        <div class="load-buttons-row">
+          <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
+          <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <div class="options">
-    <label class="options-label">Use pascalcase</label>
-    <input class="options-checkbox" type="checkbox" @bind="UsePascalCase" />
-  </div>
-  <div class="options">
-    <label class="options-label">Default to nullable</label>
-    <input class="options-checkbox" type="checkbox" @bind="DefaultNullable" />
+
+  <div class="code-menu">
+
+    <div class="code-option">
+      <label class="code-option-label">Collections</label>
+      <select class="code-option-select" @bind="DefaultCollection">
+        @foreach (var o in General.GetCollectionOptions())
+        {
+          <option value="@o">@o.ToString()</option>
+        }
+      </select>
+    </div>
+
+    <div class="code-option">
+      <label class="code-option-label">Pascalcase</label>
+      <button class="button-base transition-gen" @onclick="() => { UsePascalCase = !UsePascalCase; }">Set</button>
+    </div>
+
+    <div class="code-option">
+      <label class="code-option-label">Nullable</label>
+      <button class="button-base transition-gen" @onclick="() => { DefaultNullable = !DefaultNullable; }">Set</button>
+    </div>
+
   </div>
 </div>
 
 <div class="app-container">
   <div class="node-container" id="node-container">
-    @if (jNodes?.Count > 0)
+    @if (JNodes?.Count > 0)
     {
-      <JNodeView CurrentNode="jNodes[0]" ContainerHeight="nodeContainerHeight" OnNodeToggled="HandleNodeToggled"
+      <JNodeView CurrentNode="JNodes[0]" ContainerHeight="NodeContainerHeight" OnNodeToggled="HandleNodeToggled"
         OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" />
     }
   </div>
 
-  <pre class="code">@_code</pre>
+  <pre class="code">@RenderCode</pre>
 </div>
 
 @code {
-  string url = "https://lldev.thespacedevs.com/2.3.0/launches/58e080d1-90cd-42ac-8152-9f56fc580f8d/";
-  string _code = "";
-  List<JNode> jNodes = new();
-  int nodeContainerHeight;
+  public string Url { get; set; } = "https://lldev.thespacedevs.com/2.3.0/launches/797939fd-480c-4e5a-8c0a-53b36b2695fe/";
+  public string RenderCode { get; set; } = "";
+  public string Json { get; set; } = "";
+  public bool LoadingText { get; set; }
+  public bool LoadingUrl { get; set; }
+  public int NodeContainerHeight;
+  public List<JNode> JNodes { get; set; } = new();
 
   private CSharpOptions csOptions;
-  public CollectionType DefaultCollection
-  {
-    get => csOptions.DefaultCollection;
-    set
-    {
-      csOptions.DefaultCollection = value;
-      jNodes.ForEach(x => x.SetNodeCollectionAs(value));
-      jNodes.ForEach(x => x.SetKvpsCollectionAs(value));
-      HandleRenderCode();
-    }
-  }
   public bool UsePascalCase
   {
     get => csOptions.UsePascalCase;
@@ -66,13 +97,28 @@
       HandleRenderCode();
     }
   }
-  public bool DefaultNullable
+
+  private CollectionType defaultCollection;
+  public CollectionType DefaultCollection
   {
-    get => csOptions.DefaultNullable;
+    get => defaultCollection;
     set
     {
-      csOptions.DefaultNullable = value;
-      jNodes.ForEach(x => x.SetNullable(value));
+      defaultCollection = value;
+      JNodes.ForEach(x => x.SetNodeCollectionAs(value));
+      JNodes.ForEach(x => x.SetKvpsCollectionAs(value));
+      HandleRenderCode();
+    }
+  }
+
+  private bool defaultNullable;
+  public bool DefaultNullable
+  {
+    get => defaultNullable;
+    set
+    {
+      defaultNullable = value;
+      JNodes.ForEach(x => x.SetNullable(value));
       HandleRenderCode();
     }
   }
@@ -80,22 +126,42 @@
   protected override async Task OnInitializedAsync()
   {
     var json = await httpClient.GetStringAsync("j.json");
-    jNodes = JNodeBuilder.CreateFromJson(json, csOptions)!;
-    jNodes.ForEach(x => x.SetKvpsCollectionAs(DefaultCollection));
-    jNodes.ForEach(x => x.SetNodeCollectionAs(DefaultCollection));
-    nodeContainerHeight = (jNodes[0].KeyValues.Count + jNodes[0].Children.Count) * General.RowHeightPx;
+    LoadJson(json);
+  }
+
+  void LoadJson(string json)
+  {
+    JNodes = JNodeBuilder.CreateFromJson(json, csOptions)!;
+    JNodes.ForEach(x => x.SetKvpsCollectionAs(DefaultCollection));
+    JNodes.ForEach(x => x.SetNodeCollectionAs(DefaultCollection));
+    NodeContainerHeight = (JNodes[0].KeyValues.Count + JNodes[0].Children.Count) * General.RowHeightPx;
+    LoadingText = false;
+    LoadingUrl = false;
+  }
+
+  async Task ToggleLoadUrl()
+  {
+    LoadingUrl = !LoadingUrl;
+    LoadingText = false;
+    await InvokeAsync(StateHasChanged);
+  }
+
+  async Task ToggleLoadText()
+  {
+    LoadingText = !LoadingText;
+    LoadingUrl = false;
+    await InvokeAsync(StateHasChanged);
   }
 
   async Task FetchRequest()
   {
     try
     {
-      HttpResponseMessage? response = await httpClient.GetAsync(url);
+      HttpResponseMessage? response = await httpClient.GetAsync(Url);
       response.EnsureSuccessStatusCode();
 
-      var jsonContent = await response.Content.ReadAsStringAsync();
-      var result = JNodeBuilder.CreateFromJson(jsonContent, csOptions);
-      jNodes = result is not null ? result : jNodes;
+      var json = await response.Content.ReadAsStringAsync();
+      LoadJson(json);
     }
     catch (Exception ex)
     {
@@ -106,10 +172,10 @@
   async Task HandleNodeToggled(JNode newNode)
   {
     var toggleTo = !newNode.IsExpanded;
-    jNodes.ForEach(n => n.IsExpanded = false);
+    JNodes.ForEach(n => n.IsExpanded = false);
 
     newNode.IsExpanded = toggleTo;
-    nodeContainerHeight = (newNode.KeyValues.Count + newNode.Children.Count) * General.RowHeightPx;
+    NodeContainerHeight = (newNode.KeyValues.Count + newNode.Children.Count) * General.RowHeightPx;
 
     if (newNode.Parent is not null)
     {
@@ -119,7 +185,7 @@
       {
         iteratingNode = iteratingNode.Parent;
         iteratingNode.IsExpanded = true;
-        nodeContainerHeight += (iteratingNode.KeyValues.Count + iteratingNode.Children.Count) * General.RowHeightPx;
+        NodeContainerHeight += (iteratingNode.KeyValues.Count + iteratingNode.Children.Count) * General.RowHeightPx;
       }
       while (iteratingNode.Parent is not null);
     }
@@ -144,6 +210,6 @@
 
   void HandleRenderCode()
   {
-    _code = JNodeBuilder.JNodesToCSharp(jNodes, csOptions);
+    RenderCode = JNodeBuilder.JNodesToCSharp(JNodes, csOptions);
   }
 }

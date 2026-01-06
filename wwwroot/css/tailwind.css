@@ -3,19 +3,20 @@
 @theme {
   --cw: 10rem;
   --ncw: 9.75rem;
+  --menu-h: 3rem;
+  --btn-h: 1.5rem;
+  --load-w: 30rem;
+  --load-h: 25rem;
+  --opt-w: 7rem;
+  --bluebutton: var(--color-blue-800);
+  --bluebutton-h: var(--color-blue-900);
+  --bluebutton-a: var(--color-blue-400);
+  --bluebutton-h-a: var(--color-blue-500);
 }
 
 @layer components {
-  .input-base {
-    @apply border rounded p-1 hover:bg-amber-100;
-  }
-
   .button-node {
     @apply scale-x-100 border rounded w-full bg-orange-200 hover:bg-orange-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
-  }
-
-  .button-base {
-    @apply border-4 border-black border-double text-white rounded p-1 bg-sky-300 hover:bg-sky-500;
   }
 
   .button-sticky-inactive {
@@ -55,15 +56,15 @@
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-50 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-inactive-selected-obj {
-    @apply sticky top-1 z-50 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-inactive-selected-arr {
-    @apply sticky top-1 z-50 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
+    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
   }
 
   .div-sticky-active {
@@ -139,54 +140,90 @@
   }
 
   .app-container {
-    @apply flex flex-1 overflow-y-auto;
+    @apply border-t flex flex-1 overflow-y-auto;
   }
 
   .node-container {
-    @apply max-h-150 flex-1 overflow-y-auto flex items-start w-3/5;
+    @apply px-1 bg-sky-100 flex-1 overflow-y-auto flex items-start w-3/5;
   }
 
   .code {
-    @apply p-5 bg-sky-100 w-2/5 overflow-y-auto text-xs;
+    @apply p-5 border-l bg-sky-100 w-2/5 overflow-y-auto text-xs;
   }
 
   .menu {
-    @apply flex w-full shrink-0;
+    @apply flex min-w-full max-w-full h-(--menu-h) divide-solid divide-x;
   }
 
-  .options {
-    @apply flex flex-col w-40 mx-1;
+  .button-base {
+    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
   }
 
-  .options-label {
-    @apply text-sm text-center;
+  .button-base-active {
+    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
   }
 
-  .options-select {
-    @apply bg-sky-300;
+  .json-menu {
+    @apply flex w-3/5 h-full items-center;
   }
 
-  .options-checkbox {
-    @apply bg-sky-300;
+  .json-option {
+    @apply flex w-(--opt-w) px-2;
   }
 
-  .transition-column {
-    @apply transition-all duration-150;
+  .code-menu {
+    @apply flex w-2/5 h-full items-center;
   }
 
-  .transition-kvp {
+  .code-option {
+    @apply flex flex-col items-center justify-center h-full w-auto px-2;
+  }
+
+  .code-option-label {
+    @apply line-clamp-1 text-black text-xs font-medium;
+  }
+
+  .code-option-select {
+    @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h);
+  }
+
+  .transition-input {
+    @apply transition-all duration-150 origin-left;
+  }
+
+  .transition-tree {
     @apply transition-all duration-50;
   }
 
-  .transition-sticky {
+  .transition-gen {
     @apply transition-all duration-50;
-  }
-
-  .transition-node {
-    @apply transition-all duration-150;
   }
 
   .sentinel {
     @apply h-0;
+  }
+
+  .main-el {
+    @apply flex flex-col w-screen h-screen;
+  }
+
+  .load-menu {
+    @apply flex flex-col border rounded z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
+  }
+
+  .load-buttons-row {
+    @apply flex border-t w-full divide-solid divide-x divide-black;
+  }
+
+  .load-textarea {
+    @apply flex-1 p-2 text-xs w-full h-full resize-none;
+  }
+
+  .load-input {
+    @apply p-1 w-full hover:bg-sky-200;
+  }
+
+  .button-load {
+    @apply w-1/2 h-(--btn-h) text-white text-xs p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h);
   }
 }

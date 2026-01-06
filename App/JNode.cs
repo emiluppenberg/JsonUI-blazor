@@ -13,7 +13,7 @@ public class JNode
   public CollectionType? CollectionAs { get; set; }
   public int TotalNestedSelected { get; set; }
 
-  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent, CSharpOptions options)
+  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
   {
     Name = name.Replace("{}", null).Replace("[]", null);
     Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
@@ -21,8 +21,7 @@ public class JNode
     KeyValues = keyValues;
     Children = new();
     Parent = parent;
-    Nullable = options.DefaultNullable;
-    CollectionAs = Type == JNodeType.Array ? CollectionType.Array : null;
+    CollectionAs = Type == JNodeType.Array ? CollectionType.List : null;
   }
 
   public void SetNullable(bool nullable)

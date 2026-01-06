@@ -8,8 +8,6 @@ public static class General
   public struct CSharpOptions()
   {
     public bool UsePascalCase { get; set; }
-    public bool DefaultNullable { get; set; }
-    public CollectionType DefaultCollection { get; set; }
   }
 
   public enum CollectionType

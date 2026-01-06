@@ -195,7 +195,7 @@ public static class JNodeBuilder
           jNodeKvps.Add(jNodeKvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey), options);
+        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
 
         childLookup.Add(lineageKey, new());
 
@@ -257,86 +257,78 @@ public static class JNodeBuilder
 
   public static string JNodesToCSharp(List<JNode> jNodes, CSharpOptions options)
   {
-    try
+    var classes = new Dictionary<string, JNodeClass>();
+
+    foreach (var jn in jNodes)
     {
-      var classes = new Dictionary<string, JNodeClass>();
+      var jnKvps = jn.KeyValues
+        .Where(x => x.IsSelected)
+        .ToList();
 
-      foreach (var jn in jNodes)
+      if (jnKvps.Count > 0)
       {
-        var jnKvps = jn.KeyValues
-          .Where(x => x.IsSelected)
-          .ToList();
-
-        if (jnKvps.Count > 0)
+        if (classes.TryGetValue(jn.Name, out var jnc))
         {
-          if (classes.TryGetValue(jn.Name, out var jnc))
+          foreach (var jnk in jnKvps)
           {
-            foreach (var jnk in jnKvps)
+            // TODO - Handle case when same key has been selected multiple times and some has a null value 
+            if (!jnc.Kvps.Any(x => x.Kvp.Key == jnk.Kvp.Key))
             {
-              // TODO - Handle case when same key has been selected multiple times and some has a null value 
-              if (!jnc.Kvps.Any(x => x.Kvp.Key == jnk.Kvp.Key))
-              {
-                jnc.Kvps.Add(jnk);
-              }
+              jnc.Kvps.Add(jnk);
             }
           }
+        }
 
-          if (!classes.TryGetValue(jn.Name, out var _))
+        if (!classes.TryGetValue(jn.Name, out var _))
+        {
+          var newJnc = new JNodeClass(jn.Name, jnKvps);
+          classes.Add(jn.Name, newJnc);
+        }
+
+        if (jn.Parent is not null)
+        {
+          var iteratingNode = jn;
+
+          while (iteratingNode.Parent is not null)
           {
-            var newJnc = new JNodeClass(jn.Name, jnKvps);
-            classes.Add(jn.Name, newJnc);
-          }
+            var previousNode = iteratingNode;
+            iteratingNode = iteratingNode.Parent;
 
-          if (jn.Parent is not null)
-          {
-            var iteratingNode = jn;
-
-            while (iteratingNode.Parent is not null)
+            if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
             {
-              var previousNode = iteratingNode;
-              iteratingNode = iteratingNode.Parent;
-
-              if (classes.TryGetValue(iteratingNode.Name, out var parentJnc))
+              if (!parentJnc.Kvps.Any(x => x.Kvp.Key == previousNode.Name))
               {
-                if (!parentJnc.Kvps.Any(x => x.Kvp.Key == previousNode.Name))
-                {
-                  parentJnc.Kvps.Add(new JNodeKvp(previousNode));
-                }
+                parentJnc.Kvps.Add(new JNodeKvp(previousNode));
               }
+            }
 
-              if (!classes.TryGetValue(iteratingNode.Name, out var _))
-              {
-                var _jnKvps = new List<JNodeKvp>() { new JNodeKvp(previousNode) };
-                var newJnc = new JNodeClass(iteratingNode.Name, _jnKvps);
-                classes.Add(iteratingNode.Name, newJnc);
-              }
+            if (!classes.TryGetValue(iteratingNode.Name, out var _))
+            {
+              var _jnKvps = new List<JNodeKvp>() { new JNodeKvp(previousNode) };
+              var newJnc = new JNodeClass(iteratingNode.Name, _jnKvps);
+              classes.Add(iteratingNode.Name, newJnc);
             }
           }
         }
       }
+    }
 
-      var cs = "";
+    var cs = "";
 
-      foreach (var kvp in classes)
+    foreach (var kvp in classes)
+    {
+      var jnc = kvp.Value;
+
+      var code = jnc.GetClassName(options);
+
+      for (int i = 0; i < jnc.Kvps.Count; i++)
       {
-        var jnc = kvp.Value;
-
-        var code = jnc.GetClassName(options);
-
-        for (int i = 0; i < jnc.Kvps.Count; i++)
-        {
-          code += jnc.GetProperty(i, options);
-        }
-
-        cs += code + $"}}{Environment.NewLine}{Environment.NewLine}";
+        code += jnc.GetProperty(i, options);
       }
 
-      return cs;
+      cs += code + $"}}{Environment.NewLine}{Environment.NewLine}";
     }
-    catch (Exception ex)
-    {
-      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
-      return "";
-    }
+
+    return cs;
   }
 }

@@ -22,7 +22,7 @@ public record JNodeClass(string name, List<JNodeKvp> kvps)
   {
     var datatype = this.Kvps[i].GetKvpDatatype(options);
     var propName = this.Kvps[i].GetKvpName(options);
-    var jsonAnnotation = $"  [JsonProperty(\"{this.Kvps[i].Kvp.Key}\")]{Environment.NewLine}";
+    var jsonAnnotation = $"  [JsonPropertyName(\"{this.Kvps[i].Kvp.Key}\")]{Environment.NewLine}";
 
     var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
     var newLine = options.UsePascalCase && i != this.Kvps.Count - 1 ? Environment.NewLine : "";
