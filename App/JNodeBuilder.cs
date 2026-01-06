@@ -255,7 +255,7 @@ public static class JNodeBuilder
     return currentObject;
   }
 
-  public static string JNodesToCSharp(List<JNode> jNodes, CSharpOptions options)
+  public static string JNodesToCode(List<JNode> jNodes, ILanguageOptions options)
   {
     var classes = new Dictionary<string, JNodeClass>();
 

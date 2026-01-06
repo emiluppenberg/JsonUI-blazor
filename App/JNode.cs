@@ -10,7 +10,7 @@ public class JNode
   public JNode? Parent { get; set; }
   public bool IsExpanded { get; set; }
   public bool Nullable { get; set; }
-  public CollectionType? CollectionAs { get; set; }
+  public CollectionsCSharp? CollectionAs { get; set; }
   public int TotalNestedSelected { get; set; }
 
   public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent)
@@ -21,7 +21,7 @@ public class JNode
     KeyValues = keyValues;
     Children = new();
     Parent = parent;
-    CollectionAs = Type == JNodeType.Array ? CollectionType.List : null;
+    CollectionAs = Type == JNodeType.Array ? CollectionsCSharp.List : null;
   }
 
   public void SetNullable(bool nullable)
@@ -30,7 +30,7 @@ public class JNode
     this.KeyValues.ForEach(x => x.Nullable = nullable);
   }
 
-  public void SetNodeCollectionAs(CollectionType collectionAs)
+  public void SetNodeCollectionAs(CollectionsCSharp collectionAs)
   {
     if (this.CollectionAs is not null)
     {
@@ -38,7 +38,7 @@ public class JNode
     }
   }
 
-  public void SetKvpsCollectionAs(CollectionType collectionAs)
+  public void SetKvpsCollectionAs(CollectionsCSharp collectionAs)
   {
     this.KeyValues
       .Where(x => x.CollectionAs is not null)

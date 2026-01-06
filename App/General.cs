@@ -1,3 +1,5 @@
+using System.Data.Common;
+
 public record KvpSelectedArgs(JNode node, bool selected);
 
 public static class General
@@ -10,7 +12,12 @@ public static class General
     public bool UsePascalCase { get; set; }
   }
 
-  public enum CollectionType
+  public enum NamingConvention
+  {
+    SnakeCaseLower, SnakeCaseUpper, KebabCaseLower, KebabCaseUpper, PascalCase, CamelCase
+  }
+
+  public enum CollectionsCSharp
   {
     List, IEnumerable, ICollection, Array
   }
@@ -20,29 +27,99 @@ public static class General
     Object, Array
   }
 
-  public static Array GetCollectionOptions() => Enum.GetValues<CollectionType>();
+  public static Array GetCollectionOptions() => Enum.GetValues<CollectionsCSharp>();
 
-  public static string ConfigureCollection(string datatype, CollectionType collectionAs)
+  public static string ConfigureCollection(string datatype, CollectionsCSharp collectionAs)
   {
     switch (collectionAs)
     {
-      case CollectionType.List:
+      case CollectionsCSharp.List:
         datatype = datatype.Replace("[]", "");
         datatype = $"List<{datatype}>";
         break;
-      case CollectionType.IEnumerable:
+      case CollectionsCSharp.IEnumerable:
         datatype = datatype.Replace("[]", "");
         datatype = $"IEnumerable<{datatype}>";
         break;
-      case CollectionType.ICollection:
+      case CollectionsCSharp.ICollection:
         datatype = datatype.Replace("[]", "");
         datatype = $"ICollection<{datatype}>";
         break;
-      case CollectionType.Array:
+      case CollectionsCSharp.Array:
         datatype = $"{datatype}";
         break;
     }
 
     return datatype;
+  }
+
+  public static (bool, JNode?) JNodeIsSnakeCaseLower(JNode node)
+  {
+    if (!node.Name.Contains('_'))
+    {
+      return (false, node);
+    }
+
+    if (!node.Name.All(x => x == '_' || char.IsAsciiLetterLower(x)))
+    {
+      return (false, node);
+    }
+
+    return (true, null);
+  }
+
+  public static (bool, JNode?) JNodeIsSnakeCaseUpper(JNode node)
+  {
+    if (!node.Name.Contains('_'))
+    {
+      return (false, node);
+    }
+
+    if (!node.Name.All(x => x == '_' || char.IsAsciiLetterUpper(x)))
+    {
+      return (false, node);
+    }
+
+    return (true, null);
+  }
+
+  public static (bool, JNode?) JNodeIsKebabCaseLower(JNode node)
+  {
+    if (!node.Name.Contains('-'))
+    {
+      return (false, node);
+    }
+
+    if (!node.Name.All(x => x == '-' || char.IsAsciiLetterLower(x)))
+    {
+      return (false, node);
+    }
+
+    return (true, null);
+  }
+
+  public static (bool, JNode?) JNodeIsKebabCaseUpper(JNode node)
+  {
+    if (!node.Name.Contains('-'))
+    {
+      return (false, node);
+    }
+
+    if (!node.Name.All(x => x == '-' || char.IsAsciiLetterUpper(x)))
+    {
+      return (false, node);
+    }
+
+    return (true, null);
+  }
+
+  public static (bool, JNode?) JNodeIsCamelCase(JNode node)
+  {
+    if (!node.Name.All(x => char.IsAsciiLetter(x)))
+    {
+      return (false, node);
+    }
+
+    return (true, null);
   }
 }

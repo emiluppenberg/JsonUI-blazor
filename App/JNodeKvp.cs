@@ -7,12 +7,12 @@ public class JNodeKvp
   public bool IsSelected { get; set; }
   public bool Nullable { get; set; }
   public bool Nested { get; set; } = false;
-  public CollectionType? CollectionAs { get; set; }
+  public CollectionsCSharp? CollectionAs { get; set; }
 
   public JNodeKvp(KeyValuePair<string, string> kvp)
   {
     Kvp = kvp;
-    CollectionAs = kvp.Value.Contains("[]") ? CollectionType.Array : null;
+    CollectionAs = kvp.Value.Contains("[]") ? CollectionsCSharp.Array : null;
   }
 
   public JNodeKvp(JNode node)
@@ -28,8 +28,8 @@ public class JNodeKvp
   {
     var datatype = this.Kvp.Value;
 
-    datatype = options.UsePascalCase && Nested ?
-      Regex.Replace(datatype, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+    datatype = options.JsonOptions is not null && Nested ?
+      options.JsonOptions.NamingConvention.GetName(datatype) :
       datatype.ToLower();
 
     datatype = Nullable ? $"{datatype}?" : datatype;
@@ -41,8 +41,8 @@ public class JNodeKvp
 
   public string GetKvpName(CSharpOptions options)
   {
-    return options.UsePascalCase ?
-      Regex.Replace(this.Kvp.Key, @"(?:^|_)([a-z])", match => match.Groups[1].Value.ToUpper()) :
+    return options.JsonOptions is not null ?
+      options.JsonOptions.NamingConvention.GetName(this.Kvp.Key) :
       this.Kvp.Key.ToLower();
   }
 
