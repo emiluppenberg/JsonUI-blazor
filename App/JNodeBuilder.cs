@@ -8,7 +8,7 @@ using static General;
 
 public static class JNodeBuilder
 {
-  public static List<JNode>? CreateFromJson(string rawContent, CSharpOptions options)
+  public static List<JNode>? CreateFromJson(string rawContent, ILanguageOptions langOptions)
   {
     var model = new Dictionary<string, Dictionary<string, string>>();
     var modelCurrentParents = new List<string>() { "Base" };
@@ -191,11 +191,11 @@ public static class JNodeBuilder
 
         foreach (var kvp in model[k])
         {
-          var jNodeKvp = new JNodeKvp(kvp);
+          var jNodeKvp = new JNodeKvp(kvp, langOptions);
           jNodeKvps.Add(jNodeKvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey));
+        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey), langOptions);
 
         childLookup.Add(lineageKey, new());
 
@@ -319,14 +319,7 @@ public static class JNodeBuilder
     {
       var jnc = kvp.Value;
 
-      var code = jnc.GetClassName(options);
-
-      for (int i = 0; i < jnc.Kvps.Count; i++)
-      {
-        code += jnc.GetProperty(i, options);
-      }
-
-      cs += code + $"}}{Environment.NewLine}{Environment.NewLine}";
+      cs += options.GetClass(kvp.Value);
     }
 
     return cs;

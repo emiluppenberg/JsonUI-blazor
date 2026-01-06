@@ -26,11 +26,11 @@
         <label class="sticky-option-label">Nullable</label>
         <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
       </button>
-      @if (CurrentNode.Type == General.JNodeType.Array)
+      @if (CurrentNode.Type == JNodeType.Array)
       {
         <select class="sticky-option-select" @bind="CurrentNode.CollectionAs"
           @bind:after='async () => await SetNode("collection")'>
-          @foreach (var o in General.GetCollectionOptions())
+          @foreach (var o in LangOptions.GetCollectionOptions())
           {
             <option value="@o">@o.ToString()</option>
           }
@@ -78,7 +78,7 @@
           {
             <select class="kvp-option-select" @bind="jnKvp.CollectionAs"
               @bind:after='async () => await SetKvp("collection", jnKvp)'>
-              @foreach (var o in General.GetCollectionOptions())
+              @foreach (var o in LangOptions.GetCollectionOptions())
               {
                 <option value="@o">@o.ToString()</option>
               }
@@ -94,7 +94,8 @@
 @if (NextNode is not null && NextNode.IsExpanded)
 {
   <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
-    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" OnRenderCode="ForwardRenderCode" />
+    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" OnRenderCode="ForwardRenderCode"
+    LangOptions="LangOptions" />
 }
 
 @code {
@@ -110,7 +111,8 @@
   public EventCallback<KvpSelectedArgs> OnKvpSelected { get; set; }
   [Parameter]
   public EventCallback OnRenderCode { get; set; }
-
+  [Parameter]
+  public required ILanguageOptions LangOptions { get; set; }
 
   private bool IsSticky { get; set; }
   private bool AnyNestedSelected { get => CurrentNode.TotalNestedSelected > 0; }
@@ -186,7 +188,7 @@
 
   string GetDivStickyClass()
   {
-    var isArray = CurrentNode.Type == General.JNodeType.Array;
+    var isArray = CurrentNode.Type == JNodeType.Array;
 
     if (CurrentNode.Name is "Base")
     {

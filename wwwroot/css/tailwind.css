@@ -92,7 +92,7 @@
   }
 
   .kvp-option-select {
-    @apply border w-20 h-full text-xs font-medium text-center bg-sky-200 hover:bg-sky-300;
+    @apply border w-20 h-full text-xs font-medium bg-sky-200 hover:bg-sky-300;
   }
 
   .sticky-option-label {
@@ -108,7 +108,7 @@
   }
 
   .sticky-option-select {
-    @apply border w-20 h-full text-xs font-medium text-center bg-yellow-100 hover:bg-yellow-200;
+    @apply border w-20 h-full text-xs font-medium bg-yellow-100 hover:bg-yellow-200;
   }
 
   .div-count {

@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using JsonUI_blazor.Components
-@using static General
 @inject HttpClient httpClient
 
 <PageTitle>Home</PageTitle>
@@ -45,22 +44,23 @@
 
     <div class="code-option">
       <label class="code-option-label">Collections</label>
-      <select class="code-option-select" @bind="DefaultCollection">
-        @foreach (var o in General.GetCollectionOptions())
+      <select class="code-option-select" @bind="ToggleCollectionStr">
+        @for (int i = 0; i < LangOptions.GetCollectionOptions().Length; i++)
         {
-          <option value="@o">@o.ToString()</option>
+          var collectionAs = LangOptions.GetCollectionOptions().GetValue(i)!.ToString();
+          <option value="@collectionAs">@collectionAs</option>
         }
       </select>
     </div>
 
     <div class="code-option">
       <label class="code-option-label">Pascalcase</label>
-      <button class="button-base transition-gen" @onclick="() => { UsePascalCase = !UsePascalCase; }">Set</button>
+      @* <button class="button-base transition-gen" @onclick="() => { UsePascalCase = !UsePascalCase; }">Set</button> *@
     </div>
 
     <div class="code-option">
       <label class="code-option-label">Nullable</label>
-      <button class="button-base transition-gen" @onclick="() => { DefaultNullable = !DefaultNullable; }">Set</button>
+      <button class="button-base transition-gen" @onclick="() => { ToggleNullable = !ToggleNullable; }">Set</button>
     </div>
 
   </div>
@@ -71,7 +71,7 @@
     @if (JNodes?.Count > 0)
     {
       <JNodeView CurrentNode="JNodes[0]" ContainerHeight="NodeContainerHeight" OnNodeToggled="HandleNodeToggled"
-        OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" />
+        OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" LangOptions="LangOptions" />
     }
   </div>
 
@@ -87,37 +87,37 @@
   public int NodeContainerHeight;
   public List<JNode> JNodes { get; set; } = new();
 
-  private CSharpOptions csOptions;
-  public bool UsePascalCase
+  private ILanguageOptions langOptions = new CSharpOptions();
+  public ILanguageOptions LangOptions
   {
-    get => csOptions.UsePascalCase;
+    get => langOptions;
     set
     {
-      csOptions.UsePascalCase = value;
-      HandleRenderCode();
+      langOptions = value;
+      ToggleCollectionStr = value.GetCollectionOptions().GetValue(0)!.ToString()!;
     }
   }
 
-  private CollectionsCSharp defaultCollection;
-  public CollectionsCSharp DefaultCollection
+  private string toggleCollectionStr = "";
+  public string ToggleCollectionStr
   {
-    get => defaultCollection;
+    get => toggleCollectionStr;
     set
     {
-      defaultCollection = value;
+      toggleCollectionStr = value;
       JNodes.ForEach(x => x.SetNodeCollectionAs(value));
       JNodes.ForEach(x => x.SetKvpsCollectionAs(value));
       HandleRenderCode();
     }
   }
 
-  private bool defaultNullable;
-  public bool DefaultNullable
+  private bool toggleNullable;
+  public bool ToggleNullable
   {
-    get => defaultNullable;
+    get => toggleNullable;
     set
     {
-      defaultNullable = value;
+      toggleNullable = value;
       JNodes.ForEach(x => x.SetNullable(value));
       HandleRenderCode();
     }
@@ -125,15 +125,14 @@
 
   protected override async Task OnInitializedAsync()
   {
+    LangOptions = new CSharpOptions();
     var json = await httpClient.GetStringAsync("j.json");
     LoadJson(json);
   }
 
   void LoadJson(string json)
   {
-    JNodes = JNodeBuilder.CreateFromJson(json, csOptions)!;
-    JNodes.ForEach(x => x.SetKvpsCollectionAs(DefaultCollection));
-    JNodes.ForEach(x => x.SetNodeCollectionAs(DefaultCollection));
+    JNodes = JNodeBuilder.CreateFromJson(json, LangOptions)!;
     NodeContainerHeight = (JNodes[0].KeyValues.Count + JNodes[0].Children.Count) * General.RowHeightPx;
     LoadingText = false;
     LoadingUrl = false;
@@ -210,6 +209,6 @@
 
   void HandleRenderCode()
   {
-    RenderCode = JNodeBuilder.JNodesToCSharp(JNodes, csOptions);
+    RenderCode = JNodeBuilder.JNodesToCode(JNodes, langOptions);
   }
 }
