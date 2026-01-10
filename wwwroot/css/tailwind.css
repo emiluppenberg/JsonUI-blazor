@@ -184,7 +184,7 @@
   }
 
   .code-option-select {
-    @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h);
+    @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
   }
 
   .transition-input {

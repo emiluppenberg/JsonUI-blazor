@@ -1,36 +1,35 @@
-public enum JsonPackageType
+public interface ICSharpJsonOptions
 {
-  SystemTextJson, NewtonsoftJson
+  public string Name { get; }
+  public string Using { get; }
+  public string PropertyAnnotation { get; }
 }
 
-public class JsonOptionsCSharp
+public class SystemTextJsonOption : ICSharpJsonOptions
 {
-  public INamingConvention NamingConvention { get; set; } = new PascalCase();
-  public JsonPackage JsonPackage { get; set; } = new(JsonPackageType.SystemTextJson);
-  public bool UseSerializerOptions { get; set; }
+  public string Name => "System.Text.Json";
+  public string Using => "System.Text.Json.Serialization";
+  public string PropertyAnnotation => "JsonPropertyName";
 }
 
-public class JsonPackage(JsonPackageType jsonPackageType)
+public class NewtonsoftJsonOption : ICSharpJsonOptions
 {
-  public string PropertyAnnotation { get; set; } = jsonPackageType is JsonPackageType.SystemTextJson ? "JsonPropertyName" : "JsonProperty";
-}
-
-public enum CollectionsCSharp
-{
-  List, IEnumerable, ICollection, Array
+  public string Name => "Newtonsoft.Json";
+  public string Using => "Newtonsoft.Json";
+  public string PropertyAnnotation => "JsonProperty";
 }
 
 public class CSharpOptions : ILanguageOptions
 {
-  public JsonOptionsCSharp? JsonOptions { get; set; }
+  public INamingConvention NamingConvention { get; set; } = new None();
 
-  public Array GetCollectionOptions() => Enum.GetValues<CollectionsCSharp>();
+  public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
+
+  public Array GetCollectionOptions() => Enum.GetValues<CSharpCollections>();
 
   public string GetClass(JNodeClass jnc)
   {
-    var className = this.JsonOptions is not null ?
-      this.JsonOptions.NamingConvention.GetName(jnc.Name) :
-      jnc.Name.ToLower();
+    var className = this.NamingConvention.ToCSharp(jnc.Name);
 
     var classStr = $"public class {className} {Environment.NewLine}" +
        $"{{{Environment.NewLine}";
@@ -39,20 +38,18 @@ public class CSharpOptions : ILanguageOptions
     {
       var datatype = jnc.Kvps[i].Kvp.Value;
 
-      datatype = this.JsonOptions is not null && jnc.Kvps[i].Nested ?
-        this.JsonOptions.NamingConvention.GetName(datatype) :
+      datatype = jnc.Kvps[i].Nested ?
+        this.NamingConvention.ToCSharp(datatype) :
         datatype.ToLower();
 
       datatype = jnc.Kvps[i].Nullable ? $"{datatype}?" : datatype;
-      datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!.ToString()) : datatype;
-      datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null ? $"{datatype}?" : datatype;
+      datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!) : datatype;
+      datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null && jnc.Kvps[i].CollectionAs is not "Array" ? $"{datatype}?" : datatype;
 
-      var propName = this.JsonOptions is not null ?
-        this.JsonOptions.NamingConvention.GetName(jnc.Kvps[i].Kvp.Key) :
-        jnc.Kvps[i].Kvp.Key.ToLower();
+      var propName = this.NamingConvention.ToCSharp(jnc.Kvps[i].Kvp.Key);
 
-      var jsonAnnotation = this.JsonOptions is not null ?
-        $"  [{this.JsonOptions.JsonPackage.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" :
+      var jsonAnnotation = this.CSharpJsonOptions is not null && this.NamingConvention.Name is not "None" ?
+        $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" :
         "";
 
       var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
@@ -66,23 +63,23 @@ public class CSharpOptions : ILanguageOptions
 
   public string ConfigureCollection(string datatype, string collectionAs)
   {
-    var _collectionAs = Enum.Parse(typeof(CollectionsCSharp), collectionAs);
+    var _collectionAs = Enum.Parse(typeof(CSharpCollections), collectionAs);
 
     switch (_collectionAs)
     {
-      case CollectionsCSharp.List:
+      case CSharpCollections.List:
         datatype = datatype.Replace("[]", "");
         datatype = $"List<{datatype}>";
         break;
-      case CollectionsCSharp.IEnumerable:
+      case CSharpCollections.IEnumerable:
         datatype = datatype.Replace("[]", "");
         datatype = $"IEnumerable<{datatype}>";
         break;
-      case CollectionsCSharp.ICollection:
+      case CSharpCollections.ICollection:
         datatype = datatype.Replace("[]", "");
         datatype = $"ICollection<{datatype}>";
         break;
-      case CollectionsCSharp.Array:
+      case CSharpCollections.Array:
         datatype = $"{datatype}";
         break;
     }

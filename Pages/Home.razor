@@ -42,26 +42,11 @@
 
   <div class="code-menu">
 
-    <div class="code-option">
-      <label class="code-option-label">Collections</label>
-      <select class="code-option-select" @bind="ToggleCollectionStr">
-        @for (int i = 0; i < LangOptions.GetCollectionOptions().Length; i++)
-        {
-          var collectionAs = LangOptions.GetCollectionOptions().GetValue(i)!.ToString();
-          <option value="@collectionAs">@collectionAs</option>
-        }
-      </select>
-    </div>
-
-    <div class="code-option">
-      <label class="code-option-label">Pascalcase</label>
-      @* <button class="button-base transition-gen" @onclick="() => { UsePascalCase = !UsePascalCase; }">Set</button> *@
-    </div>
-
-    <div class="code-option">
-      <label class="code-option-label">Nullable</label>
-      <button class="button-base transition-gen" @onclick="() => { ToggleNullable = !ToggleNullable; }">Set</button>
-    </div>
+    @if (LangOptions.GetType().Name == "CSharpOptions")
+    {
+      <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
+        OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
+    }
 
   </div>
 </div>
@@ -94,33 +79,34 @@
     set
     {
       langOptions = value;
-      ToggleCollectionStr = value.GetCollectionOptions().GetValue(0)!.ToString()!;
+      HandleSetCollection(value.GetCollectionOptions().GetValue(0)!.ToString()!);
     }
   }
 
-  private string toggleCollectionStr = "";
-  public string ToggleCollectionStr
+
+  private void HandleSetCSharpJsonOption(ICSharpJsonOptions? cSharpJsonOptions)
   {
-    get => toggleCollectionStr;
-    set
-    {
-      toggleCollectionStr = value;
-      JNodes.ForEach(x => x.SetNodeCollectionAs(value));
-      JNodes.ForEach(x => x.SetKvpsCollectionAs(value));
-      HandleRenderCode();
-    }
+    LangOptions.CSharpJsonOptions = cSharpJsonOptions;
+    HandleRenderCode();
   }
 
-  private bool toggleNullable;
-  public bool ToggleNullable
+  private void HandleSetNamingConvention(INamingConvention namingConvention)
   {
-    get => toggleNullable;
-    set
-    {
-      toggleNullable = value;
-      JNodes.ForEach(x => x.SetNullable(value));
-      HandleRenderCode();
-    }
+    LangOptions.NamingConvention = namingConvention;
+    HandleRenderCode();
+  }
+
+  private void HandleSetCollection(string collectionAs)
+  {
+    JNodes.ForEach(x => x.SetNodeCollectionAs(collectionAs));
+    JNodes.ForEach(x => x.SetKvpsCollectionAs(collectionAs));
+    HandleRenderCode();
+  }
+
+  private void HandleSetNullable(bool nullable)
+  {
+    JNodes.ForEach(x => x.SetNullable(nullable));
+    HandleRenderCode();
   }
 
   protected override async Task OnInitializedAsync()
@@ -212,3 +198,4 @@
     RenderCode = JNodeBuilder.JNodesToCode(JNodes, langOptions);
   }
 }
+ö

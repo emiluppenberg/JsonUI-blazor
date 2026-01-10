@@ -1,9 +1,10 @@
 {
-  "devDependencies": {
-    "tailwindcss": "^4.1.18"
-  },
   "scripts": {
-    "tailwind:build": "tailwindcss -c ./tailwind.config.js -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --minify",
-    "tailwind:watch": "tailwindcss -c ./tailwind.config.js -i ./wwwroot/css/tailwind.css -o ./wwwroot/css/app.css --watch"
+    "tailwind:build": "tailwindcss --config ./tailwind.config.js --input ./wwwroot/css/tailwind.css --output ./wwwroot/css/app.css --minify",
+    "tailwind:watch": "tailwindcss --config ./tailwind.config.js --input ./wwwroot/css/tailwind.css --output ./wwwroot/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "tailwindcss": "^4.1.18"
   }
 }

@@ -313,7 +313,8 @@ public static class JNodeBuilder
       }
     }
 
-    var cs = "";
+    var usingStr = options.CSharpJsonOptions is not null ? $"using {options.CSharpJsonOptions.Using};{Environment.NewLine}{Environment.NewLine}" : "";
+    var cs = usingStr;
 
     foreach (var kvp in classes)
     {
