@@ -43,6 +43,24 @@ public static class JNodeBuilder
 
         if (reader.TokenType == JsonTokenType.EndArray)
         {
+          var currentArray = arrayCurrentParents.Last();
+          var currentArrayParentKey = currentArray.Value[currentArray.Value.Count - 2];
+
+          for (int i = model.Keys.Count - 1; i >= 0; i--)
+          {
+            var key = model.Keys.ElementAt(i);
+            var replacedKey = key.Replace("{}", "").Replace("[]", "");
+            var arrayObjectKey = key + $"-{currentArray.Key}[]";
+
+            if (replacedKey.EndsWith(currentArrayParentKey))
+            {
+              if (!model[key].ContainsKey(currentArray.Key) && !model.ContainsKey(arrayObjectKey))
+              {
+                model[key].Add(currentArray.Key, "object[]");
+              }
+            }
+          }
+
           arrayCurrentParents.RemoveAt(arrayCurrentParents.Count() - 1);
 
           if (arrayCurrentParents.Count() == 0)
@@ -80,7 +98,7 @@ public static class JNodeBuilder
             continue;
           }
 
-          var value = "null";
+          var value = "object";
 
           if (reader.TokenType == JsonTokenType.String)
           {
@@ -134,7 +152,7 @@ public static class JNodeBuilder
           isArray && reader.TokenType == JsonTokenType.True ||
           isArray && reader.TokenType == JsonTokenType.False)
         {
-          var value = "null";
+          var value = "object";
 
           if (reader.TokenType == JsonTokenType.String)
           {
@@ -174,7 +192,6 @@ public static class JNodeBuilder
             model[currentObject].Add(currentProperty, value);
           }
         }
-
       }
 
       var result = new List<JNode>();
