@@ -144,12 +144,16 @@
   }
 
   .app-container {
-    @apply border-t flex flex-1 overflow-y-auto;
+    @apply border-y flex h-5/6 overflow-y-auto;
   }
 
   .node-container {
     @apply px-1 bg-sky-100 flex-1 overflow-y-auto flex items-start w-3/5;
   }
+
+  .ad-container {
+    @apply flex flex-1;
+  } 
 
   .code {
     @apply p-5 border-l bg-sky-100 w-2/5 overflow-y-auto text-xs;
