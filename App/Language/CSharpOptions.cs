@@ -80,7 +80,14 @@ public class CSharpOptions : ILanguageOptions
         datatype = $"ICollection<{datatype}>";
         break;
       case CSharpCollections.Array:
-        datatype = $"{datatype}";
+        var split = datatype.Contains('?') ?
+        new[]
+        {
+          datatype.Substring(0, datatype.IndexOf('[')),
+          datatype.Substring(datatype.IndexOf('['))
+        } :
+        null;
+        datatype = split is not null ? $"{split[0]}?{split[1]}" : $"{datatype}";
         break;
     }
 
