@@ -1526,6 +1526,19 @@
     line-height: var(--tw-leading, var(--text-xs--line-height));
     font-style: italic;
   }
+  .span-value-type {
+    height: 100%;
+    width: calc(var(--spacing) * 12);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-inline: calc(var(--spacing) * 1);
+    text-align: center;
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
   .node-col {
     position: relative;
     display: flex;

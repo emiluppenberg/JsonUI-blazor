@@ -131,6 +131,10 @@
     @apply px-1 w-12 h-full text-start text-xs italic truncate;
   }
 
+  .span-value-type {
+    @apply px-1 w-12 h-full text-center text-xs font-medium truncate;
+  }
+
   .node-col {
     @apply pt-1 flex flex-col relative w-40 overflow-visible;
   }

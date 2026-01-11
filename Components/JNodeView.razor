@@ -18,7 +18,7 @@
         <div class="div-count-hidden"></div>
       }
       <span class="span-key">@CurrentNode.Name</span>
-      <span class="span-value">@CurrentNode.Type</span>
+      <span class="span-value-type">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
     </button>
     @if (AnyNestedSelected && CurrentNode.Name is not "Base")
     {
@@ -56,7 +56,7 @@
           <div class="div-count-hidden"></div>
         }
         <span class="@(child.IsExpanded ? "hidden" : "span-key")">@child.Name</span>
-        <span class="@(child.IsExpanded ? "hidden" : "span-value")">@child.Type</span>
+        <span class="@(child.IsExpanded ? "hidden" : "span-value-type")">@(child.Type == JNodeType.Object ? "{}" : "[]")</span>
       </button>
     }
 
