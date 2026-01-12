@@ -1,0 +1,46 @@
+@inject IJSRuntime JS
+
+@if (!HasConsent)
+{
+  <div class="cookie-container">
+    <p>
+      This website uses cookies to display advertisements.
+      By accepting, you consent to the use of cookies.
+    </p>
+
+    <NavLink class="link" href="/privacy">Learn more</NavLink>
+
+    <div class="cookie-buttons">
+      <button class="transition-gen button-base" @onclick="Accept">Accept</button>
+      <button class="transition-gen button-base" @onclick="Reject">Reject</button>
+    </div>
+  </div>
+}
+
+@code {
+  private const string StorageKey = "cookie-consent";
+  private bool HasConsent;
+  [Parameter]
+  public EventCallback<string> OnCookieConsent { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    var value = await JS.InvokeAsync<string>("localStorage.getItem", StorageKey);
+    HasConsent = value == "accepted" || value == "rejected";
+    await OnCookieConsent.InvokeAsync(value);
+  }
+
+  private async Task Accept()
+  {
+    await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, "accepted");
+    HasConsent = true;
+    await OnCookieConsent.InvokeAsync("accepted");
+  }
+
+  private async Task Reject()
+  {
+    await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, "rejected");
+    HasConsent = true;
+    await OnCookieConsent.InvokeAsync("rejected");
+  }
+}

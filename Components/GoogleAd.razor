@@ -1,8 +1,7 @@
 @inject IJSRuntime JS
 
 <div class="">
-  <ins class="adsbygoogle" style="@Style" data-ad-client="ca-pub-3629979359038521" data-ad-slot="@Slot"
-    data-ad-format="@Format" data-full-width-responsive="true">
+  <ins class="adsbygoogle" @attributes="Attributes">
   </ins>
 </div>
 
@@ -12,8 +11,28 @@
   [Parameter]
   public string Style { get; set; } = "";
   [Parameter]
-  public string Format { get; set; } = "";
+  public string? Format { get; set; }
+  [Parameter]
+  public bool Responsive { get; set; }
 
+  private Dictionary<string, object> Attributes => BuildAttributes();
+
+  private Dictionary<string, object> BuildAttributes()
+  {
+    var attrs = new Dictionary<string, object>();
+
+    attrs["data-ad-client"] = "ca-pub-3629979359038521";
+    attrs["data-ad-slot"] = Slot;
+    attrs["style"] = Style;
+
+    if (!string.IsNullOrWhiteSpace(Format))
+      attrs["data-ad-format"] = Format;
+
+    if (Responsive)
+      attrs["data-full-width-responsive"] = "true";
+
+    return attrs;
+  }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {

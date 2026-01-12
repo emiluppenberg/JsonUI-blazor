@@ -9,21 +9,21 @@
   <div class="json-container">
 
     <div class="json-menu">
+
       <div class="json-option">
         <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
-          @onclick="async () => await ToggleLoadUrl()">Load from
-          URL</button>
+          @onclick="async () => await ToggleLoadUrl()">Load URL</button>
       </div>
 
       <div class="json-option">
         <button class="transition-gen @(LoadingText ? "button-base-active" : "button-base")"
-          @onclick="async () => await ToggleLoadText()">Load from
-          TEXT</button>
+          @onclick="async () => await ToggleLoadText()">Load TEXT</button>
       </div>
 
       <div class="json-option relative">
+
         <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
-          <textarea class="load-textarea" @bind="Json"></textarea>
+          <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
           <div class="load-buttons-row">
             <button class="button-load" @onclick="() => LoadJson(Json)">OK</button>
             <button class="button-load" @onclick="() => { LoadingText = false; }">Cancel</button>
@@ -31,13 +31,15 @@
         </div>
 
         <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-          <input type="text" @bind="Url" class="load-input" />
+          <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
           <div class="load-buttons-row">
             <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
             <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
           </div>
         </div>
+
       </div>
+
     </div>
 
     <div class="node-container" id="node-container">
@@ -64,7 +66,7 @@
 </div>
 
 @code {
-  public string Url { get; set; } = "https://lldev.thespacedevs.com/2.3.0/launches/797939fd-480c-4e5a-8c0a-53b36b2695fe/";
+  public string Url { get; set; } = "";
   public string RenderCode { get; set; } = "";
   public string Json { get; set; } = "";
   public bool LoadingText { get; set; }
@@ -112,7 +114,7 @@
   protected override async Task OnInitializedAsync()
   {
     LangOptions = new CSharpOptions();
-    var json = await httpClient.GetStringAsync("j.json");
+    var json = await httpClient.GetStringAsync("example.json");
     LoadJson(json);
   }
 

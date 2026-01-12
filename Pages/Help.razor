@@ -1,0 +1,144 @@
+@page "/help"
+
+<NavLink class="m-10 font-light link fixed top-0" href="/">Back</NavLink>
+
+<div class="w-full px-50 py-12 text-slate-80 overflow-y-auto">
+
+  <div class="px-6 font-light">
+    <p class="mb-6 leading-relaxed">
+      json-UI is a tool designed to generate clutter-free boilerplate code specific to your needs.
+    </p>
+
+    <p class="mb-6 leading-relaxed">
+      By loading your JSON into json-UI, you get a visual overview of the data structure while also
+      allowing you to effortlessly design your own classes by selecting key-value-pairs.
+    </p>
+  </div>
+
+  <h2 class="mt-8 mb-3 text-3xl font-light">
+    Load JSON
+  </h2>
+
+  <h3 class="mt-6 mb-2 text-lg font-light">
+    Load JSON from text
+  </h3>
+
+  <p class="mb-6 leading-relaxed">
+    Press <strong>Load TEXT</strong>, paste JSON text into the textarea field,
+    and press <strong>OK</strong>.
+  </p>
+
+  <h3 class="mt-6 mb-2 text-lg font-light">
+    Load JSON from URL
+  </h3>
+
+  <p class="mb-6 leading-relaxed">
+    Press <strong>Load URL</strong>, paste the URL into the input field labeled
+    <strong>Url</strong>. If needed, paste an API token into the input field labeled
+    <strong>Authorization token</strong>, then press <strong>OK</strong>.
+  </p>
+
+  <h2 class="mt-8 mb-3 text-3xl font-light">
+    Select key-value-pairs
+  </h2>
+
+  <p class="mb-4 leading-relaxed">
+    The key-value-pairs for the loaded JSON are rendered as a tree structure.
+    Objects and arrays are rendered as nested branches with their own set of key-value-pairs.
+  </p>
+
+  <p class="mb-6 leading-relaxed">
+    Selecting key-value-pairs will generate properties for the class it belongs to
+    and all necessary ancestor relationships if the class is a descendant of root.
+  </p>
+
+  <p class="mb-6 leading-relaxed">
+    Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
+    Primitive types and arrays are noted as-is.<br />
+    Primitive types noted as 'object' or 'object[]' means the JSON value was null or empty array, meaning the datatype
+    cannot be inferred.
+  </p>
+
+  <h2 class="mt-8 mb-3 text-3xl font-light">
+    Configure generated code
+  </h2>
+
+  <p class="mb-6 leading-relaxed">
+    Configure the language-specific options to suit your application.
+  </p>
+
+  <h3 class="mt-6 mb-2 text-lg font-light italic">
+    C#
+  </h3>
+
+  <div class="px-6">
+    <h4 class="mt-4 mb-2 font-light">
+      JSON library
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <li>System.Text.Json</li>
+      <li>Newtonsoft.Json</li>
+    </ul>
+
+    <h4 class="mt-4 mb-2 font-light">
+      Naming convention
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <p class="mb-6 leading-relaxed">
+        Selecting a naming convention will generate a
+        JsonProperty / JsonPropertyName annotation for all properties.
+      </p>
+    </ul>
+
+    <h4 class="mt-4 mb-2 font-light">
+      Collection type
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <p class="mb-3 leading-relaxed">
+        Selecting a collection type in the menu will set all collections across all classes
+        to that type.
+      </p>
+
+      <p class="mb-6 leading-relaxed">
+        Selecting a collection type in the rendered tree will set that specific
+        key-value-pair to that type.
+      </p>
+    </ul>
+
+    <h4 class="mt-4 mb-2 font-light">
+      Nullable type
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <p class="mb-3 leading-relaxed">
+        Setting nullable in the menu will toggle nullable for all properties across all classes.
+      </p>
+
+      <p class="mb-6 leading-relaxed">
+        Setting nullable in the rendered tree will toggle nullable for that specific
+        key-value-pair.
+      </p>
+    </ul>
+
+    <h4 class="mt-4 mb-2 font-light">
+      Annotations
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <p class="mb-6 leading-relaxed">
+        Select the annotations you need for any key-value-pair.
+      </p>
+    </ul>
+  </div>
+
+  <h3 class="mt-8 mb-2 text-lg font-light italic">
+    TypeScript
+  </h3>
+
+  <p class="mb-6 leading-relaxed">
+    TypeScript support coming soon.
+  </p>
+</div>
