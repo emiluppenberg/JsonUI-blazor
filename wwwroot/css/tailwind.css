@@ -144,7 +144,7 @@
   }
 
   .app-container {
-    @apply border-y flex w-full h-full divide-solid divide-x divide-black;
+    @apply flex w-full h-full divide-solid divide-x divide-black;
   }
 
   .node-container {
@@ -212,7 +212,7 @@
   }
 
   .page-el {
-    @apply flex flex-col w-screen h-screen;
+    @apply flex flex-col w-screen h-screen divide-y divide-solid divide-black;
   }
 
   .main-el {
@@ -228,7 +228,7 @@
   }
 
   .footer-container {
-    @apply flex justify-end items-center px-2 h-4;
+    @apply flex justify-between items-center px-2 h-4;
   }
 
   .link {

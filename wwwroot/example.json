@@ -1,0 +1,141 @@
+{
+  "id": 102345,
+  "name": "Example Root Object",
+  "tags": ["json", "ui", "generator", "example"],
+  "version": 1,
+  "is_active": true,
+  "description": null,
+  "scores": [12, 45, 78, 90],
+  "empty_list": [],
+  "metadata": {
+    "created_by": "system",
+    "created_at": "2026-01-12T10:30:00Z",
+    "updated_at": null,
+    "flags": [
+      {
+        "is_verified": false,
+        "is_archived": false,
+        "labels": ["internal", "beta"],
+        "priority": 3,
+        "notes": null
+      }
+    ],
+    "attributes": {
+      "region": "EU",
+      "language": "en",
+      "currency": "SEK",
+      "supported_locales": ["en-SE", "sv-SE"],
+      "limits": {
+        "min": 1,
+        "max": 100,
+        "step": 1,
+        "allowed": true,
+        "exceptions": []
+      }
+    },
+    "counters": {
+      "views": 1234,
+      "likes": 120,
+      "shares": 45,
+      "history": [10, 20, 30, 40, 50]
+    }
+  },
+  "settings": {
+    "theme": "dark",
+    "notifications_enabled": true,
+    "backup_servers": ["srv-a", "srv-b"],
+    "timeouts": [
+      {
+        "connect": 5000,
+        "read": 10000,
+        "write": 8000,
+        "retry": 3,
+        "enabled": true
+      }
+    ],
+    "features": {
+      "beta": true,
+      "experimental": false,
+      "modules": ["core", "ui", "api"],
+      "thresholds": {
+        "low": 10,
+        "medium": 50,
+        "high": 90,
+        "auto_adjust": false
+      }
+    }
+  },
+  "users": [
+    {
+      "user_id": 1,
+      "username": "alice",
+      "email": "alice@example.com",
+      "roles": ["admin", "editor"],
+      "profile": {
+        "age": 30,
+        "country": "SE",
+        "preferences": {
+          "newsletter": true,
+          "sms": false,
+          "topics": ["tech", "ui"]
+        }
+      }
+    },
+    {
+      "user_id": 2,
+      "username": "bob",
+      "email": "bob@example.com",
+      "roles": ["viewer"],
+      "profile": {
+        "age": 25,
+        "country": "NO",
+        "preferences": {
+          "newsletter": false,
+          "sms": true,
+          "topics": ["api", "docs"]
+        }
+      }
+    }
+  ],
+  "statistics": {
+    "uptime_days": 342,
+    "error_rate": 0.02,
+    "regions": ["EU", "US", "APAC"],
+    "daily_usage": {
+      "monday": 120,
+      "tuesday": 140,
+      "wednesday": 160,
+      "thursday": 155,
+      "friday": 130
+    },
+    "alerts": [
+      {
+        "enabled": true,
+        "emails": ["ops@example.com"],
+        "levels": [
+          {
+            "info": true,
+            "warning": true,
+            "critical": false
+          }
+        ]
+      }
+    ]
+  },
+  "audit": {
+    "enabled": true,
+    "retention_days": 90,
+    "logs": [],
+    "last_run": null,
+    "target": {
+      "database": true,
+      "filesystem": false,
+      "network": true,
+      "details": {
+        "deep_scan": false,
+        "sample_rate": 0.1,
+        "notes": null
+      }
+    }
+  }
+}
