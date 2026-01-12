@@ -144,43 +144,31 @@
   }
 
   .app-container {
-    @apply border-y flex h-5/6 overflow-y-auto;
+    @apply border-y flex w-full h-full divide-solid divide-x divide-black;
   }
 
   .node-container {
-    @apply px-1 bg-sky-100 flex-1 overflow-y-auto flex items-start w-3/5;
+    @apply px-1 bg-sky-100 overflow-y-auto flex flex-1 items-start w-full;
   }
 
-  .ad-container {
-    @apply flex flex-1;
-  } 
-
-  .code {
-    @apply p-5 border-l bg-sky-100 w-2/5 overflow-y-auto text-xs;
-  }
-
-  .menu {
-    @apply flex min-w-full max-w-full h-(--menu-h) divide-solid divide-x;
-  }
-
-  .button-base {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
-  }
-
-  .button-base-active {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
+  .json-container {
+    @apply flex flex-col w-3/5 divide-y divide-solid divide-black;
   }
 
   .json-menu {
-    @apply flex w-3/5 h-full items-center;
+    @apply flex w-full h-(--menu-h) items-center;
   }
 
   .json-option {
     @apply flex w-(--opt-w) px-2;
   }
 
+  .code-container {
+    @apply flex flex-col w-2/5 divide-y divide-solid divide-black;
+  }
+
   .code-menu {
-    @apply flex w-2/5 h-full items-center;
+    @apply flex w-full h-(--menu-h) items-center;
   }
 
   .code-option {
@@ -193,6 +181,18 @@
 
   .code-option-select {
     @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
+  }
+
+  .code {
+    @apply p-5 bg-sky-100 w-full flex flex-1 overflow-y-auto text-xs;
+  }
+
+  .button-base {
+    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
+  }
+
+  .button-base-active {
+    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
   }
 
   .transition-input {
@@ -211,8 +211,28 @@
     @apply h-0;
   }
 
-  .main-el {
+  .page-el {
     @apply flex flex-col w-screen h-screen;
+  }
+
+  .main-el {
+    @apply flex flex-col w-full h-5/6;
+  }
+
+  .bottom-container {
+    @apply flex flex-col w-full h-1/6 divide-y divide-solid divide-black;
+  }
+
+  .ad-container {
+    @apply flex flex-1 justify-around items-center;
+  }
+
+  .footer-container {
+    @apply flex justify-end items-center px-2 h-4;
+  }
+
+  .footer-link {
+    @apply underline text-xs;
   }
 
   .load-menu {

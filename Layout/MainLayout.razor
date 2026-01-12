@@ -1,6 +1,18 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
+<div class="page-el">
     <main class="main-el">
         @Body
     </main>
+
+    <div class="bottom-container">
+
+        <div class="ad-container">
+            <GoogleAd Slot="6738928383" Style="display:block" Format="auto"></GoogleAd>
+        </div>
+
+        <footer class="footer-container">
+            <NavLink class="footer-link" href="privacy">Privacy</NavLink>
+        </footer>
+
+    </div>
 </div>
