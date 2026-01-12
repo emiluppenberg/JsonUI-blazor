@@ -25,3 +25,7 @@ window.scrollToElement = (element) => {
 
   container.scrollTo({ top: scrollTo, behavior: "smooth" });
 };
+
+window.loadAdSense = () => {
+  (adsbygoogle = window.adsbygoogle || []).push({});
+};

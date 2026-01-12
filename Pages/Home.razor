@@ -4,43 +4,53 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="menu">
+<div class="app-container">
 
-  <div class="json-menu">
+  <div class="json-container">
 
-    <div class="json-option">
-      <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
-        @onclick="async () => await ToggleLoadUrl()">Load from
-        URL</button>
-    </div>
-
-    <div class="json-option">
-      <button class="transition-gen @(LoadingText ? "button-base-active" : "button-base")"
-        @onclick="async () => await ToggleLoadText()">Load from
-        TEXT</button>
-    </div>
-
-    <div class="json-option relative">
-      <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
-        <textarea class="load-textarea" @bind="Json"></textarea>
-        <div class="load-buttons-row">
-          <button class="button-load" @onclick="() => LoadJson(Json)">OK</button>
-          <button class="button-load" @onclick="() => { LoadingText = false; }">Cancel</button>
-        </div>
+    <div class="json-menu">
+      <div class="json-option">
+        <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
+          @onclick="async () => await ToggleLoadUrl()">Load from
+          URL</button>
       </div>
 
-      <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-        <input type="text" @bind="Url" class="load-input" />
-        <div class="load-buttons-row">
-          <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
-          <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+      <div class="json-option">
+        <button class="transition-gen @(LoadingText ? "button-base-active" : "button-base")"
+          @onclick="async () => await ToggleLoadText()">Load from
+          TEXT</button>
+      </div>
+
+      <div class="json-option relative">
+        <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
+          <textarea class="load-textarea" @bind="Json"></textarea>
+          <div class="load-buttons-row">
+            <button class="button-load" @onclick="() => LoadJson(Json)">OK</button>
+            <button class="button-load" @onclick="() => { LoadingText = false; }">Cancel</button>
+          </div>
+        </div>
+
+        <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
+          <input type="text" @bind="Url" class="load-input" />
+          <div class="load-buttons-row">
+            <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
+            <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="node-container" id="node-container">
+      @if (JNodes?.Count > 0)
+      {
+        <JNodeView CurrentNode="JNodes[0]" ContainerHeight="NodeContainerHeight" OnNodeToggled="HandleNodeToggled"
+          OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" LangOptions="LangOptions" />
+      }
     </div>
 
   </div>
 
-  <div class="code-menu">
+  <div class="code-container">
 
     @if (LangOptions.GetType().Name == "CSharpOptions")
     {
@@ -48,23 +58,9 @@
         OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
     }
 
+    <pre class="code">@RenderCode</pre>
+
   </div>
-</div>
-
-<div class="app-container">
-  <div class="node-container" id="node-container">
-    @if (JNodes?.Count > 0)
-    {
-      <JNodeView CurrentNode="JNodes[0]" ContainerHeight="NodeContainerHeight" OnNodeToggled="HandleNodeToggled"
-        OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" LangOptions="LangOptions" />
-    }
-  </div>
-
-  <pre class="code">@RenderCode</pre>
-</div>
-
-<div class="ad-container">
-  <GoogleAd></GoogleAd>
 </div>
 
 @code {
