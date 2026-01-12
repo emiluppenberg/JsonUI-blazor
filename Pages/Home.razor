@@ -9,6 +9,7 @@
   <div class="json-container">
 
     <div class="json-menu">
+
       <div class="json-option">
         <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
           @onclick="async () => await ToggleLoadUrl()">Load from
@@ -22,6 +23,7 @@
       </div>
 
       <div class="json-option relative">
+
         <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
           <textarea class="load-textarea" @bind="Json"></textarea>
           <div class="load-buttons-row">
@@ -37,7 +39,9 @@
             <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
           </div>
         </div>
+
       </div>
+
     </div>
 
     <div class="node-container" id="node-container">

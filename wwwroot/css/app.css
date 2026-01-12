@@ -1174,8 +1174,9 @@
       border-color: var(--color-black);
     }
   }
-  .ad-container {
+  .ads-container {
     display: flex;
+    width: 100%;
     flex: 1;
     align-items: center;
     justify-content: space-around;
@@ -1187,10 +1188,31 @@
     justify-content: flex-end;
     padding-inline: calc(var(--spacing) * 2);
   }
-  .footer-link {
+  .link {
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
     text-decoration-line: underline;
+  }
+  .cookie-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+    }
+    padding-inline: calc(var(--spacing) * 20);
+    padding-block: calc(var(--spacing) * 5);
+    text-align: center;
+  }
+  .cookie-buttons {
+    display: flex;
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
   }
   .load-menu {
     position: absolute;
@@ -1326,6 +1348,11 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -1343,6 +1370,7 @@
       --tw-translate-z: 0;
       --tw-divide-y-reverse: 0;
       --tw-duration: initial;
+      --tw-space-x-reverse: 0;
     }
   }
 }

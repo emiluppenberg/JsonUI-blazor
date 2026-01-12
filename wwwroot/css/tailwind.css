@@ -223,16 +223,24 @@
     @apply flex flex-col w-full h-1/6 divide-y divide-solid divide-black;
   }
 
-  .ad-container {
-    @apply flex flex-1 justify-around items-center;
+  .ads-container {
+    @apply flex flex-1 w-full justify-around items-center;
   }
 
   .footer-container {
     @apply flex justify-end items-center px-2 h-4;
   }
 
-  .footer-link {
+  .link {
     @apply underline text-xs;
+  }
+
+  .cookie-container {
+    @apply flex flex-col space-y-2 px-20 py-5 text-center items-center;
+  }
+
+  .cookie-buttons {
+    @apply flex space-x-2;
   }
 
   .load-menu {

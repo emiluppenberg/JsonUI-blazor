@@ -6,13 +6,27 @@
 
     <div class="bottom-container">
 
-        <div class="ad-container">
-            <GoogleAd Slot="6738928383" Style="display:block" Format="auto"></GoogleAd>
+        <div class="ads-container">
+
+            <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
+
+            @if (CookieConsent)
+            {
+                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+            }
         </div>
 
         <footer class="footer-container">
-            <NavLink class="footer-link" href="privacy">Privacy</NavLink>
+            <NavLink class="link" href="privacy">Privacy</NavLink>
         </footer>
 
     </div>
 </div>
+
+@code {
+    public bool CookieConsent { get; set; }
+
+    private void HandleCookieConsent(string consent) => CookieConsent = consent == "accepted";
+}
