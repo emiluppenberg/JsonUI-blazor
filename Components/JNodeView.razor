@@ -6,7 +6,8 @@
 
   <div class="sentinel" @ref="_sentinel"></div>
   <div class="@GetDivStickyClass()">
-    <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)">
+    <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)"
+      disabled="@(CurrentNode.Name == RootName)">
       @if (AnyNestedSelected)
       {
         <div class="div-count">
@@ -20,7 +21,7 @@
       <span class="span-key">@CurrentNode.Name</span>
       <span class="span-value-type">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
     </button>
-    @if (AnyNestedSelected && CurrentNode.Name is not "Base")
+    @if (AnyNestedSelected && CurrentNode.Name != RootName)
     {
       <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
         <label class="sticky-option-label">Nullable</label>
@@ -56,7 +57,8 @@
           <div class="div-count-hidden"></div>
         }
         <span class="@(child.IsExpanded ? "hidden" : "span-key")">@child.Name</span>
-        <span class="@(child.IsExpanded ? "hidden" : "span-value-type")">@(child.Type == JNodeType.Object ? "{}" : "[]")</span>
+        <span class="@(child.IsExpanded ? "hidden" : "span-value-type")">@(child.Type == JNodeType.Object ? "{}" :
+                  "[]")</span>
       </button>
     }
 
@@ -105,6 +107,8 @@
   public int RowOffset { get; set; }
   [Parameter]
   public JNode CurrentNode { get; set; } = default!;
+  [Parameter]
+  public string RootName { get; set; } = "";
   [Parameter]
   public EventCallback<JNode> OnNodeToggled { get; set; }
   [Parameter]
@@ -190,31 +194,31 @@
   {
     var isArray = CurrentNode.Type == JNodeType.Array;
 
-    if (CurrentNode.Name is "Base")
+    if (CurrentNode.Name == RootName)
     {
       return "div-sticky-active";
     }
-    if (IsSticky && !AnyNestedSelected)
+    else if (IsSticky && !AnyNestedSelected)
     {
       return "div-sticky-active";
     }
-    if (IsSticky && AnyNestedSelected && isArray)
+    else if (IsSticky && AnyNestedSelected && isArray)
     {
       return "div-sticky-active-selected-arr";
     }
-    if (IsSticky && AnyNestedSelected && !isArray)
+    else if (IsSticky && AnyNestedSelected && !isArray)
     {
       return "div-sticky-active-selected-obj";
     }
-    if (!IsSticky && AnyNestedSelected && isArray)
+    else if (!IsSticky && AnyNestedSelected && isArray)
     {
       return "div-sticky-inactive-selected-arr";
     }
-    if (!IsSticky && AnyNestedSelected && !isArray)
+    else if (!IsSticky && AnyNestedSelected && !isArray)
     {
       return "div-sticky-inactive-selected-obj";
     }
-    if (!IsSticky && !AnyNestedSelected)
+    else if (!IsSticky && !AnyNestedSelected)
     {
       return "div-sticky-inactive";
     }
@@ -226,15 +230,15 @@
 
   string GetButtonStickyClass()
   {
-    if (CurrentNode.Name is "Base" || IsSticky && !AnyNestedSelected)
+    if (CurrentNode.Name == RootName || IsSticky && !AnyNestedSelected)
     {
       return "button-sticky-active";
     }
-    if (IsSticky && AnyNestedSelected)
+    else if (IsSticky && AnyNestedSelected)
     {
       return "button-sticky-active-selected";
     }
-    if (!IsSticky && AnyNestedSelected)
+    else if (!IsSticky && AnyNestedSelected)
     {
       return "button-sticky-inactive-selected";
     }
