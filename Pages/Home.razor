@@ -1,5 +1,8 @@
 ﻿@page "/"
 @using JsonUI_blazor.Components
+@using System.Net.Http.Headers
+@using System.Buffers.Text
+@using System.Text
 @inject HttpClient httpClient
 
 <PageTitle>Home</PageTitle>
@@ -32,6 +35,21 @@
 
         <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
           <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+          @foreach (var header in CustomHeaders)
+          {
+            <div class="flex">
+              <div class="w-1/2 flex">
+                <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+              </div>
+              <div class="w-1/2 flex items-center">
+                <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+                <label class="load-label">Base64</label>
+                <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+              </div>
+            </div>
+          }
+          <button class="button-load w-full" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+            header</button>
           <div class="load-buttons-row">
             <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
             <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
@@ -67,12 +85,19 @@
 
 @code {
   public string Url { get; set; } = "";
+  public List<CustomHeader> CustomHeaders { get; set; } = new();
+
   public string RenderCode { get; set; } = "";
   public string Json { get; set; } = "";
-  public bool LoadingText { get; set; }
+  public bool LoadingText { get; set; } = true;
   public bool LoadingUrl { get; set; }
   public int NodeContainerHeight;
   public List<JNode> JNodes { get; set; } = new();
+
+  protected override async Task OnInitializedAsync()
+  {
+    Json = await httpClient.GetStringAsync("example.json");
+  }
 
   private ILanguageOptions langOptions = new CSharpOptions();
   public ILanguageOptions LangOptions
@@ -111,13 +136,6 @@
     HandleRenderCode();
   }
 
-  protected override async Task OnInitializedAsync()
-  {
-    LangOptions = new CSharpOptions();
-    var json = await httpClient.GetStringAsync("example.json");
-    LoadJson(json);
-  }
-
   void LoadJson(string json)
   {
     JNodes = JNodeBuilder.CreateFromJson(json, LangOptions)!;
@@ -144,7 +162,38 @@
   {
     try
     {
-      HttpResponseMessage? response = await httpClient.GetAsync(Url);
+      using var request = new HttpRequestMessage(HttpMethod.Get, Url);
+
+      foreach (var ch in CustomHeaders)
+      {
+        var value = ch.Value;
+
+        if (ch.ConvertToBase64)
+        {
+          var splitVal = ch.Value.Split(' ');
+          var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(splitVal[1]));
+          value = $"{splitVal[0]} {base64}";
+        }
+
+        if (ch.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.Authorization = AuthenticationHeaderValue.Parse(value);
+        }
+        else if (ch.Key.Equals("User-Agent", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.UserAgent.ParseAdd(value);
+        }
+        else if (ch.Key.Equals("Accept", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.Accept.ParseAdd(value);
+        }
+        else
+        {
+          request.Headers.Add(ch.Key, ch.Value);
+        }
+      }
+
+      var response = await httpClient.SendAsync(request);
       response.EnsureSuccessStatusCode();
 
       var json = await response.Content.ReadAsStringAsync();

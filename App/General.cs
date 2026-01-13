@@ -7,10 +7,24 @@ public enum JNodeType
   Object, Array
 }
 
+public enum TokenType
+{
+  Bearer, BasicUsernamePassword, BasicBase64
+}
+
+public class CustomHeader
+{
+  public string Key { get; set; } = "";
+  public string Value { get; set; } = "";
+  public bool ConvertToBase64 { get; set; }
+}
+
 public static class General
 {
   public const int RowHeightPx = 22;
   public const int ColWidthPx = 160;
+
+  public static Array GetTokenTypes() => Enum.GetValues<TokenType>();
 
   public static (bool, JNode?) JNodeIsSnakeCaseLower(JNode node)
   {

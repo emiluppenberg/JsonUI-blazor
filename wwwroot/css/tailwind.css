@@ -5,7 +5,7 @@
   --ncw: 9.75rem;
   --menu-h: 3rem;
   --btn-h: 1.5rem;
-  --load-w: 30rem;
+  --load-w: 50rem;
   --load-h: 25rem;
   --opt-w: 7rem;
   --bluebutton: var(--color-blue-800);
@@ -256,7 +256,19 @@
   }
 
   .load-input {
-    @apply p-1 w-full hover:bg-sky-200;
+    @apply p-1 flex flex-1 hover:bg-sky-200;
+  }
+
+  .load-label {
+    @apply text-xs;
+  }
+
+  .load-checkbox {
+    @apply w-5 h-full bg-sky-100 hover:bg-sky-200;
+  }
+
+  .load-select {
+    @apply p-1 w-full text-xs font-medium hover:bg-sky-200;
   }
 
   .button-load {
