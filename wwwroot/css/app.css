@@ -9,6 +9,7 @@
       "Courier New", monospace;
     --color-orange-200: oklch(90.1% 0.076 70.697);
     --color-orange-300: oklch(83.7% 0.128 66.29);
+    --color-orange-400: oklch(75% 0.183 55.934);
     --color-yellow-100: oklch(97.3% 0.071 103.193);
     --color-yellow-200: oklch(94.5% 0.129 101.54);
     --color-yellow-300: oklch(90.5% 0.182 98.111);
@@ -23,6 +24,7 @@
     --color-blue-800: oklch(42.4% 0.199 265.638);
     --color-blue-900: oklch(37.9% 0.146 265.522);
     --color-slate-500: oklch(55.4% 0.046 257.417);
+    --color-slate-800: oklch(27.9% 0.041 260.031);
     --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-gray-300: oklch(87.2% 0.01 258.338);
     --color-black: #000;
@@ -269,9 +271,6 @@
   .flex {
     display: flex;
   }
-  .hidden {
-    display: none;
-  }
   .size-40 {
     width: calc(var(--spacing) * 40);
     height: calc(var(--spacing) * 40);
@@ -392,139 +391,32 @@
   }
 }
 @layer components {
-  .button-node {
-    margin-bottom: calc(var(--spacing) * 0.5);
+  .div-node {
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    height: calc(var(--spacing) * 5);
-    width: 100%;
-    --tw-scale-x: 100%;
-    scale: var(--tw-scale-x) var(--tw-scale-y);
-    align-items: center;
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
-    border-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
+    width: fit-content;
+    flex: 1;
     background-color: var(--color-orange-200);
     &:hover {
       @media (hover: hover) {
-        background-color: var(--color-orange-300);
+        z-index: 50;
       }
     }
-  }
-  .button-sticky-inactive {
-    display: flex;
-    height: 100%;
-    width: calc(var(--cw) * 2);
-    align-items: center;
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
-    border-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-yellow-100);
     &:hover {
       @media (hover: hover) {
-        background-color: var(--color-yellow-200);
+        outline-style: var(--tw-outline-style);
+        outline-width: 2px;
       }
     }
-  }
-  .button-sticky-inactive-selected {
-    display: flex;
-    height: 100%;
-    width: calc(var(--cw) * 2);
-    align-items: center;
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-yellow-100);
     &:hover {
       @media (hover: hover) {
-        background-color: var(--color-yellow-200);
+        outline-color: var(--color-orange-400);
       }
     }
   }
-  .button-sticky-active {
+  .button-node {
     display: flex;
-    height: 100%;
-    width: var(--cw);
-    align-items: center;
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
-    border-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-yellow-100);
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-yellow-200);
-      }
-    }
-  }
-  .button-sticky-active-selected {
-    display: flex;
-    height: 100%;
-    width: var(--cw);
-    align-items: center;
-    :where(& > :not(:last-child)) {
-      --tw-divide-x-reverse: 0;
-      border-inline-style: var(--tw-border-style);
-      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
-      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
-    }
-    :where(& > :not(:last-child)) {
-      --tw-border-style: dotted;
-      border-style: dotted;
-    }
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-yellow-100);
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-yellow-200);
-      }
-    }
-  }
-  .button-kvp {
-    display: flex;
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: var(--ncw);
     align-items: center;
     :where(& > :not(:last-child)) {
@@ -537,10 +429,70 @@
       --tw-border-style: dotted;
       border-style: dotted;
     }
-    border-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-gray-200);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-300);
+      }
+    }
+  }
+  .node-option-label {
+    width: calc(var(--spacing) * 15);
+    text-align: center;
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .node-option-button {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 20);
+    align-items: center;
+    padding-inline: calc(var(--spacing) * 1);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-300);
+      }
+    }
+  }
+  .node-option-checkbox {
+    pointer-events: none;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 5);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-300);
+      }
+    }
+  }
+  .node-option-select {
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 20);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-300);
+      }
+    }
+  }
+  .button-kvp {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: var(--ncw);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-gray-300);
@@ -549,7 +501,7 @@
   }
   .button-kvp-selected {
     display: flex;
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: var(--ncw);
     align-items: center;
     :where(& > :not(:last-child)) {
@@ -562,11 +514,6 @@
       --tw-border-style: dotted;
       border-style: dotted;
     }
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-sky-200);
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-sky-300);
@@ -574,20 +521,30 @@
     }
   }
   .div-kvp {
-    margin-bottom: calc(var(--spacing) * 0.5);
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    height: calc(var(--spacing) * 5);
-    width: var(--ncw);
-    overflow: hidden;
+    flex: 1;
+    background-color: var(--color-gray-200);
   }
-  .div-kvp-selected-obj {
-    margin-bottom: calc(var(--spacing) * 0.5);
+  .div-kvp-selected {
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    height: calc(var(--spacing) * 5);
-    width: calc(5rem + var(--ncw));
-    overflow: hidden;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
+    width: fit-content;
+    flex: 1;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(2px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: solid;
+      border-style: solid;
+    }
+    :where(& > :not(:last-child)) {
+      border-color: var(--color-sky-300);
+    }
+    background-color: var(--color-sky-200);
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -605,58 +562,158 @@
       }
     }
   }
-  .div-kvp-selected-arr {
-    margin-bottom: calc(var(--spacing) * 0.5);
+  .kvp-option-label {
+    width: calc(var(--spacing) * 15);
+    text-align: center;
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .kvp-option-button {
     display: flex;
-    height: calc(var(--spacing) * 5);
-    width: calc(10rem + var(--ncw));
-    overflow: hidden;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 20);
+    align-items: center;
+    padding-inline: calc(var(--spacing) * 1);
     &:hover {
       @media (hover: hover) {
-        z-index: 50;
+        background-color: var(--color-sky-300);
       }
     }
+  }
+  .kvp-option-checkbox {
+    pointer-events: none;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 5);
     &:hover {
       @media (hover: hover) {
-        outline-style: var(--tw-outline-style);
-        outline-width: 2px;
+        background-color: var(--color-sky-300);
       }
     }
+  }
+  .kvp-option-select {
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--spacing) * 20);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
     &:hover {
       @media (hover: hover) {
-        outline-color: var(--color-sky-400);
+        background-color: var(--color-sky-300);
       }
+    }
+  }
+  .button-sticky-inactive {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--cw) * 2);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+  }
+  .button-sticky-inactive-selected {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: calc(var(--cw) * 2);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+  }
+  .button-sticky-active {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: var(--cw);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
+    }
+  }
+  .button-sticky-active-selected {
+    display: flex;
+    height: calc(var(--spacing) * 6);
+    width: var(--cw);
+    align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(1px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(1px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: dotted;
+      border-style: dotted;
     }
   }
   .div-sticky-inactive {
     position: sticky;
     top: calc(var(--spacing) * 1);
     z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: calc(var(--cw) * 2);
+    max-height: calc(var(--spacing) * 6);
+    width: fit-content;
+    flex: 1;
     --tw-translate-x: calc(var(--cw) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
     align-items: center;
-    overflow: hidden;
+    background-color: var(--color-yellow-100);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-200);
+      }
+    }
   }
-  .div-sticky-inactive-selected-obj {
+  .div-sticky-inactive-selected {
     position: sticky;
     top: calc(var(--spacing) * 1);
     z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: calc(5rem + var(--cw) * 2);
+    max-height: calc(var(--spacing) * 6);
+    width: fit-content;
+    flex: 1;
     --tw-translate-x: calc(var(--cw) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
     align-items: center;
-    overflow: hidden;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(2px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: solid;
+      border-style: solid;
+    }
+    :where(& > :not(:last-child)) {
+      border-color: var(--color-yellow-300);
+    }
+    background-color: var(--color-yellow-100);
     &:hover {
       @media (hover: hover) {
         z-index: 50;
@@ -664,32 +721,7 @@
     }
     &:hover {
       @media (hover: hover) {
-        outline-style: var(--tw-outline-style);
-        outline-width: 2px;
-      }
-    }
-    &:hover {
-      @media (hover: hover) {
-        outline-color: var(--color-yellow-300);
-      }
-    }
-  }
-  .div-sticky-inactive-selected-arr {
-    position: sticky;
-    top: calc(var(--spacing) * 1);
-    z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
-    display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: calc(10rem + var(--cw) * 2);
-    --tw-translate-x: calc(var(--cw) * -1);
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-    align-items: center;
-    overflow: hidden;
-    &:hover {
-      @media (hover: hover) {
-        z-index: 50;
+        background-color: var(--color-yellow-200);
       }
     }
     &:hover {
@@ -708,30 +740,53 @@
     position: sticky;
     top: calc(var(--spacing) * 1);
     z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: var(--cw);
+    max-height: calc(var(--spacing) * 6);
+    width: fit-content;
+    flex: 1;
     align-items: center;
-    overflow: hidden;
+    background-color: var(--color-yellow-100);
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-200);
+      }
+    }
   }
-  .div-sticky-active-selected-obj {
+  .div-sticky-active-selected {
     position: sticky;
     top: calc(var(--spacing) * 1);
     z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
+    margin-bottom: calc(var(--spacing) * 1);
     display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: calc(5rem + var(--cw));
+    max-height: calc(var(--spacing) * 6);
+    width: fit-content;
+    flex: 1;
+    --tw-translate-x: calc(var(--cw) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
     align-items: center;
-    overflow: hidden;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
+    :where(& > :not(:last-child)) {
+      --tw-divide-x-reverse: 0;
+      border-inline-style: var(--tw-border-style);
+      border-inline-start-width: calc(2px * var(--tw-divide-x-reverse));
+      border-inline-end-width: calc(2px * calc(1 - var(--tw-divide-x-reverse)));
+    }
+    :where(& > :not(:last-child)) {
+      --tw-border-style: solid;
+      border-style: solid;
+    }
+    :where(& > :not(:last-child)) {
+      border-color: var(--color-yellow-300);
+    }
+    background-color: var(--color-yellow-100);
     &:hover {
       @media (hover: hover) {
         z-index: 50;
+      }
+    }
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-yellow-200);
       }
     }
     &:hover {
@@ -743,86 +798,6 @@
     &:hover {
       @media (hover: hover) {
         outline-color: var(--color-yellow-300);
-      }
-    }
-  }
-  .div-sticky-active-selected-arr {
-    position: sticky;
-    top: calc(var(--spacing) * 1);
-    z-index: 40;
-    margin-bottom: calc(var(--spacing) * 0.5);
-    display: flex;
-    max-height: calc(var(--spacing) * 5);
-    min-height: calc(var(--spacing) * 5);
-    width: calc(10rem + var(--cw));
-    align-items: center;
-    overflow: hidden;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-    &:hover {
-      @media (hover: hover) {
-        z-index: 50;
-      }
-    }
-    &:hover {
-      @media (hover: hover) {
-        outline-style: var(--tw-outline-style);
-        outline-width: 2px;
-      }
-    }
-    &:hover {
-      @media (hover: hover) {
-        outline-color: var(--color-yellow-300);
-      }
-    }
-  }
-  .kvp-option-label {
-    width: calc(var(--spacing) * 15);
-    text-align: center;
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
-  }
-  .kvp-option-button {
-    display: flex;
-    height: 100%;
-    width: calc(var(--spacing) * 20);
-    align-items: center;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-sky-200);
-    padding-block: calc(var(--spacing) * 0.5);
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-sky-300);
-      }
-    }
-  }
-  .kvp-option-checkbox {
-    pointer-events: none;
-    height: 100%;
-    width: calc(var(--spacing) * 5);
-    background-color: var(--color-sky-200);
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-sky-300);
-      }
-    }
-  }
-  .kvp-option-select {
-    height: 100%;
-    width: calc(var(--spacing) * 20);
-    border-style: var(--tw-border-style);
-    border-width: 1px;
-    background-color: var(--color-sky-200);
-    font-size: var(--text-xs);
-    line-height: var(--tw-leading, var(--text-xs--line-height));
-    --tw-font-weight: var(--font-weight-medium);
-    font-weight: var(--font-weight-medium);
-    &:hover {
-      @media (hover: hover) {
-        background-color: var(--color-sky-300);
       }
     }
   }
@@ -836,14 +811,12 @@
   }
   .sticky-option-button {
     display: flex;
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: calc(var(--spacing) * 20);
     align-items: center;
     justify-content: center;
-    border-style: var(--tw-border-style);
-    border-width: 1px;
     background-color: var(--color-yellow-100);
-    padding-block: calc(var(--spacing) * 0.5);
+    padding-inline: calc(var(--spacing) * 1);
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-yellow-200);
@@ -852,7 +825,7 @@
   }
   .sticky-option-checkbox {
     pointer-events: none;
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: calc(var(--spacing) * 5);
     background-color: var(--color-yellow-100);
     &:hover {
@@ -862,10 +835,8 @@
     }
   }
   .sticky-option-select {
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: calc(var(--spacing) * 20);
-    border-style: var(--tw-border-style);
-    border-width: 1px;
     background-color: var(--color-yellow-100);
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
@@ -879,7 +850,7 @@
   }
   .div-count {
     display: flex;
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: calc(var(--spacing) * 4);
     align-items: center;
     justify-content: center;
@@ -889,7 +860,7 @@
     }
   }
   .div-count-hidden {
-    height: 100%;
+    height: calc(var(--spacing) * 6);
     width: calc(var(--spacing) * 4);
     opacity: 100%;
   }
@@ -903,8 +874,10 @@
     color: var(--color-sky-900);
   }
   .span-key {
+    display: flex;
     height: 100%;
     flex: 1;
+    align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -916,8 +889,10 @@
     font-weight: var(--font-weight-bold);
   }
   .span-value {
+    display: flex;
     height: 100%;
     width: calc(var(--spacing) * 12);
+    align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -928,8 +903,10 @@
     font-style: italic;
   }
   .span-value-type {
+    display: flex;
     height: 100%;
     width: calc(var(--spacing) * 12);
+    align-items: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -977,7 +954,7 @@
     flex: 1;
     align-items: flex-start;
     overflow-y: auto;
-    background-color: var(--color-sky-100);
+    background-color: var(--color-slate-800);
     padding-inline: calc(var(--spacing) * 1);
   }
   .json-container {
@@ -1385,17 +1362,17 @@
   syntax: "*";
   inherits: false;
 }
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
 @property --tw-divide-x-reverse {
   syntax: "*";
   inherits: false;
   initial-value: 0;
 }
 @property --tw-border-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
-@property --tw-outline-style {
   syntax: "*";
   inherits: false;
   initial-value: solid;
@@ -1438,9 +1415,9 @@
       --tw-space-y-reverse: 0;
       --tw-leading: initial;
       --tw-font-weight: initial;
+      --tw-outline-style: solid;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
-      --tw-outline-style: solid;
       --tw-translate-x: 0;
       --tw-translate-y: 0;
       --tw-translate-z: 0;

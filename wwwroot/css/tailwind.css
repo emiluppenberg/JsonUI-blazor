@@ -15,68 +15,44 @@
 }
 
 @layer components {
+  .div-node {
+    @apply flex flex-1 w-fit mb-1 bg-orange-200 hover:z-50 hover:outline-2 hover:outline-orange-400;
+  }
+
   .button-node {
-    @apply scale-x-100 border rounded w-full bg-orange-200 hover:bg-orange-300 flex items-center divide-dotted divide-x h-5 mb-0.5;
+    @apply w-(--ncw) h-6 hover:bg-orange-300 flex items-center divide-dotted divide-x;
   }
 
-  .button-sticky-inactive {
-    @apply border rounded w-[calc(var(--cw)*2)] h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
+  .node-option-label {
+    @apply text-xs font-medium text-center w-15;
   }
 
-  .button-sticky-inactive-selected {
-    @apply border rounded-l w-[calc(var(--cw)*2)] h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
+  .node-option-button {
+    @apply px-1 flex h-6 w-20 items-center hover:bg-orange-300;
   }
 
-  .button-sticky-active {
-    @apply border rounded w-(--cw) h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
+  .node-option-checkbox {
+    @apply w-5 h-6 pointer-events-none hover:bg-orange-300;
   }
 
-  .button-sticky-active-selected {
-    @apply border rounded-l w-(--cw) h-full bg-yellow-100 hover:bg-yellow-200 flex items-center divide-dotted divide-x;
+  .node-option-select {
+    @apply w-20 h-6 text-xs font-medium hover:bg-orange-300;
   }
 
   .button-kvp {
-    @apply border rounded w-(--ncw) h-full bg-gray-200 hover:bg-gray-300 flex items-center divide-dotted divide-x;
+    @apply w-(--ncw) h-6 hover:bg-gray-300 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply border rounded-l w-(--ncw) h-full bg-sky-200 hover:bg-sky-300 flex items-center divide-dotted divide-x;
+    @apply w-(--ncw) h-6 hover:bg-sky-300 flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
-    @apply flex w-(--ncw) h-5 mb-0.5 overflow-hidden;
+    @apply flex flex-1 mb-1 bg-gray-200;
   }
 
-  .div-kvp-selected-obj {
-    @apply flex w-[calc(5rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-400 rounded-l;
-  }
-
-  .div-kvp-selected-arr {
-    @apply flex w-[calc(10rem+var(--ncw))] h-5 mb-0.5 overflow-hidden hover:z-50 hover:outline-2 hover:outline-sky-400 rounded-l;
-  }
-
-  .div-sticky-inactive {
-    @apply sticky top-1 z-40 w-[calc(var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
-  }
-
-  .div-sticky-inactive-selected-obj {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 w-[calc(5rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
-  }
-
-  .div-sticky-inactive-selected-arr {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 w-[calc(10rem+var(--cw)*2)] -translate-x-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
-  }
-
-  .div-sticky-active {
-    @apply sticky top-1 z-40 w-(--cw) flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
-  }
-
-  .div-sticky-active-selected-obj {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded-l w-[calc(5rem+var(--cw))] flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
-  }
-
-  .div-sticky-active-selected-arr {
-    @apply sticky top-1 z-40 hover:z-50 hover:outline-2 hover:outline-yellow-300 rounded-l w-[calc(10rem+var(--cw))] flex items-center min-h-5 max-h-5 mb-0.5 overflow-hidden;
+  .div-kvp-selected {
+    @apply flex flex-1 w-fit mb-1 bg-sky-200 divide-x-2 divide-solid divide-sky-300 hover:z-50 hover:outline-2 hover:outline-sky-400;
   }
 
   .kvp-option-label {
@@ -84,15 +60,47 @@
   }
 
   .kvp-option-button {
-    @apply border py-0.5 flex h-full w-20 items-center bg-sky-200 hover:bg-sky-300;
+    @apply px-1 flex h-6 w-20 items-center hover:bg-sky-300;
   }
 
   .kvp-option-checkbox {
-    @apply w-5 h-full pointer-events-none bg-sky-200 hover:bg-sky-300;
+    @apply w-5 h-6 pointer-events-none hover:bg-sky-300;
   }
 
   .kvp-option-select {
-    @apply border w-20 h-full text-xs font-medium bg-sky-200 hover:bg-sky-300;
+    @apply w-20 h-6 text-xs font-medium hover:bg-sky-300;
+  }
+
+  .button-sticky-inactive {
+    @apply w-[calc(var(--cw)*2)] h-6 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-inactive-selected {
+    @apply w-[calc(var(--cw)*2)] h-6 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-active {
+    @apply w-(--cw) h-6 flex items-center divide-dotted divide-x;
+  }
+
+  .button-sticky-active-selected {
+    @apply w-(--cw) h-6 flex items-center divide-dotted divide-x;
+  }
+
+  .div-sticky-inactive {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200;
+  }
+
+  .div-sticky-inactive-selected {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200 hover:z-50 hover:outline-2 hover:outline-yellow-300 divide-x-2 divide-solid divide-yellow-300;
+  }
+
+  .div-sticky-active {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-yellow-100 hover:bg-yellow-200;
+  }
+
+  .div-sticky-active-selected {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200 hover:z-50 hover:outline-2 hover:outline-yellow-300 divide-x-2 divide-solid divide-yellow-300;
   }
 
   .sticky-option-label {
@@ -100,23 +108,23 @@
   }
 
   .sticky-option-button {
-    @apply border py-0.5 flex h-full w-20 items-center justify-center bg-yellow-100 hover:bg-yellow-200;
+    @apply px-1 flex h-6 w-20 items-center justify-center bg-yellow-100 hover:bg-yellow-200;
   }
 
   .sticky-option-checkbox {
-    @apply w-5 h-full pointer-events-none bg-yellow-100 hover:bg-yellow-200;
+    @apply w-5 h-6 pointer-events-none bg-yellow-100 hover:bg-yellow-200;
   }
 
   .sticky-option-select {
-    @apply border w-20 h-full text-xs font-medium bg-yellow-100 hover:bg-yellow-200;
+    @apply w-20 h-6 text-xs font-medium bg-yellow-100 hover:bg-yellow-200;
   }
 
   .div-count {
-    @apply w-4 h-full flex items-center justify-center bg-white/40;
+    @apply w-4 h-6 flex items-center justify-center bg-white/40;
   }
 
   .div-count-hidden {
-    @apply w-4 h-full opacity-100;
+    @apply w-4 h-6 opacity-100;
   }
 
   .span-count {
@@ -124,15 +132,15 @@
   }
 
   .span-key {
-    @apply px-1 flex-1 h-full text-start text-xs font-bold truncate;
+    @apply px-1 flex flex-1 items-center h-full text-start text-xs font-bold truncate;
   }
 
   .span-value {
-    @apply px-1 w-12 h-full text-start text-xs italic truncate;
+    @apply px-1 w-12 flex items-center h-full text-start text-xs italic truncate;
   }
 
   .span-value-type {
-    @apply px-1 w-12 h-full text-center text-xs font-medium truncate;
+    @apply px-1 w-12 flex items-center h-full text-center text-xs font-medium truncate;
   }
 
   .node-col {
@@ -148,7 +156,7 @@
   }
 
   .node-container {
-    @apply px-1 bg-sky-100 overflow-y-auto flex flex-1 items-start w-full;
+    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
   }
 
   .json-container {
