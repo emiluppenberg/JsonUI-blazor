@@ -8,10 +8,10 @@ using static General;
 
 public static class JNodeBuilder
 {
-  public static List<JNode>? CreateFromJson(string rawContent, ILanguageOptions langOptions)
+  public static List<JNode>? CreateFromJson(string rawContent, ILanguageOptions langOptions, string rootName)
   {
     var model = new Dictionary<string, Dictionary<string, string>>();
-    var modelCurrentParents = new List<string>() { "Base" };
+    var modelCurrentParents = new List<string>() { rootName };
     var arrayCurrentParents = new List<KeyValuePair<string, List<string>>>();
 
     var isArray = false;
@@ -196,6 +196,7 @@ public static class JNodeBuilder
 
       var result = new List<JNode>();
       var childLookup = new Dictionary<string, List<JNode>>();
+      childLookup.Add($"{rootName}{{}}", new());
 
       foreach (var k in model.Keys)
       {
@@ -214,7 +215,10 @@ public static class JNodeBuilder
 
         var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey), langOptions);
 
-        childLookup.Add(lineageKey, new());
+        if (!childLookup.TryGetValue(lineageKey, out var _))
+        {
+          childLookup.Add(lineageKey, new());
+        }
 
         if (childLookup.TryGetValue(parentKey, out var parent))
         {

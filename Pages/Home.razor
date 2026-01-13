@@ -13,17 +13,15 @@
 
     <div class="json-menu">
 
-      <div class="json-option">
-        <button class="transition gen @(LoadingUrl ? "button-base-active" : "button-base")"
-          @onclick="async () => await ToggleLoadUrl()">Load URL</button>
-      </div>
+      <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
 
-      <div class="json-option">
-        <button class="transition-gen @(LoadingText ? "button-base-active" : "button-base")"
-          @onclick="async () => await ToggleLoadText()">Load TEXT</button>
-      </div>
+      <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadUrl()">Load URL</button>
 
-      <div class="json-option relative">
+      <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadText()">Load TEXT</button>
+
+      <div class="relative">
 
         <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
           <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
@@ -34,15 +32,15 @@
         </div>
 
         <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-          <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+          <input type="text" @bind="Url" class="load-input flex-1" placeholder="Paste url" />
           @foreach (var header in CustomHeaders)
           {
             <div class="flex">
               <div class="w-1/2 flex">
-                <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+                <input type="text" @bind="header.Key" class="load-input flex-1" placeholder="Header key" />
               </div>
               <div class="w-1/2 flex items-center">
-                <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+                <input type="text" @bind="header.Value" class="load-input flex-1" placeholder="Header value" />
                 <label class="load-label">Base64</label>
                 <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
               </div>
@@ -61,10 +59,11 @@
     </div>
 
     <div class="node-container" id="node-container">
-      @if (JNodes?.Count > 0)
+      @if (Root is not null)
       {
-        <JNodeView CurrentNode="JNodes[0]" ContainerHeight="NodeContainerHeight" OnNodeToggled="HandleNodeToggled"
-          OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode" LangOptions="LangOptions" />
+        <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
+          OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
+          LangOptions="LangOptions" />
       }
     </div>
 
@@ -93,6 +92,8 @@
   public bool LoadingUrl { get; set; }
   public int NodeContainerHeight;
   public List<JNode> JNodes { get; set; } = new();
+  public JNode? Root { get; set; }
+  public string? RootName { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
@@ -138,8 +139,10 @@
 
   void LoadJson(string json)
   {
-    JNodes = JNodeBuilder.CreateFromJson(json, LangOptions)!;
-    NodeContainerHeight = (JNodes[0].KeyValues.Count + JNodes[0].Children.Count) * General.RowHeightPx;
+    RootName = RootName is null ? "Root" : RootName;
+    JNodes = JNodeBuilder.CreateFromJson(json, LangOptions, RootName)!;
+    Root = JNodes.First(x => x.LineageKey == $"{RootName}{{}}");
+    NodeContainerHeight = (Root.KeyValues.Count + Root.Children.Count) * General.RowHeightPx;
     LoadingText = false;
     LoadingUrl = false;
   }

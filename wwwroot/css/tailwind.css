@@ -156,7 +156,7 @@
   }
 
   .json-menu {
-    @apply flex w-full h-(--menu-h) items-center;
+    @apply flex space-x-2 px-2 w-full h-(--menu-h) items-center;
   }
 
   .json-option {
@@ -256,7 +256,7 @@
   }
 
   .load-input {
-    @apply p-1 flex flex-1 hover:bg-sky-200;
+    @apply p-1 flex rounded-sm bg-sky-100 hover:bg-sky-200;
   }
 
   .load-label {

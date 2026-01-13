@@ -42,6 +42,7 @@
     --font-weight-medium: 500;
     --font-weight-bold: 700;
     --leading-relaxed: 1.625;
+    --radius-sm: 0.25rem;
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
@@ -284,11 +285,20 @@
   .w-1\/2 {
     width: calc(1/2 * 100%);
   }
+  .w-20 {
+    width: calc(var(--spacing) * 20);
+  }
+  .w-40 {
+    width: calc(var(--spacing) * 40);
+  }
   .w-full {
     width: 100%;
   }
   .w-screen {
     width: 100vw;
+  }
+  .flex-1 {
+    flex: 1;
   }
   .scale-x-0 {
     --tw-scale-x: 0%;
@@ -994,6 +1004,12 @@
     height: var(--menu-h);
     width: 100%;
     align-items: center;
+    :where(& > :not(:last-child)) {
+      --tw-space-x-reverse: 0;
+      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
+      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
+    }
+    padding-inline: calc(var(--spacing) * 2);
   }
   .json-option {
     display: flex;
@@ -1290,7 +1306,8 @@
   }
   .load-input {
     display: flex;
-    flex: 1;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-sky-100);
     padding: calc(var(--spacing) * 1);
     &:hover {
       @media (hover: hover) {
@@ -1403,14 +1420,14 @@
   inherits: false;
   initial-value: 0;
 }
-@property --tw-duration {
-  syntax: "*";
-  inherits: false;
-}
 @property --tw-space-x-reverse {
   syntax: "*";
   inherits: false;
   initial-value: 0;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
 }
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
@@ -1428,8 +1445,8 @@
       --tw-translate-y: 0;
       --tw-translate-z: 0;
       --tw-divide-y-reverse: 0;
-      --tw-duration: initial;
       --tw-space-x-reverse: 0;
+      --tw-duration: initial;
     }
   }
 }
