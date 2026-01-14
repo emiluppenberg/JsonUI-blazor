@@ -3,6 +3,7 @@
 @using System.Net.Http.Headers
 @using System.Buffers.Text
 @using System.Text
+@using System.IO.IsolatedStorage
 @inject HttpClient httpClient
 
 <PageTitle>Home</PageTitle>
@@ -25,32 +26,36 @@
 
         <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
           <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
-          <div class="load-buttons-row">
-            <button class="button-load" @onclick="() => LoadJson(Json)">OK</button>
-            <button class="button-load" @onclick="() => { LoadingText = false; }">Cancel</button>
+          <div class="flex w-full">
+            <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+            <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
           </div>
         </div>
 
         <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-          <input type="text" @bind="Url" class="load-input flex-1" placeholder="Paste url" />
+          <div class="w-full">
+            <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+          </div>
           @foreach (var header in CustomHeaders)
           {
             <div class="flex">
-              <div class="w-1/2 flex">
-                <input type="text" @bind="header.Key" class="load-input flex-1" placeholder="Header key" />
+              <div class="w-1/2">
+                <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
               </div>
-              <div class="w-1/2 flex items-center">
-                <input type="text" @bind="header.Value" class="load-input flex-1" placeholder="Header value" />
-                <label class="load-label">Base64</label>
-                <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+              <div class="w-1/2 flex">
+                <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+                <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
+                  <label class="load-label">Base64</label>
+                  <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+                </button>
               </div>
             </div>
           }
-          <button class="button-load w-full" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+          <button class="button-base w-full" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
             header</button>
-          <div class="load-buttons-row">
-            <button class="button-load" @onclick="async () => await FetchRequest()">OK</button>
-            <button class="button-load" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+          <div class="flex w-full">
+            <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+            <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
           </div>
         </div>
 
@@ -71,20 +76,39 @@
 
   <div class="code-container">
 
-    @if (LangOptions.GetType().Name == "CSharpOptions")
-    {
-      <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
-        OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
-    }
+    <div class="code-menu">
 
-    <pre class="code">@RenderCode</pre>
+      <select class="select-base">
+        <option selected>C#</option>
+        <option>TypeScript</option>
+      </select>
 
+      <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
+        @onclick="() => { IsOptions = !IsOptions; }">Options</button>
+
+    </div>
+
+
+    <div class="flex flex-1 overflow-y-auto">
+
+      <pre class="transition-gen code">@RenderCode</pre>
+
+      <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
+        @if (LangOptions.GetType().Name == "CSharpOptions")
+        {
+          <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
+            OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
+        }
+      </div>
+
+    </div>
   </div>
 </div>
 
 @code {
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
+  public bool IsOptions { get; set; }
 
   public string RenderCode { get; set; } = "";
   public string Json { get; set; } = "";
@@ -204,7 +228,7 @@
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE -  {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
     }
   }
 

@@ -4,8 +4,8 @@
   --cw: 10rem;
   --ncw: 9.75rem;
   --menu-h: 3rem;
-  --btn-h: 1.5rem;
-  --load-w: 50rem;
+  --inp-h: 1.5rem;
+  --load-w: 25rem;
   --load-h: 25rem;
   --opt-w: 7rem;
   --bluebutton: var(--color-blue-800);
@@ -161,61 +161,33 @@
   .node-col {
     @apply pt-1 flex flex-col relative w-40 overflow-visible;
   }
-
-  .node-col-container {
-    @apply pl-1 flex flex-col;
-  }
-
-  .app-container {
-    @apply flex w-full h-full divide-solid divide-x divide-black;
-  }
-
-  .node-container {
-    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
-  }
-
-  .json-container {
-    @apply flex flex-col w-3/5 divide-y divide-solid divide-black;
-  }
-
+  
   .json-menu {
-    @apply flex space-x-2 px-2 w-full h-(--menu-h) items-center;
-  }
-
-  .json-option {
-    @apply flex w-(--opt-w) px-2;
-  }
-
-  .code-container {
-    @apply flex flex-col w-2/5 divide-y divide-solid divide-black;
+    @apply flex space-x-2 w-full py-2;
   }
 
   .code-menu {
-    @apply flex w-full h-(--menu-h) items-center;
+    @apply flex space-x-2 w-full py-2 justify-end;
   }
 
-  .code-option {
-    @apply flex flex-col items-center justify-center h-full w-auto px-2;
-  }
-
-  .code-option-label {
-    @apply line-clamp-1 text-black text-xs font-medium;
-  }
-
-  .code-option-select {
-    @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
+  .code-options {
+    @apply flex flex-col w-0 space-y-2;
   }
 
   .code {
-    @apply p-5 bg-sky-100 w-full flex flex-1 overflow-y-auto text-xs;
+    @apply p-2 bg-slate-800 flex flex-1 overflow-y-auto text-xs text-(--bluebutton);
+  }
+
+  .select-base {
+    @apply h-(--inp-h) text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
   }
 
   .button-base {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
+    @apply h-(--inp-h) line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
   }
 
   .button-base-active {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
+    @apply h-(--inp-h) line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
   }
 
   .transition-input {
@@ -235,31 +207,51 @@
   }
 
   .page-el {
-    @apply flex flex-col w-screen h-screen divide-y divide-solid divide-black;
+    @apply flex flex-col w-screen h-screen bg-slate-500;
   }
 
   .main-el {
-    @apply flex flex-col w-full h-5/6;
+    @apply flex flex-col w-full min-h-5/6 max-h-5/6;
   }
 
-  .bottom-container {
-    @apply flex flex-col w-full h-1/6 divide-y divide-solid divide-black;
+  .node-col-container {
+    @apply pl-1 flex flex-col;
+  }
+
+  .app-container {
+    @apply flex px-2 pb-2 w-full h-full overflow-y-auto;
+  }
+
+  .node-container {
+    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
+  }
+
+  .json-container {
+    @apply flex flex-col w-3/5;
+  }
+  
+  .code-container {
+    @apply pl-2 flex flex-col w-2/5;
+  }
+  
+  .bottom-el {
+    @apply px-2 pb-2 flex flex-col w-full min-h-1/6 max-h-1/6 divide-y divide-solid divide-black;
   }
 
   .ads-container {
-    @apply flex flex-1 w-full justify-around items-center;
+    @apply flex flex-1 w-full justify-around items-center bg-slate-800;
   }
 
-  .footer-container {
-    @apply flex justify-between items-center px-2 h-4;
+  .nav-container {
+    @apply flex justify-start items-center space-x-5 px-2 h-5;
   }
 
   .link {
-    @apply underline text-xs;
+    @apply underline font-extrabold;
   }
 
   .cookie-container {
-    @apply flex flex-col space-y-2 px-20 py-5 text-center items-center;
+    @apply flex flex-col space-y-2 px-20 text-center text-white items-center;
   }
 
   .cookie-buttons {
@@ -267,19 +259,19 @@
   }
 
   .load-menu {
-    @apply flex flex-col border rounded z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
-  }
-
-  .load-buttons-row {
-    @apply flex border-t w-full divide-solid divide-x divide-black;
+    @apply flex flex-col z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
   }
 
   .load-textarea {
-    @apply flex-1 p-2 text-xs w-full h-full resize-none;
+    @apply flex-1 p-2 text-xs w-full h-full resize-none bg-sky-100 hover:bg-sky-200;
   }
 
   .load-input {
-    @apply p-1 flex rounded-sm bg-sky-100 hover:bg-sky-200;
+    @apply p-1 h-(--inp-h) w-full bg-sky-100 hover:bg-sky-200;
+  }
+
+  .load-button {
+    @apply flex h-(--inp-h) items-center bg-sky-100 hover:bg-sky-200;
   }
 
   .load-label {
@@ -287,14 +279,6 @@
   }
 
   .load-checkbox {
-    @apply w-5 h-full bg-sky-100 hover:bg-sky-200;
-  }
-
-  .load-select {
-    @apply p-1 w-full text-xs font-medium hover:bg-sky-200;
-  }
-
-  .button-load {
-    @apply w-1/2 h-(--btn-h) text-white text-xs p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h);
+    @apply w-5 h-(--inp-h) pointer-events-none bg-sky-100 hover:bg-sky-200;
   }
 }
