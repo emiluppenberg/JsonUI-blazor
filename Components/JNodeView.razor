@@ -5,22 +5,24 @@
   style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
 
   <div class="sentinel" @ref="_sentinel"></div>
-  <div class="@GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
+  <div class="transition-tree @GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
     @onmouseleave="() => { IsMouseOver = false; }">
     <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)"
       disabled="@(CurrentNode.Name == RootName)">
-      @if (AnyNestedSelected)
-      {
-        <div class="div-count">
-          <span class="span-count">@CurrentNode.TotalNestedSelected</span>
-        </div>
-      }
-      @if (!AnyNestedSelected)
-      {
-        <div class="div-count-hidden"></div>
-      }
-      <span class="span-key">@CurrentNode.Name</span>
-      <span class="span-value-type">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
+      <span class="key-node">@CurrentNode.Name</span>
+      <div class="div-value-node">
+        <span class="value-node">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
+        @if (AnyNestedSelected)
+        {
+          <div class="div-count">
+            <span class="span-count">@CurrentNode.TotalNestedSelected</span>
+          </div>
+        }
+        @if (!AnyNestedSelected)
+        {
+          <div class="div-count-hidden"></div>
+        }
+      </div>
     </button>
     @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
     {
@@ -52,19 +54,21 @@
         @onmouseover="() => { IsMouseOverNode = child; }" @onmouseleave="() => { IsMouseOverNode = null; }">
         <button @key="child" class="transition-gen button-node"
           @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-          @if (child.TotalNestedSelected > 0)
-          {
-            <div class="div-count">
-              <span class="span-count">@child.TotalNestedSelected</span>
-            </div>
-          }
-          @if (child.TotalNestedSelected < 1)
-          {
-            <div class="div-count-hidden"></div>
-          }
-          <span class="span-key">@child.Name</span>
-          <span class="span-value-type">@(child.Type == JNodeType.Object ? "{}" :
-                      "[]")</span>
+          <span class="key-node">@child.Name</span>
+          <div class="div-value-node">
+            <span class="value-node">@(child.Type == JNodeType.Object ? "{}" :
+                          "[]")</span>
+            @if (child.TotalNestedSelected > 0)
+            {
+              <div class="div-count">
+                <span class="span-count">@child.TotalNestedSelected</span>
+              </div>
+            }
+            @if (child.TotalNestedSelected < 1)
+            {
+              <div class="div-count-hidden"></div>
+            }
+          </div>
         </button>
         @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
         {
@@ -93,8 +97,8 @@
         @onmouseover="() => { IsMouseOverKvp = jnKvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
         <button @key="jnKvp" class="transition-tree @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
           @onclick='async () => await SetKvp("selected", jnKvp)'>
-          <div class="span-key">@jnKvp.Kvp.Key</div>
-          <div class="span-value">@jnKvp.Kvp.Value</div>
+          <span class="key-kvp">@jnKvp.Kvp.Key</span>
+          <span class="value-kvp">@jnKvp.Kvp.Value</span>
         </button>
         @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
         {
