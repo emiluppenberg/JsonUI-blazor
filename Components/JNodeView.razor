@@ -24,10 +24,12 @@
     </button>
     @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
     {
-      <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
-        <label class="sticky-option-label">Nullable</label>
-        <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
-      </button>
+      <div>
+        <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
+          <label class="sticky-option-label">Nullable</label>
+          <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
+        </button>
+      </div>
       @if (CurrentNode.Type == JNodeType.Array)
       {
         <select class="sticky-option-select" @bind="CurrentNode.CollectionAs"
@@ -45,7 +47,8 @@
 
     @foreach (var child in CurrentNode.Children)
     {
-      <div class="transition-node div-node @(child.IsExpanded ? "scale-x-0" : "")"
+      <div
+        class="transition-node @(child.TotalNestedSelected > 0 ? "div-node-selected" : "div-node") @(child.IsExpanded ? "scale-x-0" : "")"
         @onmouseover="() => { IsMouseOverNode = child; }" @onmouseleave="() => { IsMouseOverNode = null; }">
         <button @key="child" class="transition-gen button-node"
           @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
@@ -65,10 +68,12 @@
         </button>
         @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
         {
-          <button class="node-option-button">
-            <label class="node-option-label">Nullable</label>
-            <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
-          </button>
+          <div>
+            <button class="node-option-button">
+              <label class="node-option-label">Nullable</label>
+              <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
+            </button>
+          </div>
           @if (child.Type == JNodeType.Array)
           {
             <select class="node-option-select" @bind="child.CollectionAs">
@@ -93,10 +98,12 @@
         </button>
         @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
         {
-          <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
-            <label class="kvp-option-label">Nullable</label>
-            <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
-          </button>
+          <div>
+            <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
+              <label class="kvp-option-label">Nullable</label>
+              <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
+            </button>
+          </div>
           @if (jnKvp.IsArray())
           {
             <select class="kvp-option-select" @bind="jnKvp.CollectionAs"

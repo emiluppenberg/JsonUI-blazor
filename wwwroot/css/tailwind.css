@@ -12,15 +12,30 @@
   --bluebutton-h: var(--color-blue-900);
   --bluebutton-a: var(--color-blue-400);
   --bluebutton-h-a: var(--color-blue-500);
+  --sticky: var(--color-teal-400);
+  --sticky-hov: var(--color-teal-500);
+  --sticky-hov-ol: var(--color-teal-100);
+  --node: var(--color-emerald-200);
+  --node-hov: var(--color-emerald-300);
+  --node-hov-ol: var(--color-emerald-100);
+  --kvp: var(--color-gray-200);
+  --kvp-hov: var(--color-gray-300);
+  --kvp-sel: var(--color-sky-200);
+  --kvp-sel-hov: var(--color-sky-300);
+  --kvp-sel-hov-ol: var(--color-sky-100);
 }
 
 @layer components {
   .div-node {
-    @apply flex flex-1 w-fit mb-1 bg-orange-200 hover:z-50 hover:outline-2 hover:outline-orange-400;
+    @apply flex flex-1 w-fit mb-1 bg-(--node) hover:bg-(--node-hov);
+  }
+
+  .div-node-selected {
+    @apply flex flex-1 w-fit mb-1 bg-(--node) hover:bg-(--node-hov) hover:z-50 hover:outline-3 hover:outline-(--node-hov-ol) divide-x-3 divide-solid divide-(--node-hov-ol);
   }
 
   .button-node {
-    @apply w-(--ncw) h-6 hover:bg-orange-300 flex items-center divide-dotted divide-x;
+    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
   }
 
   .node-option-label {
@@ -28,31 +43,31 @@
   }
 
   .node-option-button {
-    @apply px-1 flex h-6 w-20 items-center hover:bg-orange-300;
+    @apply px-1 flex h-6 w-20 items-center hover:border hover:border-black;
   }
 
   .node-option-checkbox {
-    @apply w-5 h-6 pointer-events-none hover:bg-orange-300;
+    @apply w-5 h-6 pointer-events-none;
   }
 
   .node-option-select {
-    @apply w-20 h-6 text-xs font-medium hover:bg-orange-300;
+    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
   }
 
   .button-kvp {
-    @apply w-(--ncw) h-6 hover:bg-gray-300 flex items-center divide-dotted divide-x;
+    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply w-(--ncw) h-6 hover:bg-sky-300 flex items-center divide-dotted divide-x;
+    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
-    @apply flex flex-1 mb-1 bg-gray-200;
+    @apply flex flex-1 mb-1 bg-(--kvp) hover:bg-(--kvp-hov);
   }
 
   .div-kvp-selected {
-    @apply flex flex-1 w-fit mb-1 bg-sky-200 divide-x-2 divide-solid divide-sky-300 hover:z-50 hover:outline-2 hover:outline-sky-400;
+    @apply flex flex-1 w-fit mb-1 bg-(--kvp-sel) hover:bg-(--kvp-sel-hov) divide-x-3 divide-solid divide-(--kvp-sel-hov-ol) hover:z-50 hover:outline-3 hover:outline-(--kvp-sel-hov-ol);
   }
 
   .kvp-option-label {
@@ -60,15 +75,15 @@
   }
 
   .kvp-option-button {
-    @apply px-1 flex h-6 w-20 items-center hover:bg-sky-300;
+    @apply px-1 flex h-6 w-20 items-center hover:border hover:border-black;
   }
 
   .kvp-option-checkbox {
-    @apply w-5 h-6 pointer-events-none hover:bg-sky-300;
+    @apply w-5 h-6 pointer-events-none;
   }
 
   .kvp-option-select {
-    @apply w-20 h-6 text-xs font-medium hover:bg-sky-300;
+    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
   }
 
   .button-sticky-inactive {
@@ -88,19 +103,19 @@
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200;
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-inactive-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200 hover:z-50 hover:outline-2 hover:outline-yellow-300 divide-x-2 divide-solid divide-yellow-300;
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .div-sticky-active {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-yellow-100 hover:bg-yellow-200;
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
-  .div-sticky-active-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-yellow-100 hover:bg-yellow-200 hover:z-50 hover:outline-2 hover:outline-yellow-300 divide-x-2 divide-solid divide-yellow-300;
+  .div-sticky-activeected {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .sticky-option-label {
@@ -108,15 +123,15 @@
   }
 
   .sticky-option-button {
-    @apply px-1 flex h-6 w-20 items-center justify-center bg-yellow-100 hover:bg-yellow-200;
+    @apply px-1 flex h-6 w-20 items-center justify-center hover:border hover:border-black;
   }
 
   .sticky-option-checkbox {
-    @apply w-5 h-6 pointer-events-none bg-yellow-100 hover:bg-yellow-200;
+    @apply w-5 h-6 pointer-events-none;
   }
 
   .sticky-option-select {
-    @apply w-20 h-6 text-xs font-medium bg-yellow-100 hover:bg-yellow-200;
+    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
   }
 
   .div-count {
