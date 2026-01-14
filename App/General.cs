@@ -21,7 +21,7 @@ public class CustomHeader
 
 public static class General
 {
-  public const int RowHeightPx = 22;
+  public const int RowHeightPx = 28;
   public const int ColWidthPx = 160;
 
   public static Array GetTokenTypes() => Enum.GetValues<TokenType>();

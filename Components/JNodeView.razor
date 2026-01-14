@@ -5,7 +5,8 @@
   style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
 
   <div class="sentinel" @ref="_sentinel"></div>
-  <div class="@GetDivStickyClass()">
+  <div class="@GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
+    @onmouseleave="() => { IsMouseOver = false; }">
     <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)"
       disabled="@(CurrentNode.Name == RootName)">
       @if (AnyNestedSelected)
@@ -21,12 +22,14 @@
       <span class="span-key">@CurrentNode.Name</span>
       <span class="span-value-type">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
     </button>
-    @if (AnyNestedSelected && CurrentNode.Name != RootName)
+    @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
     {
-      <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
-        <label class="sticky-option-label">Nullable</label>
-        <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
-      </button>
+      <div>
+        <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
+          <label class="sticky-option-label">Nullable</label>
+          <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
+        </button>
+      </div>
       @if (CurrentNode.Type == JNodeType.Array)
       {
         <select class="sticky-option-select" @bind="CurrentNode.CollectionAs"
@@ -44,38 +47,63 @@
 
     @foreach (var child in CurrentNode.Children)
     {
-      <button @key="child" class="transition-gen button-node @(child.IsExpanded ? "scale-x-0" : "")"
-        @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-        @if (child.TotalNestedSelected > 0)
+      <div
+        class="transition-node @(child.TotalNestedSelected > 0 ? "div-node-selected" : "div-node") @(child.IsExpanded ? "scale-x-0" : "")"
+        @onmouseover="() => { IsMouseOverNode = child; }" @onmouseleave="() => { IsMouseOverNode = null; }">
+        <button @key="child" class="transition-gen button-node"
+          @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
+          @if (child.TotalNestedSelected > 0)
+          {
+            <div class="div-count">
+              <span class="span-count">@child.TotalNestedSelected</span>
+            </div>
+          }
+          @if (child.TotalNestedSelected < 1)
+          {
+            <div class="div-count-hidden"></div>
+          }
+          <span class="span-key">@child.Name</span>
+          <span class="span-value-type">@(child.Type == JNodeType.Object ? "{}" :
+                      "[]")</span>
+        </button>
+        @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
         {
-          <div class="div-count">
-            <span class="span-count">@child.TotalNestedSelected</span>
+          <div>
+            <button class="node-option-button">
+              <label class="node-option-label">Nullable</label>
+              <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
+            </button>
           </div>
+          @if (child.Type == JNodeType.Array)
+          {
+            <select class="node-option-select" @bind="child.CollectionAs">
+              @foreach (var o in LangOptions.GetCollectionOptions())
+              {
+                <option value="@o">@o.ToString()</option>
+              }
+            </select>
+          }
         }
-        @if (child.TotalNestedSelected < 1)
-        {
-          <div class="div-count-hidden"></div>
-        }
-        <span class="@(child.IsExpanded ? "hidden" : "span-key")">@child.Name</span>
-        <span class="@(child.IsExpanded ? "hidden" : "span-value-type")">@(child.Type == JNodeType.Object ? "{}" :
-                  "[]")</span>
-      </button>
+      </div>
     }
 
     @foreach (var jnKvp in CurrentNode.KeyValues)
     {
-      <div class="transition-tree @(GetKvpClass(jnKvp))">
+      <div class="transition-tree @(jnKvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
+        @onmouseover="() => { IsMouseOverKvp = jnKvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
         <button @key="jnKvp" class="transition-tree @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
           @onclick='async () => await SetKvp("selected", jnKvp)'>
-          <span class="span-key">@jnKvp.Kvp.Key</span>
-          <span class="span-value">@jnKvp.Kvp.Value</span>
+          <div class="span-key">@jnKvp.Kvp.Key</div>
+          <div class="span-value">@jnKvp.Kvp.Value</div>
         </button>
-        @if (jnKvp.IsSelected)
+        @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
         {
-          <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
-            <label class="kvp-option-label">Nullable</label>
-            <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
-          </button>
+          <div>
+            <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
+              <label class="kvp-option-label">Nullable</label>
+              <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
+            </button>
+          </div>
           @if (jnKvp.IsArray())
           {
             <select class="kvp-option-select" @bind="jnKvp.CollectionAs"
@@ -120,6 +148,10 @@
 
   private bool IsSticky { get; set; }
   private bool AnyNestedSelected { get => CurrentNode.TotalNestedSelected > 0; }
+  private bool IsMouseOver { get; set; }
+  private JNodeKvp? IsMouseOverKvp { get; set; }
+  private JNode? IsMouseOverNode { get; set; }
+
 
   public int NextRowOffset { get; set; }
   public JNode? NextNode { get; set; } = null;
@@ -202,21 +234,13 @@
     {
       return "div-sticky-active";
     }
-    else if (IsSticky && AnyNestedSelected && isArray)
+    else if (IsSticky && AnyNestedSelected)
     {
-      return "div-sticky-active-selected-arr";
+      return "div-sticky-active-selected";
     }
-    else if (IsSticky && AnyNestedSelected && !isArray)
+    else if (!IsSticky && AnyNestedSelected)
     {
-      return "div-sticky-active-selected-obj";
-    }
-    else if (!IsSticky && AnyNestedSelected && isArray)
-    {
-      return "div-sticky-inactive-selected-arr";
-    }
-    else if (!IsSticky && AnyNestedSelected && !isArray)
-    {
-      return "div-sticky-inactive-selected-obj";
+      return "div-sticky-inactive-selected";
     }
     else if (!IsSticky && !AnyNestedSelected)
     {
@@ -245,22 +269,6 @@
     else
     {
       return "button-sticky-inactive";
-    }
-  }
-
-  string GetKvpClass(JNodeKvp kvp)
-  {
-    if (kvp.IsSelected && kvp.IsArray())
-    {
-      return "div-kvp-selected-arr";
-    }
-    if (kvp.IsSelected && !kvp.IsArray())
-    {
-      return "div-kvp-selected-obj";
-    }
-    else
-    {
-      return "div-kvp";
     }
   }
 }
