@@ -108,7 +108,39 @@
       "details": {
         "deep_scan": false,
         "sample_rate": 0.1,
-        "notes": null
+        "notes": null,
+        "audit": {
+          "enabled": true,
+          "retention_days": 90,
+          "logs": [],
+          "last_run": null,
+          "target": {
+            "database": true,
+            "filesystem": false,
+            "network": true,
+            "details": {
+              "deep_scan": false,
+              "sample_rate": 0.1,
+              "notes": null
+            }
+          },
+          "audit": {
+            "enabled": true,
+            "retention_days": 90,
+            "logs": [],
+            "last_run": null,
+            "target": {
+              "database": true,
+              "filesystem": false,
+              "network": true,
+              "details": {
+                "deep_scan": false,
+                "sample_rate": 0.1,
+                "notes": null
+              }
+            }
+          }
+        }
       }
     }
   }

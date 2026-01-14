@@ -1,10 +1,16 @@
 ﻿@inherits LayoutComponentBase
 <div class="page-el">
     <main class="main-el">
+
+        <footer class="nav-container">
+            <NavLink class="link" href="documentation">Docs</NavLink>
+            <NavLink class="link" href="privacy">Privacy</NavLink>
+        </footer>
+
         @Body
     </main>
 
-    <div class="bottom-container">
+    <div class="bottom-el">
 
         <div class="ads-container">
 
@@ -17,11 +23,6 @@
                 <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
             }
         </div>
-
-        <footer class="footer-container">
-            <NavLink class="link" href="help">Help</NavLink>
-            <NavLink class="link" href="privacy">Privacy</NavLink>
-        </footer>
 
     </div>
 </div>

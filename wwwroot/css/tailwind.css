@@ -1,28 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --cw: 10rem;
-  --ncw: 9.75rem;
+  --col-w: 10rem;
+  --kvp-w: 9.75rem;
+  --sticky-w: 19.75rem;
   --menu-h: 3rem;
-  --btn-h: 1.5rem;
-  --load-w: 50rem;
+  --inp-h: 1.5rem;
+  --load-w: 25rem;
   --load-h: 25rem;
   --opt-w: 7rem;
   --bluebutton: var(--color-blue-800);
   --bluebutton-h: var(--color-blue-900);
-  --bluebutton-a: var(--color-blue-400);
-  --bluebutton-h-a: var(--color-blue-500);
-  --sticky: var(--color-teal-400);
-  --sticky-hov: var(--color-teal-500);
+  --bluebutton-a: var(--color-blue-500);
+  --bluebutton-h-a: var(--color-blue-600);
+  --sticky: var(--color-teal-600);
+  --sticky-hov: var(--color-teal-700);
   --sticky-hov-ol: var(--color-teal-100);
-  --node: var(--color-emerald-200);
-  --node-hov: var(--color-emerald-300);
-  --node-hov-ol: var(--color-emerald-100);
-  --kvp: var(--color-gray-200);
-  --kvp-hov: var(--color-gray-300);
-  --kvp-sel: var(--color-sky-200);
-  --kvp-sel-hov: var(--color-sky-300);
-  --kvp-sel-hov-ol: var(--color-sky-100);
+  --node: var(--color-teal-400);
+  --node-hov: var(--color-teal-500);
+  --node-hov-ol: var(--color-teal-100);
+  --kvp: var(--color-teal-200);
+  --kvp-hov: var(--color-teal-300);
+  --kvp-sel: var(--color-cyan-400);
+  --kvp-sel-hov: var(--color-cyan-500);
+  --kvp-sel-hov-ol: var(--color-cyan-100);
 }
 
 @layer components {
@@ -35,7 +36,7 @@
   }
 
   .button-node {
-    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-6 flex flex-1 items-center divide-dotted divide-x;
   }
 
   .node-option-label {
@@ -55,11 +56,11 @@
   }
 
   .button-kvp {
-    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply w-(--ncw) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
@@ -87,35 +88,35 @@
   }
 
   .button-sticky-inactive {
-    @apply w-[calc(var(--cw)*2)] h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-inactive-selected {
-    @apply w-[calc(var(--cw)*2)] h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active {
-    @apply w-(--cw) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--col-w) h-6 flex items-center divide-dotted divide-x border-r;
   }
 
   .button-sticky-active-selected {
-    @apply w-(--cw) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--col-w) h-6 flex items-center divide-dotted divide-x border-r;
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-inactive-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .div-sticky-active {
     @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
-  .div-sticky-activeected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--cw) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+  .div-sticky-active-selected {
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--col-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .sticky-option-label {
@@ -146,76 +147,56 @@
     @apply px-1 text-xs font-medium font-mono text-sky-900;
   }
 
-  .span-key {
+  .key-node {
     @apply px-1 flex flex-1 items-center h-full text-start text-xs font-bold truncate;
   }
 
-  .span-value {
-    @apply px-1 w-12 flex items-center h-full text-start text-xs italic truncate;
+  .value-node {
+    @apply px-1 flex items-center text-start text-xs font-medium;
   }
 
-  .span-value-type {
-    @apply px-1 w-12 flex items-center h-full text-center text-xs font-medium truncate;
+  .div-value-node {
+    @apply w-12 flex items-center justify-between h-full text-center text-xs font-medium truncate;
+  }
+
+  .key-kvp {
+    @apply px-1 flex flex-1 items-center h-full text-start text-xs font-light truncate;
+  }
+
+  .value-kvp {
+    @apply px-1 w-12 flex items-center h-full text-start text-xs italic truncate;
   }
 
   .node-col {
     @apply pt-1 flex flex-col relative w-40 overflow-visible;
   }
 
-  .node-col-container {
-    @apply pl-1 flex flex-col;
-  }
-
-  .app-container {
-    @apply flex w-full h-full divide-solid divide-x divide-black;
-  }
-
-  .node-container {
-    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
-  }
-
-  .json-container {
-    @apply flex flex-col w-3/5 divide-y divide-solid divide-black;
-  }
-
   .json-menu {
-    @apply flex space-x-2 px-2 w-full h-(--menu-h) items-center;
-  }
-
-  .json-option {
-    @apply flex w-(--opt-w) px-2;
-  }
-
-  .code-container {
-    @apply flex flex-col w-2/5 divide-y divide-solid divide-black;
+    @apply flex space-x-2 w-full py-2;
   }
 
   .code-menu {
-    @apply flex w-full h-(--menu-h) items-center;
+    @apply flex space-x-2 w-full py-2 justify-end;
   }
 
-  .code-option {
-    @apply flex flex-col items-center justify-center h-full w-auto px-2;
-  }
-
-  .code-option-label {
-    @apply line-clamp-1 text-black text-xs font-medium;
-  }
-
-  .code-option-select {
-    @apply h-(--btn-h) border border-black rounded text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
+  .code-options {
+    @apply flex flex-col w-0 space-y-2;
   }
 
   .code {
-    @apply p-5 bg-sky-100 w-full flex flex-1 overflow-y-auto text-xs;
+    @apply p-2 bg-slate-800 flex flex-1 overflow-y-auto text-xs text-cyan-400;
+  }
+
+  .select-base {
+    @apply h-(--inp-h) text-xs font-medium text-white bg-(--bluebutton) hover:bg-(--bluebutton-h) disabled:opacity-50;
   }
 
   .button-base {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
+    @apply h-(--inp-h) line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95;
   }
 
   .button-base-active {
-    @apply h-(--btn-h) border border-black rounded line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
+    @apply h-(--inp-h) line-clamp-1 text-white text-xs font-medium p-1 bg-(--bluebutton-a) hover:bg-(--bluebutton-h-a) active:scale-95;
   }
 
   .transition-input {
@@ -235,31 +216,51 @@
   }
 
   .page-el {
-    @apply flex flex-col w-screen h-screen divide-y divide-solid divide-black;
+    @apply flex flex-col w-screen h-screen bg-slate-500;
   }
 
   .main-el {
-    @apply flex flex-col w-full h-5/6;
+    @apply flex flex-col w-full min-h-5/6 max-h-5/6;
   }
 
-  .bottom-container {
-    @apply flex flex-col w-full h-1/6 divide-y divide-solid divide-black;
+  .node-col-container {
+    @apply pl-1 flex flex-col;
+  }
+
+  .app-container {
+    @apply flex px-2 pb-2 w-full h-full overflow-y-auto;
+  }
+
+  .node-container {
+    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
+  }
+
+  .json-container {
+    @apply flex flex-col w-3/5;
+  }
+
+  .code-container {
+    @apply pl-2 flex flex-col w-2/5;
+  }
+
+  .bottom-el {
+    @apply px-2 pb-2 flex flex-col w-full min-h-1/6 max-h-1/6 divide-y divide-solid divide-black;
   }
 
   .ads-container {
-    @apply flex flex-1 w-full justify-around items-center;
+    @apply flex flex-1 w-full justify-around items-center bg-slate-800;
   }
 
-  .footer-container {
-    @apply flex justify-between items-center px-2 h-4;
+  .nav-container {
+    @apply flex justify-start items-center space-x-5 px-2 h-5;
   }
 
   .link {
-    @apply underline text-xs;
+    @apply underline font-extrabold;
   }
 
   .cookie-container {
-    @apply flex flex-col space-y-2 px-20 py-5 text-center items-center;
+    @apply flex flex-col space-y-2 px-20 text-center text-white items-center;
   }
 
   .cookie-buttons {
@@ -267,19 +268,19 @@
   }
 
   .load-menu {
-    @apply flex flex-col border rounded z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
-  }
-
-  .load-buttons-row {
-    @apply flex border-t w-full divide-solid divide-x divide-black;
+    @apply flex flex-col z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
   }
 
   .load-textarea {
-    @apply flex-1 p-2 text-xs w-full h-full resize-none;
+    @apply flex-1 p-2 text-xs w-full h-full resize-none bg-sky-100 hover:bg-sky-200;
   }
 
   .load-input {
-    @apply p-1 flex rounded-sm bg-sky-100 hover:bg-sky-200;
+    @apply p-1 h-(--inp-h) w-full bg-sky-100 hover:bg-sky-200;
+  }
+
+  .load-button {
+    @apply flex h-(--inp-h) items-center bg-sky-100 hover:bg-sky-200;
   }
 
   .load-label {
@@ -287,14 +288,6 @@
   }
 
   .load-checkbox {
-    @apply w-5 h-full bg-sky-100 hover:bg-sky-200;
-  }
-
-  .load-select {
-    @apply p-1 w-full text-xs font-medium hover:bg-sky-200;
-  }
-
-  .button-load {
-    @apply w-1/2 h-(--btn-h) text-white text-xs p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h);
+    @apply w-5 h-(--inp-h) pointer-events-none bg-sky-100 hover:bg-sky-200;
   }
 }
