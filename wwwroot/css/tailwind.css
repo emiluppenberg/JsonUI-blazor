@@ -98,7 +98,7 @@
 
   .button-sticky-active {
     @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
-  } 
+  }
 
   .button-sticky-active-selected {
     @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
@@ -228,8 +228,12 @@
     @apply pl-1 flex flex-col;
   }
 
+  .description {
+    @apply h-1/12 flex px-2 space-x-2 items-center font-light leading-relaxed text-cyan-400;
+  }
+
   .app-container {
-    @apply flex px-2 pb-2 w-full h-full overflow-y-auto;
+    @apply flex px-2 pb-2 w-full h-11/12 overflow-y-auto;
   }
 
   .node-container {

@@ -21,6 +21,7 @@ public class CustomHeader
 
 public static class General
 {
+  public const string StorageKey = "cookie-consent";
   public const int RowHeightPx = 28;
   public const int ColWidthPx = 160;
 

@@ -18,28 +18,27 @@
 }
 
 @code {
-  private const string StorageKey = "cookie-consent";
   private bool HasConsent;
   [Parameter]
   public EventCallback<string> OnCookieConsent { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
-    var value = await JS.InvokeAsync<string>("localStorage.getItem", StorageKey);
+    var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
     HasConsent = value == "accepted" || value == "rejected";
     await OnCookieConsent.InvokeAsync(value);
   }
 
   private async Task Accept()
   {
-    await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, "accepted");
+    await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
     HasConsent = true;
     await OnCookieConsent.InvokeAsync("accepted");
   }
 
   private async Task Reject()
   {
-    await JS.InvokeVoidAsync("localStorage.setItem", StorageKey, "rejected");
+    await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "rejected");
     HasConsent = true;
     await OnCookieConsent.InvokeAsync("rejected");
   }
