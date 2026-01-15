@@ -8,6 +8,28 @@
 
 <PageTitle>Home</PageTitle>
 
+<section class="description">
+  <h1 class="text-xl font-medium text-center">JSON to code Generator</h1>
+  <div class="flex space-x-2 font-medium text-sm italic">
+    <p class="text-center line-clamp-2">
+      Visualize complex JSON
+    </p>
+
+    <p class="text-center line-clamp-2">
+      Select properties interactively
+    </p>
+
+    <p class="text-center line-clamp-2">
+      Generate clean, configurable code
+    </p>
+  </div>
+  <p class="max-w-200 text-white text-xs">
+    Json-UI is a tool designed to generate boilerplate code specific to your needs.
+    It is intended for developers who want fast, clutter-free classes without manual class writing. For help getting
+    started, read the <NavLink class="link font-normal" href="documentation" target="_blank">documentation</NavLink>.
+  </p>
+</section>
+
 <div class="app-container" id="app-container">
 
   <div class="json-container" id="json-container">
@@ -70,6 +92,12 @@
           OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
           LangOptions="LangOptions" />
       }
+      else
+      {
+        <div class="h-11/12 w-full flex items-end justify-center">
+          <span class="text-cyan-400 text-xl font-bold">No JSON loaded</span>
+        </div>
+      }
     </div>
 
   </div>
@@ -91,7 +119,18 @@
 
     <div class="flex flex-1 overflow-y-auto">
 
-      <pre class="transition-gen code">@RenderCode</pre>
+      @if (RenderCode.Length < 1)
+      {
+        <div class="transition-gen code">
+          <div class="h-11/12 w-full flex items-end justify-center">
+            <span class="text-cyan-400 text-xl font-bold">No properties selected</span>
+          </div>
+        </div>
+      }
+      else
+      {
+        <pre class="transition-gen code">@RenderCode</pre>
+      }
 
       <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
         @if (LangOptions.GetType().Name == "CSharpOptions")

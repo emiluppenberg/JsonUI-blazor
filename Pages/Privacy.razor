@@ -1,12 +1,14 @@
+@inject IJSRuntime JS
+
 @page "/privacy"
 
-<NavLink class="m-10 font-light link fixed top-0" href="/">Back</NavLink>
-
+<PageTitle>Privacy</PageTitle>
 
 <div class="w-full px-50 py-12 text-slate-80 overflow-y-auto">
-  <h1 class="mb-6 text-3xl font-light">Privacy Policy</h1>
-
-  <p class="mb-6 text-sm text-slate-500">Last updated: 12 January 2026</p>
+  <div class="flex space-x-5 mb-6 items-center">
+    <h1 class="text-3xl font-light">Privacy Policy</h1>
+    <p class="text-sm text-slate-500">Last updated: 12 January 2026</p>
+  </div>
 
   <p class="mb-6 leading-relaxed">
     This Privacy Policy describes how <strong>JsonUI</strong> (“we”, “us”, or “our”)
@@ -21,6 +23,7 @@
   <h2 class="mt-8 mb-3 text-xl font-light">1. Information We Collect</h2>
 
   <p class="mb-4 leading-relaxed">
+    The tool runs entirely in the browser and does not store your data.
     We do not require users to create accounts or submit personal information directly.
     However, certain information may be collected automatically when you visit the Website.
   </p>
@@ -98,6 +101,13 @@
     You may withdraw consent at any time.
   </p>
 
+  <select class="select-base" @bind="CookieConsent" @bind:after="async () => await SetCookieConsent()">
+    <option selected disabled>Cookie consent</option>
+    <option value="accepted">Accept</option>
+    <option value="rejected">Reject</option>
+  </select>
+
+
   <h2 class="mt-8 mb-3 text-xl font-light">6. Data Protection Rights (GDPR)</h2>
 
   <ul class="mb-4 list-disc space-y-1 pl-6">
@@ -123,3 +133,15 @@
     </a>
   </p>
 </div>
+
+@code {
+  public string? CookieConsent { get; set; }
+
+  async Task SetCookieConsent()
+  {
+    if (CookieConsent is not null)
+    {
+      await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, CookieConsent);
+    }
+  }
+}
