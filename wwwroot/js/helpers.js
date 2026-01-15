@@ -1,6 +1,24 @@
 window.createStickyObserver = (sentinel, dotNetRef) => {
   const observer = new IntersectionObserver(
     ([entry]) => {
+      const appContainer = document.getElementById("app-container");
+      const appStyle = getComputedStyle(appContainer);
+      const appPadding = parseFloat(appStyle.paddingLeft);
+
+      const nodeContainer = document.getElementById("node-container");
+      const nodeStyle = getComputedStyle(nodeContainer);
+      const nodePadding = parseFloat(nodeStyle.paddingLeft);
+
+      const jsonContainer = document.getElementById("json-container");
+      const jsonRect = jsonContainer.getBoundingClientRect();
+
+      const stickyRectLeft =
+        entry.boundingClientRect.left + appPadding + nodePadding;
+
+      if (stickyRectLeft >= jsonRect.right) {
+        return;
+      }
+
       dotNetRef.invokeMethodAsync(
         "OnStickyStateChanged",
         !entry.isIntersecting

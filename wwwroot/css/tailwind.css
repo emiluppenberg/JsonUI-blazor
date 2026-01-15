@@ -24,6 +24,7 @@
   --kvp-sel: var(--color-cyan-400);
   --kvp-sel-hov: var(--color-cyan-500);
   --kvp-sel-hov-ol: var(--color-cyan-100);
+  --bg-primary: var(--color-slate-800);
 }
 
 @layer components {
@@ -88,19 +89,19 @@
   }
 
   .button-sticky-inactive {
-    @apply w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--sticky-w) max-w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-inactive-selected {
-    @apply w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--sticky-w)  max-w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active {
-    @apply w-(--col-w) h-6 flex items-center divide-dotted divide-x border-r;
-  }
+    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
+  } 
 
   .button-sticky-active-selected {
-    @apply w-(--col-w) h-6 flex items-center divide-dotted divide-x border-r;
+    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
   }
 
   .div-sticky-inactive {
@@ -116,7 +117,7 @@
   }
 
   .div-sticky-active-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--col-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .sticky-option-label {
@@ -168,7 +169,7 @@
   }
 
   .node-col {
-    @apply pt-1 flex flex-col relative w-40 overflow-visible;
+    @apply pt-1 flex flex-col relative w-40 overflow-visible select-none;
   }
 
   .json-menu {
@@ -184,7 +185,7 @@
   }
 
   .code {
-    @apply p-2 bg-slate-800 flex flex-1 overflow-y-auto text-xs text-cyan-400;
+    @apply p-2 bg-(--bg-primary) flex flex-1 overflow-y-auto text-xs text-cyan-400;
   }
 
   .select-base {
@@ -216,7 +217,7 @@
   }
 
   .page-el {
-    @apply flex flex-col w-screen h-screen bg-slate-500;
+    @apply flex flex-col w-screen h-screen bg-cyan-900;
   }
 
   .main-el {
@@ -232,7 +233,7 @@
   }
 
   .node-container {
-    @apply px-1 bg-slate-800 overflow-y-auto flex flex-1 items-start w-full;
+    @apply px-1 bg-(--bg-primary) overflow-y-auto flex flex-1 items-start w-full;
   }
 
   .json-container {
@@ -248,15 +249,15 @@
   }
 
   .ads-container {
-    @apply flex flex-1 w-full justify-around items-center bg-slate-800;
+    @apply flex flex-1 w-full justify-around items-center bg-(--bg-primary);
   }
 
   .nav-container {
-    @apply flex justify-start items-center space-x-5 px-2 h-5;
+    @apply flex justify-start items-center space-x-5 px-2 h-5 bg-(--bg-primary);
   }
 
   .link {
-    @apply underline font-extrabold;
+    @apply underline font-bold text-xs text-white;
   }
 
   .cookie-container {
