@@ -5,7 +5,7 @@
   style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
 
   <div class="sentinel" @ref="_sentinel"></div>
-  <div class="transition-tree @GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
+  <div class="@GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
     @onmouseleave="() => { IsMouseOver = false; }">
     <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)"
       disabled="@(CurrentNode.Name == RootName)">
