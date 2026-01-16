@@ -9,25 +9,33 @@
 <PageTitle>Home</PageTitle>
 
 <section class="description">
-  <h1 class="text-xl font-medium text-center">JSON to code Generator</h1>
-  <div class="flex space-x-2 font-medium text-sm italic">
-    <p class="text-center line-clamp-2">
-      Visualize complex JSON
-    </p>
+  <div class="flex items-center w-full md:w-3/5 space-x-2">
+    <h1 class="text-sm text-center md:text-xl line-clamp-2 max-w-30 md:min-w-fit md:line-clamp-1 font-medium">JSON to
+      code generator
+    </h1>
+    <div class="flex flex-1 items-center justify-around font-medium text-xs italic">
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Visualize complex JSON
+      </p>
 
-    <p class="text-center line-clamp-2">
-      Select properties interactively
-    </p>
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Select properties interactively
+      </p>
 
-    <p class="text-center line-clamp-2">
-      Generate clean, configurable code
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Generate clean, configurable code
+      </p>
+    </div>
+  </div>
+  <div class="pl-2 overflow-hidden flex flex-col w-0 md:w-2/5 items-start justify-center font-light text-white text-xs">
+    <p class="line-clamp-2">
+      Json-UI is a tool intended for developers who want fast, clutter-free classes without manual class writing.
+    </p>
+    <p class="p-0">
+      For help getting started, read the <NavLink class="link font-normal" href="documentation" target="_blank">
+        documentation</NavLink>.
     </p>
   </div>
-  <p class="max-w-200 text-white text-xs">
-    Json-UI is a tool designed to generate boilerplate code specific to your needs.
-    It is intended for developers who want fast, clutter-free classes without manual class writing. For help getting
-    started, read the <NavLink class="link font-normal" href="documentation" target="_blank">documentation</NavLink>.
-  </p>
 </section>
 
 <div class="app-container" id="app-container">
@@ -35,7 +43,6 @@
   <div class="json-container" id="json-container">
 
     <div class="json-menu">
-
       <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
 
       <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
@@ -43,49 +50,48 @@
 
       <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
         @onclick="async () => await ToggleLoadText()">Load TEXT</button>
-
-      <div class="relative">
-
-        <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
-          <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
-          <div class="flex w-full">
-            <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
-            <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
-          </div>
-        </div>
-
-        <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-          <div class="w-full">
-            <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
-          </div>
-          @foreach (var header in CustomHeaders)
-          {
-            <div class="flex">
-              <div class="w-1/2">
-                <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
-              </div>
-              <div class="w-1/2 flex">
-                <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
-                <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
-                  <label class="load-label">Base64</label>
-                  <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
-                </button>
-              </div>
-            </div>
-          }
-          <button class="button-base w-full" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
-            header</button>
-          <div class="flex w-full">
-            <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
-            <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
-          </div>
-        </div>
-
-      </div>
-
     </div>
 
-    <div class="node-container" id="node-container">
+    <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
+      <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+        <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-input load-menu @(LoadingUrl ? "scale-y-100 h-auto" : "scale-y-0 h-0")">
+      <div class="w-full">
+        <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+      </div>
+      @foreach (var header in CustomHeaders)
+      {
+        <div class="flex">
+          <div class="w-1/2">
+            <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+          </div>
+          <div class="w-1/2 flex">
+            <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+            <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
+              <label class="load-label">Base64</label>
+              <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+            </button>
+          </div>
+        </div>
+      }
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+          header</button>
+        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
+          header</button>
+      </div>
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+        <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-gen node-container" id="node-container">
       @if (Root is not null)
       {
         <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
@@ -108,7 +114,7 @@
 
       <select class="select-base">
         <option selected>C#</option>
-        <option>TypeScript</option>
+        @* <option>TypeScript</option> *@
       </select>
 
       <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
@@ -144,6 +150,20 @@
   </div>
 </div>
 
+<div class="bottom-container">
+
+  <div class="main-ads-container">
+
+    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
+
+    @if (CookieConsent)
+    {
+      <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+    }
+  </div>
+
+</div>
+
 @code {
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
@@ -157,6 +177,10 @@
   public List<JNode> JNodes { get; set; } = new();
   public JNode? Root { get; set; }
   public string? RootName { get; set; }
+
+  public bool CookieConsent { get; set; }
+
+  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
 
   protected override async Task OnInitializedAsync()
   {

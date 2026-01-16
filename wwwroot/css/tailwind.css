@@ -201,7 +201,7 @@
   }
 
   .transition-input {
-    @apply transition-all duration-150 origin-left;
+    @apply transition-all duration-150 origin-top;
   }
 
   .transition-tree {
@@ -216,12 +216,8 @@
     @apply h-0;
   }
 
-  .page-el {
+  .main-page {
     @apply flex flex-col w-screen h-screen bg-cyan-900;
-  }
-
-  .main-el {
-    @apply flex flex-col w-full min-h-5/6 max-h-5/6;
   }
 
   .node-col-container {
@@ -229,43 +225,57 @@
   }
 
   .description {
-    @apply h-1/12 flex px-2 space-x-2 items-center font-light leading-relaxed text-cyan-400;
+    @apply h-1/12 flex mt-5 px-2 items-center leading-relaxed text-cyan-400;
   }
 
   .app-container {
-    @apply flex px-2 pb-2 w-full h-11/12 overflow-y-auto;
+    @apply flex flex-col px-2 pb-2 w-full h-9/12 overflow-y-auto;
+  }
+
+  .json-container {
+    @apply flex flex-col w-full h-1/2;
+  }
+
+  .code-container {
+    @apply flex flex-col w-full h-1/2;
+  }
+
+  .cookie-container {
+    @apply flex space-x-2 text-white items-center;
+  }
+
+  @media (min-width: 768px) {
+    .app-container {
+      @apply flex-row;
+    }
+
+    .json-container {
+      @apply w-3/5 h-full;
+    }
+
+    .code-container {
+      @apply pl-2 w-2/5 h-full;
+    }
+  }
+
+  .bottom-container {
+    @apply px-2 pb-2 flex flex-col w-full min-h-2/12 max-h-2/12 divide-y divide-solid divide-black;
+  }
+
+  .main-ads-container {
+    @apply flex flex-1 w-full justify-around items-center bg-(--bg-primary);
+  }
+
+  .nav-container {
+    @apply absolute top-0 z-50 w-full flex justify-start items-center space-x-5 px-2 h-5 bg-(--bg-primary);
   }
 
   .node-container {
     @apply px-1 bg-(--bg-primary) overflow-y-auto flex flex-1 items-start w-full;
   }
 
-  .json-container {
-    @apply flex flex-col w-3/5;
-  }
-
-  .code-container {
-    @apply pl-2 flex flex-col w-2/5;
-  }
-
-  .bottom-el {
-    @apply px-2 pb-2 flex flex-col w-full min-h-1/6 max-h-1/6 divide-y divide-solid divide-black;
-  }
-
-  .ads-container {
-    @apply flex flex-1 w-full justify-around items-center bg-(--bg-primary);
-  }
-
-  .nav-container {
-    @apply flex justify-start items-center space-x-5 px-2 h-5 bg-(--bg-primary);
-  }
-
   .link {
     @apply underline font-bold text-xs text-white;
-  }
-
-  .cookie-container {
-    @apply flex flex-col space-y-2 px-20 text-center text-white items-center;
   }
 
   .cookie-buttons {
@@ -273,7 +283,7 @@
   }
 
   .load-menu {
-    @apply flex flex-col z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
+    @apply flex flex-col w-full bg-sky-100 overflow-hidden;
   }
 
   .load-textarea {
