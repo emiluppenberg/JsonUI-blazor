@@ -2,18 +2,13 @@
 
 <PageTitle>Documentation</PageTitle>
 
-<div class="w-full px-5 md:px-50 py-12 text-slate-80 overflow-y-auto">
+<div class="w-full px-5 md:px-50 py-12 text-white overflow-y-auto">
 
-  <div class="px-6 font-light">
-    <p class="mb-6 leading-relaxed">
-      json-UI is a tool designed to generate clutter-free boilerplate code specific to your needs.
-    </p>
-
-    <p class="mb-6 leading-relaxed">
-      By loading your JSON into json-UI, you get a visual overview of the data structure while also
-      allowing you to effortlessly design your own classes by selecting key-value-pairs.
-    </p>
-  </div>
+  <p class="mb-6  italic leading-relaxed">
+    Load JSON and get a visual overview of the data structure.<br />
+    Select the key-value-pairs needed for your application.<br />
+    Effortlessly configure the generated code.
+  </p>
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
     Load JSON
@@ -24,8 +19,8 @@
   </h3>
 
   <p class="mb-6 leading-relaxed">
-    Press <strong>Load TEXT</strong>, paste JSON text into the textarea field,
-    and press <strong>OK</strong>.
+    Press <strong>Load TEXT</strong> and paste JSON text into the textarea field.<br />
+    Press <strong>OK</strong>.
   </p>
 
   <h3 class="mt-6 mb-2 text-lg font-light">
@@ -33,9 +28,15 @@
   </h3>
 
   <p class="mb-6 leading-relaxed">
-    Press <strong>Load URL</strong>, paste the URL into the input field labeled
-    <strong>Url</strong>. If needed, paste an API token into the input field labeled
-    <strong>Authorization token</strong>, then press <strong>OK</strong>.
+    Press <strong>Load URL</strong> and paste a URL into the input field.<br />
+    If needed, provide any additional headers required for authorization etc.<br /><br />
+    <strong>Example: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Bearer
+      -your-token-</i><br /><br />
+    If the URL uses <strong>Basic</strong> authorization, set Header value to:<br />
+    <i>Basic -username:password-</i> and check Base64.<br />
+    OR -<br />
+    <i>Basic -your-base64-login-</i><br />
+    Press <strong>OK</strong>.
   </p>
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
@@ -55,7 +56,8 @@
   <p class="mb-6 leading-relaxed">
     Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
     Primitive types and arrays are noted as-is.<br />
-    Primitive types noted as 'object' or 'object[]' means the JSON value was null or empty array, meaning the datatype
+    Primitive types noted as 'object' or 'object[]' means the JSON value was null or an empty array, meaning the
+    datatype
     cannot be inferred.
   </p>
 
@@ -124,7 +126,7 @@
     </ul>
 
     <h4 class="mt-4 mb-2 font-light">
-      Annotations
+      Annotations (coming soon)
     </h4>
 
     <ul class="mb-6 list-disc space-y-1 pl-6">
