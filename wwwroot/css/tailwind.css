@@ -217,7 +217,7 @@
   }
 
   .main-page {
-    @apply flex flex-col w-screen h-screen bg-cyan-900;
+    @apply pb-6 flex flex-col w-screen h-screen bg-cyan-900;
   }
 
   .node-col-container {
@@ -225,7 +225,7 @@
   }
 
   .description {
-    @apply h-1/12 flex mt-5 px-2 items-center leading-relaxed text-cyan-400;
+    @apply h-1/12 flex mt-5 px-2 items-center leading-relaxed text-cyan-400 select-none;
   }
 
   .app-container {
@@ -241,7 +241,7 @@
   }
 
   .cookie-container {
-    @apply flex space-x-2 text-white items-center;
+    @apply flex space-x-2 text-white items-center select-none;
   }
 
   @media (min-width: 768px) {
@@ -255,6 +255,10 @@
 
     .code-container {
       @apply pl-2 w-2/5 h-full;
+    }
+
+    .main-page {
+      @apply pb-0;
     }
   }
 

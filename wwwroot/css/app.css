@@ -21,11 +21,12 @@
     --color-sky-100: oklch(95.1% 0.026 236.824);
     --color-sky-200: oklch(90.1% 0.058 230.902);
     --color-sky-900: oklch(39.1% 0.09 240.876);
+    --color-blue-300: oklch(80.9% 0.105 251.813);
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
     --color-blue-800: oklch(42.4% 0.199 265.638);
     --color-blue-900: oklch(37.9% 0.146 265.522);
-    --color-slate-500: oklch(55.4% 0.046 257.417);
+    --color-slate-300: oklch(86.9% 0.022 252.894);
     --color-slate-800: oklch(27.9% 0.041 260.031);
     --color-black: #000;
     --color-white: #fff;
@@ -444,14 +445,14 @@
     --tw-font-weight: var(--font-weight-normal);
     font-weight: var(--font-weight-normal);
   }
-  .text-blue-600 {
-    color: var(--color-blue-600);
+  .text-blue-300 {
+    color: var(--color-blue-300);
   }
   .text-cyan-400 {
     color: var(--color-cyan-400);
   }
-  .text-slate-500 {
-    color: var(--color-slate-500);
+  .text-slate-300 {
+    color: var(--color-slate-300);
   }
   .text-white {
     color: var(--color-white);
@@ -467,10 +468,10 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
-  .hover\:text-blue-800 {
+  .hover\:text-blue-500 {
     &:hover {
       @media (hover: hover) {
-        color: var(--color-blue-800);
+        color: var(--color-blue-500);
       }
     }
   }
@@ -1295,6 +1296,7 @@
     width: 100vw;
     flex-direction: column;
     background-color: var(--color-cyan-900);
+    padding-bottom: calc(var(--spacing) * 6);
   }
   .node-col-container {
     display: flex;
@@ -1310,6 +1312,8 @@
     --tw-leading: var(--leading-relaxed);
     line-height: var(--leading-relaxed);
     color: var(--color-cyan-400);
+    -webkit-user-select: none;
+    user-select: none;
   }
   .app-container {
     display: flex;
@@ -1341,6 +1345,8 @@
       margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
     }
     color: var(--color-white);
+    -webkit-user-select: none;
+    user-select: none;
   }
   @media (min-width: 768px) {
     .app-container {
@@ -1354,6 +1360,9 @@
       height: 100%;
       width: calc(2/5 * 100%);
       padding-left: calc(var(--spacing) * 2);
+    }
+    .main-page {
+      padding-bottom: calc(var(--spacing) * 0);
     }
   }
   .bottom-container {
