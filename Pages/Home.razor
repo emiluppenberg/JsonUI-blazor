@@ -43,7 +43,6 @@
   <div class="json-container" id="json-container">
 
     <div class="json-menu">
-
       <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
 
       <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
@@ -51,49 +50,48 @@
 
       <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
         @onclick="async () => await ToggleLoadText()">Load TEXT</button>
-
-      <div class="relative">
-
-        <div class="transition-input load-menu @(LoadingText ? "scale-x-100" : "scale-x-0")">
-          <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
-          <div class="flex w-full">
-            <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
-            <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
-          </div>
-        </div>
-
-        <div class="transition-input load-menu @(LoadingUrl ? "scale-x-100 h-auto" : "scale-x-0 h-auto")">
-          <div class="w-full">
-            <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
-          </div>
-          @foreach (var header in CustomHeaders)
-          {
-            <div class="flex">
-              <div class="w-1/2">
-                <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
-              </div>
-              <div class="w-1/2 flex">
-                <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
-                <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
-                  <label class="load-label">Base64</label>
-                  <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
-                </button>
-              </div>
-            </div>
-          }
-          <button class="button-base w-full" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
-            header</button>
-          <div class="flex w-full">
-            <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
-            <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
-          </div>
-        </div>
-
-      </div>
-
     </div>
 
-    <div class="node-container" id="node-container">
+    <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
+      <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+        <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-input load-menu @(LoadingUrl ? "scale-y-100 h-auto" : "scale-y-0 h-0")">
+      <div class="w-full">
+        <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+      </div>
+      @foreach (var header in CustomHeaders)
+      {
+        <div class="flex">
+          <div class="w-1/2">
+            <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+          </div>
+          <div class="w-1/2 flex">
+            <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+            <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
+              <label class="load-label">Base64</label>
+              <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+            </button>
+          </div>
+        </div>
+      }
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+          header</button>
+        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
+          header</button>
+      </div>
+      <div class="flex w-full">
+        <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+        <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-gen node-container" id="node-container">
       @if (Root is not null)
       {
         <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"

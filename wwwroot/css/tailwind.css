@@ -201,7 +201,7 @@
   }
 
   .transition-input {
-    @apply transition-all duration-150 origin-left;
+    @apply transition-all duration-150 origin-top;
   }
 
   .transition-tree {
@@ -240,6 +240,10 @@
     @apply flex flex-col w-full h-1/2;
   }
 
+  .cookie-container {
+    @apply flex space-x-2 text-white items-center;
+  }
+
   @media (min-width: 768px) {
     .app-container {
       @apply flex-row;
@@ -274,16 +278,12 @@
     @apply underline font-bold text-xs text-white;
   }
 
-  .cookie-container {
-    @apply flex flex-col space-y-2 text-center text-white items-center;
-  }
-
   .cookie-buttons {
     @apply flex space-x-2;
   }
 
   .load-menu {
-    @apply flex flex-col z-50 absolute top-0 left-0 w-(--load-w) h-(--load-h) bg-sky-100 overflow-hidden;
+    @apply flex flex-col w-full bg-sky-100 overflow-hidden;
   }
 
   .load-textarea {
