@@ -9,25 +9,33 @@
 <PageTitle>Home</PageTitle>
 
 <section class="description">
-  <h1 class="text-xl font-medium text-center">JSON to code Generator</h1>
-  <div class="flex space-x-2 font-medium text-sm italic">
-    <p class="text-center line-clamp-2">
-      Visualize complex JSON
-    </p>
+  <div class="flex items-center w-full md:w-3/5 space-x-2">
+    <h1 class="text-sm text-center md:text-xl line-clamp-2 max-w-30 md:min-w-fit md:line-clamp-1 font-medium">JSON to
+      code generator
+    </h1>
+    <div class="flex flex-1 items-center justify-around font-medium text-xs italic">
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Visualize complex JSON
+      </p>
 
-    <p class="text-center line-clamp-2">
-      Select properties interactively
-    </p>
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Select properties interactively
+      </p>
 
-    <p class="text-center line-clamp-2">
-      Generate clean, configurable code
+      <p class="text-center md:line-clamp-2 md:min-w-20">
+        Generate clean, configurable code
+      </p>
+    </div>
+  </div>
+  <div class="pl-2 overflow-hidden flex flex-col w-0 md:w-2/5 items-start justify-center font-light text-white text-xs">
+    <p class="line-clamp-2">
+      Json-UI is a tool intended for developers who want fast, clutter-free classes without manual class writing.
+    </p>
+    <p class="p-0">
+      For help getting started, read the <NavLink class="link font-normal" href="documentation" target="_blank">
+        documentation</NavLink>.
     </p>
   </div>
-  <p class="max-w-200 text-white text-xs">
-    Json-UI is a tool designed to generate boilerplate code specific to your needs.
-    It is intended for developers who want fast, clutter-free classes without manual class writing. For help getting
-    started, read the <NavLink class="link font-normal" href="documentation" target="_blank">documentation</NavLink>.
-  </p>
 </section>
 
 <div class="app-container" id="app-container">
@@ -108,7 +116,7 @@
 
       <select class="select-base">
         <option selected>C#</option>
-        <option>TypeScript</option>
+        @* <option>TypeScript</option> *@
       </select>
 
       <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
@@ -144,6 +152,20 @@
   </div>
 </div>
 
+<div class="bottom-container">
+
+  <div class="main-ads-container">
+
+    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
+
+    @if (CookieConsent)
+    {
+      <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+    }
+  </div>
+
+</div>
+
 @code {
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
@@ -157,6 +179,10 @@
   public List<JNode> JNodes { get; set; } = new();
   public JNode? Root { get; set; }
   public string? RootName { get; set; }
+
+  public bool CookieConsent { get; set; }
+
+  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
 
   protected override async Task OnInitializedAsync()
   {

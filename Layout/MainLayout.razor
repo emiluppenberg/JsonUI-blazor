@@ -1,36 +1,19 @@
 ﻿@inherits LayoutComponentBase
-<div class="page-el">
-    <main class="main-el">
+<header>
+    <nav class="nav-container">
+        <NavLink class="link" href="/">Home</NavLink>
+        <NavLink class="link" href="documentation">Docs</NavLink>
+        <NavLink class="link" href="privacy">Privacy</NavLink>
+        <NavLink class="link" href="about">About</NavLink>
+    </nav>
+</header>
 
-        <nav class="nav-container">
-            <NavLink class="link" href="/">Home</NavLink>
-            <NavLink class="link" href="documentation" target="_blank">Docs</NavLink>
-            <NavLink class="link" href="privacy" target="_blank">Privacy</NavLink>
-            <NavLink class="link" href="about" target="_blank">About</NavLink>
-        </nav>
-
-        @Body
-    </main>
-
-    <div class="bottom-el">
-
-        <div class="ads-container">
-
-            <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
-
-            @if (CookieConsent)
-            {
-                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
-                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
-                <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
-            }
-        </div>
-
-    </div>
-</div>
+<main class="main-page">
+    @Body
+</main>
 
 @code {
     public bool CookieConsent { get; set; }
 
-    private void HandleCookieConsent(string consent) => CookieConsent = consent == "accepted";
+    private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
 }
