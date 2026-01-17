@@ -203,6 +203,7 @@ public static class JNodeBuilder
         var lineage = k.Split('-');
 
         var parentKey = String.Join("", lineage.Take(lineage.Length - 1));
+        var _parentKey = String.Join('-', lineage.Take(lineage.Length - 1));
         var lineageKey = parentKey + lineage.Last();
 
         var jNodeKvps = new List<JNodeKvp>();
@@ -213,7 +214,7 @@ public static class JNodeBuilder
           jNodeKvps.Add(jNodeKvp);
         }
 
-        var jNode = new JNode(lineageKey, lineage.Last(), jNodeKvps, result.FirstOrDefault(x => x.LineageKey == parentKey), langOptions);
+        var jNode = new JNode(lineageKey, parentKey, lineage.Last(), jNodeKvps, langOptions);
 
         if (!childLookup.TryGetValue(lineageKey, out var _))
         {
@@ -228,7 +229,18 @@ public static class JNodeBuilder
         result.Add(jNode);
       }
 
-      result.ForEach(x => x.Children = childLookup[x.LineageKey]);
+      foreach (var r in result)
+      {
+        r.Parent = result.FirstOrDefault(x => x.LineageKey == r.ParentKey);
+
+        if (r.Parent is not null && !r.Parent.Children.Contains(r))
+        {
+          r.Parent.Children.Add(r);
+        }
+
+        r.Children.AddRange(childLookup[r.LineageKey]);
+      }
+
       return result;
     }
     catch (Exception ex)

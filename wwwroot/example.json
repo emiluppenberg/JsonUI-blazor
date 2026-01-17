@@ -1,139 +1,117 @@
 {
-  "name": "Example json",
-  "tags": ["json", "to", "code", "generator", "example"],
-  "version": 1,
-  "is_active": true,
-  "description": null,
-  "scores": [12, 45, 78, 90],
-  "empty_list": [],
-  "settings": {
-    "theme": "dark",
-    "notifications_enabled": true,
-    "backup_servers": ["srv-a", "srv-b"],
-    "timeouts": [
+  "planet_id": 3,
+  "solar_id": 1,
+  "galaxy_id": 1,
+  "names": ["Earth", "Terra", "Gaia", "Blue Planet"],
+  "orbit_index": 3,
+  "mean_radius_km": 6371.0,
+  "mass_earths": 1.0,
+  "atmosphere": {
+    "exists": true,
+    "gases": [
       {
-        "connect": 5000,
-        "read": 10000,
-        "write": 8000,
-        "retry": 3,
-        "enabled": true
+        "gas": {
+          "name": "Nitrogen",
+          "symbol": "N",
+          "atomic_number": 7
+        },
+        "percentage": 78.08
+      },
+      {
+        "gas": {
+          "name": "Oxygen",
+          "symbol": "O",
+          "atomic_number": 8
+        },
+        "percentage": 20.95
+      },
+      {
+        "gas": {
+          "name": "Argon",
+          "symbol": "Ar",
+          "atomic_number": 18
+        },
+        "percentage": 0.93
+      },
+      {
+        "gas": {
+          "name": "Carbon Dioxide",
+          "symbol": "CO2",
+          "atomic_number": null
+        },
+        "percentage": 0.04
       }
     ],
-    "features": {
-      "beta": true,
-      "experimental": false,
-      "modules": ["core", "ui", "api"],
-      "thresholds": {
-        "low": 10,
-        "medium": 50,
-        "high": 90,
-        "auto_adjust": false
-      }
-    }
+    "surface_pressure_kpa": 101.325
   },
-  "users": [
+  "continents": [
     {
-      "user_id": 1,
-      "username": "lisa",
-      "email": "lisa@example.com",
-      "roles": ["admin", "editor"],
-      "profile": {
-        "age": 30,
-        "country": "SE",
-        "preferences": {
-          "newsletter": true,
-          "sms": false,
-          "topics": ["tech", "ui"]
-        }
-      }
+      "name": "Africa",
+      "population": 1400000000,
+      "highest_peak": "Mount Kilimanjaro",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
     },
     {
-      "user_id": 2,
-      "username": "bob",
-      "email": "bob@example.com",
-      "roles": ["viewer"],
-      "profile": {
-        "age": 25,
-        "country": "NO",
-        "preferences": {
-          "newsletter": false,
-          "sms": true,
-          "topics": ["api", "docs"]
-        }
-      }
+      "name": "Antarctica",
+      "population": 0,
+      "highest_peak": "Vinson Massif",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": null
+    },
+    {
+      "name": "Asia",
+      "population": 4600000000,
+      "highest_peak": "Mount Everest",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
+    },
+    {
+      "name": "Europe",
+      "population": 750000000,
+      "highest_peak": "Mount Elbrus",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
+    },
+    {
+      "name": "North America",
+      "population": 600000000,
+      "highest_peak": "Denali",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
+    },
+    {
+      "name": "South America",
+      "population": 430000000,
+      "highest_peak": "Aconcagua",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
+    },
+    {
+      "name": "Australia",
+      "population": 26000000,
+      "highest_peak": "Mount Kosciuszko",
+      "countries": [],
+      "major_rivers": [],
+      "last_census_date": "2020-01-01"
     }
   ],
-  "statistics": {
-    "uptime_days": 342,
-    "error_rate": 0.02,
-    "regions": ["EU", "US", "APAC"],
-    "daily_usage": {
-      "monday": 120,
-      "tuesday": 140,
-      "wednesday": 160,
-      "thursday": 155,
-      "friday": 130
-    },
-    "alerts": [
-      {
-        "enabled": true,
-        "emails": ["ops@example.com"],
-        "levels": [
-          {
-            "info": true,
-            "warning": true,
-            "critical": false
-          }
-        ]
-      }
-    ]
-  },
-  "audit": {
-    "enabled": true,
-    "retention_days": 90,
-    "logs": [],
-    "last_run": null,
-    "target": {
-      "database": true,
-      "filesystem": false,
-      "network": true,
-      "details": {
-        "deep_scan": false,
-        "sample_rate": 0.1,
-        "notes": null,
-        "audit": {
-          "enabled": true,
-          "retention_days": 90,
-          "logs": [],
-          "last_run": null,
-          "target": {
-            "database": true,
-            "filesystem": false,
-            "network": true,
-            "details": {
-              "deep_scan": false,
-              "sample_rate": 0.1,
-              "notes": null
-            }
-          },
-          "audit": {
-            "enabled": true,
-            "retention_days": 90,
-            "logs": [],
-            "last_run": null,
-            "target": {
-              "database": true,
-              "filesystem": false,
-              "network": true,
-              "details": {
-                "deep_scan": false,
-                "sample_rate": 0.1,
-                "notes": null
-              }
-            }
-          }
-        }
-      }
+  "surface_temperature_k": 288,
+  "natural_satellites_history": [],
+  "moons": [
+    {
+      "moon_id": 301,
+      "name": "Moon",
+      "mean_radius_km": 1737.4,
+      "mass_earths": 0.0123,
+      "is_tidally_locked": true,
+      "surface_temperature_k": null
     }
-  }
+  ]
 }
