@@ -225,7 +225,7 @@
   }
 
   .description {
-    @apply h-1/12 flex mt-5 px-2 items-center leading-relaxed text-cyan-400 select-none;
+    @apply h-1/12 flex px-2 items-center leading-relaxed text-cyan-400 select-none overflow-hidden;
   }
 
   .app-container {
