@@ -11,9 +11,3 @@
 <main class="main-page">
     @Body
 </main>
-
-@code {
-    public bool CookieConsent { get; set; }
-
-    private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
-}
