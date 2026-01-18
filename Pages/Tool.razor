@@ -10,6 +10,10 @@
 
 <div class="app-container" id="app-container">
 
+  <div class="div-cookie">
+    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
+  </div>
+
   <div class="json-container" id="json-container">
 
     <div class="json-menu">
@@ -24,9 +28,9 @@
 
     <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
       <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
-      <div class="flex w-full">
-        <button class="button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
-        <button class="button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
       </div>
     </div>
 
@@ -49,15 +53,16 @@
           </div>
         </div>
       }
-      <div class="flex w-full">
-        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
           header</button>
-        <button class="button-base w-1/2" @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
+        <button class="transition-gen button-base w-1/2"
+          @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
           header</button>
       </div>
-      <div class="flex w-full">
-        <button class="button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
-        <button class="button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
       </div>
     </div>
 
@@ -120,19 +125,6 @@
   </div>
 </div>
 
-<div class="bottom-container">
-
-  <div class="main-ads-container">
-
-    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
-
-    @if (CookieConsent)
-    {
-      <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
-    }
-  </div>
-
-</div>
 
 @code {
   public string Url { get; set; } = "";

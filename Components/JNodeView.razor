@@ -93,9 +93,9 @@
 
     @foreach (var jnKvp in CurrentNode.KeyValues)
     {
-      <div class="transition-tree @(jnKvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
+      <div class="transition-gen @(jnKvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
         @onmouseover="() => { IsMouseOverKvp = jnKvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
-        <button @key="jnKvp" class="transition-tree @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
+        <button @key="jnKvp" class="transition-gen @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
           @onclick='async () => await SetKvp("selected", jnKvp)'>
           <span class="key-kvp">@jnKvp.Kvp.Key</span>
           <span class="value-kvp">@jnKvp.Kvp.Value</span>

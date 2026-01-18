@@ -8,37 +8,29 @@
   "mass_earths": 1.0,
   "atmosphere": {
     "exists": true,
-    "gases": [
+    "gas": [
       {
-        "gas": {
-          "name": "Nitrogen",
-          "symbol": "N",
-          "atomic_number": 7
-        },
+        "name": "Nitrogen",
+        "symbol": "N",
+        "atomic_number": 7,
         "percentage": 78.08
       },
       {
-        "gas": {
-          "name": "Oxygen",
-          "symbol": "O",
-          "atomic_number": 8
-        },
+        "name": "Oxygen",
+        "symbol": "O",
+        "atomic_number": 8,
         "percentage": 20.95
       },
       {
-        "gas": {
-          "name": "Argon",
-          "symbol": "Ar",
-          "atomic_number": 18
-        },
+        "name": "Argon",
+        "symbol": "Ar",
+        "atomic_number": 18,
         "percentage": 0.93
       },
       {
-        "gas": {
-          "name": "Carbon Dioxide",
-          "symbol": "CO2",
-          "atomic_number": null
-        },
+        "name": "Carbon Dioxide",
+        "symbol": "CO2",
+        "atomic_number": null,
         "percentage": 0.04
       }
     ],

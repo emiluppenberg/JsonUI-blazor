@@ -2,30 +2,65 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="div-landing px-5 md:px-50">
+<div class="w-full h-full flex flex-col items-center overflow-y-auto ">
 
-  <section class="section-landing bg-cyan-800">
-    <h1 class="text-center md:text-start text-xl font-medium">Generate code
-      from JSON
-    </h1>
-    <p class="text-center md:text-start italic">
-      Visualize complex JSON
-    </p>
+  <div class="div-cookie">
+    <Cookie OnCookieConsent="HandleCookieConsent" />
+  </div>
 
-    <p class="text-center md:text-start italic">
-      Pick properties interactively
-    </p>
+  <h1 class="text-center text-xl font-medium mt-2 text-cyan-400 select-none">PickJSON - Easy code from JSON</h1>
 
-    <p class="text-center md:text-start italic">
-      Generate clean, configurable code
-    </p>
+  <section class="section-landing px-5 md:px-40 mt-2 text-sm md:text-base">
+    <div class="flex space-x-3 md:space-x-10">
+      <p class="text-center md:text-start italic">
+        Visualize complex JSON
+      </p>
+
+      <p class="text-center md:text-start italic">
+        Pick properties interactively
+      </p>
+
+      <p class="text-center md:text-start italic">
+        Generate clean, configurable code
+      </p>
+    </div>
     <p class="font-light text-white text-xs">
       Fast and clutter-free classes/interfaces/types.<br />
       Full guide: <NavLink class="link font-normal" href="documentation" target="_blank">
         Documentation</NavLink>
     </p>
-    <NavLink class="button-base text-4xl font-medium italic text-center text-white w-full h-auto mt-5" href="tool">Go
-    </NavLink>
   </section>
 
+  <div
+    class="mx-5 mt-5 bg-cyan-700 flex flex-col h-80 md:flex-row md:flex-1 md:items-center md:scale-80 space-y-5 md:space-x-5 px-5 md:px-10 font-light line-clamp-1 text-cyan-400 text-center overflow-y-auto md:overflow-hidden">
+    <div class="flex flex-col items-center">
+      <p class="mb-2">1. Paste JSON</p>
+      <img src="landing-example-json.png" class="opacity-70 w-100 md:w-auto" />
+    </div>
+
+    <div class="flex flex-col items-center">
+      <p class="mb-2">2. Pick properties</p>
+      <img src="landing-example-jnodes.png" class="opacity-70 w-100 md:w-auto" />
+    </div>
+
+    <div class="flex flex-col items-center">
+      <p class="mb-2">3. Configure code</p>
+      <img src="landing-example-code.png" class="opacity-70 w-100 md:w-auto" />
+    </div>
+  </div>
+
+  <div class="w-auto h-30">
+    @if (CookieConsent)
+    {
+      <GoogleAd Slot="6738928383" Style="display:inline-block;width:400px;height:90px"></GoogleAd>
+    }
+  </div>
+
+  <NavLink class="mt-auto button-base text-3xl font-medium italic text-center text-white w-full h-auto" href="tool">Go
+  </NavLink>
 </div>
+
+@code {
+  public bool CookieConsent { get; set; }
+  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
+}
