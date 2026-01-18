@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 <header>
     <nav class="nav-container">
-        <NavLink class="link" href="/">Home</NavLink>
+        <NavLink class="link" href="tool">Tool</NavLink>
         <NavLink class="link" href="documentation">Docs</NavLink>
         <NavLink class="link" href="privacy">Privacy</NavLink>
         <NavLink class="link" href="about">About</NavLink>
@@ -11,3 +11,7 @@
 <main class="main-page">
     @Body
 </main>
+
+@code {
+    public RenderFragment? OverlayContent { get; set; }
+}

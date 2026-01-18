@@ -1,0 +1,319 @@
+﻿@page "/tool"
+@using JsonUI_blazor.Components
+@using System.Net.Http.Headers
+@using System.Buffers.Text
+@using System.Text
+@using System.IO.IsolatedStorage
+@inject HttpClient httpClient
+
+<PageTitle>Tool</PageTitle>
+
+<div class="app-container" id="app-container">
+
+  <div class="div-cookie">
+    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
+  </div>
+
+  <div class="json-container" id="json-container">
+
+    <div class="json-menu">
+      <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
+
+      <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadUrl()">Load URL</button>
+
+      <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
+        @onclick="async () => await ToggleLoadText()">Load TEXT</button>
+    </div>
+
+    <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
+      <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-input load-menu @(LoadingUrl ? "scale-y-100 h-auto" : "scale-y-0 h-0")">
+      <div class="w-full">
+        <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
+      </div>
+      @foreach (var header in CustomHeaders)
+      {
+        <div class="flex">
+          <div class="w-1/2">
+            <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+          </div>
+          <div class="w-1/2 flex">
+            <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+            <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
+              <label class="load-label">Base64</label>
+              <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+            </button>
+          </div>
+        </div>
+      }
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+          header</button>
+        <button class="transition-gen button-base w-1/2"
+          @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
+          header</button>
+      </div>
+      <div class="flex w-full bg-(--bg-primary)">
+        <button class="transition-gen button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+      </div>
+    </div>
+
+    <div class="transition-gen node-container" id="node-container">
+      @if (Root is not null)
+      {
+        <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
+          OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
+          LangOptions="LangOptions" />
+      }
+      else
+      {
+        <div class="h-11/12 w-full flex items-end justify-center">
+          <span class="text-cyan-400 text-xl font-bold">No JSON loaded</span>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <div class="code-container">
+
+    <div class="code-menu">
+
+      <select class="select-base">
+        <option selected>C#</option>
+        @* <option>TypeScript</option> *@
+      </select>
+
+      <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
+        @onclick="() => { IsOptions = !IsOptions; }">Options</button>
+
+    </div>
+
+
+    <div class="flex flex-1 overflow-y-auto">
+
+      @if (RenderCode.Length < 1)
+      {
+        <div class="transition-gen code">
+          <div class="h-11/12 w-full flex items-end justify-center">
+            <span class="text-cyan-400 text-xl font-bold">No properties selected</span>
+          </div>
+        </div>
+      }
+      else
+      {
+        <pre class="transition-gen code">@RenderCode</pre>
+      }
+
+      <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
+        @if (LangOptions.GetType().Name == "CSharpOptions")
+        {
+          <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
+            OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
+        }
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+@code {
+  public string Url { get; set; } = "";
+  public List<CustomHeader> CustomHeaders { get; set; } = new();
+  public bool IsOptions { get; set; }
+
+  public string RenderCode { get; set; } = "";
+  public string Json { get; set; } = "";
+  public bool LoadingText { get; set; } = true;
+  public bool LoadingUrl { get; set; }
+  public int NodeContainerHeight;
+  public List<JNode> JNodes { get; set; } = new();
+  public JNode? Root { get; set; }
+  public string? RootName { get; set; }
+
+  public bool CookieConsent { get; set; }
+
+  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
+
+  protected override async Task OnInitializedAsync()
+  {
+    Json = await httpClient.GetStringAsync("example.json");
+  }
+
+  private ILanguageOptions langOptions = new CSharpOptions();
+  public ILanguageOptions LangOptions
+  {
+    get => langOptions;
+    set
+    {
+      langOptions = value;
+      HandleSetCollection(value.GetCollectionOptions().GetValue(0)!.ToString()!);
+    }
+  }
+
+
+  private void HandleSetCSharpJsonOption(ICSharpJsonOptions? cSharpJsonOptions)
+  {
+    LangOptions.CSharpJsonOptions = cSharpJsonOptions;
+    HandleRenderCode();
+  }
+
+  private void HandleSetNamingConvention(INamingConvention namingConvention)
+  {
+    LangOptions.NamingConvention = namingConvention;
+    HandleRenderCode();
+  }
+
+  private void HandleSetCollection(string collectionAs)
+  {
+    JNodes.ForEach(x => x.SetNodeCollectionAs(collectionAs));
+    JNodes.ForEach(x => x.SetKvpsCollectionAs(collectionAs));
+    HandleRenderCode();
+  }
+
+  private void HandleSetNullable(bool nullable)
+  {
+    JNodes.ForEach(x => x.SetNullable(nullable));
+    HandleRenderCode();
+  }
+
+  void LoadJson(string json)
+  {
+    RootName = RootName is null ? "Root" : RootName;
+    var rootType = Json.StartsWith('{') ? "{}" : "[]";
+    JNodes = JNodeBuilder.CreateFromJson(json, LangOptions, RootName)!;
+    Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{rootType}");
+
+    if (Root is null)
+    {
+      Root = new JNode($"{RootName}{rootType}", string.Empty, RootName, new(), langOptions);
+
+      foreach (var jn in JNodes)
+      {
+        if (jn.ParentKey == $"{RootName}{rootType}")
+        {
+          Root.Children.Add(jn);
+          jn.Parent = Root;
+        }
+      }
+    }
+
+    NodeContainerHeight = (Root.KeyValues.Count + Root.Children.Count) * General.RowHeightPx;
+    LoadingText = false;
+    LoadingUrl = false;
+  }
+
+  async Task ToggleLoadUrl()
+  {
+    LoadingUrl = !LoadingUrl;
+    LoadingText = false;
+    await InvokeAsync(StateHasChanged);
+  }
+
+  async Task ToggleLoadText()
+  {
+    LoadingText = !LoadingText;
+    LoadingUrl = false;
+    await InvokeAsync(StateHasChanged);
+  }
+
+  async Task FetchRequest()
+  {
+    try
+    {
+      using var request = new HttpRequestMessage(HttpMethod.Get, Url);
+
+      foreach (var ch in CustomHeaders)
+      {
+        var value = ch.Value;
+
+        if (ch.ConvertToBase64)
+        {
+          var splitVal = ch.Value.Split(' ');
+          var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(splitVal[1]));
+          value = $"{splitVal[0]} {base64}";
+        }
+
+        if (ch.Key.Equals("Authorization", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.Authorization = AuthenticationHeaderValue.Parse(value);
+        }
+        else if (ch.Key.Equals("User-Agent", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.UserAgent.ParseAdd(value);
+        }
+        else if (ch.Key.Equals("Accept", StringComparison.OrdinalIgnoreCase))
+        {
+          request.Headers.Accept.ParseAdd(value);
+        }
+        else
+        {
+          request.Headers.Add(ch.Key, ch.Value);
+        }
+      }
+
+      var response = await httpClient.SendAsync(request);
+      response.EnsureSuccessStatusCode();
+
+      var json = await response.Content.ReadAsStringAsync();
+      LoadJson(json);
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE -  {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+    }
+  }
+
+  async Task HandleNodeToggled(JNode newNode)
+  {
+    var toggleTo = !newNode.IsExpanded;
+    JNodes.ForEach(n => n.IsExpanded = false);
+
+    newNode.IsExpanded = toggleTo;
+    NodeContainerHeight = (newNode.KeyValues.Count + newNode.Children.Count) * General.RowHeightPx;
+
+    if (newNode.Parent is not null)
+    {
+      var iteratingNode = newNode;
+
+      do
+      {
+        iteratingNode = iteratingNode.Parent;
+        iteratingNode.IsExpanded = true;
+        NodeContainerHeight += (iteratingNode.KeyValues.Count + iteratingNode.Children.Count) * General.RowHeightPx;
+      }
+      while (iteratingNode.Parent is not null);
+    }
+
+    await InvokeAsync(StateHasChanged);
+  }
+
+  async Task HandleKvpSelected(KvpSelectedArgs args)
+  {
+    args.node.TotalNestedSelected += args.selected ? 1 : -1;
+
+    var iteratingNode = args.node;
+
+    while (iteratingNode.Parent is not null)
+    {
+      iteratingNode = iteratingNode.Parent;
+      iteratingNode.TotalNestedSelected += args.selected ? 1 : -1;
+    }
+
+    await InvokeAsync(StateHasChanged);
+  }
+
+  void HandleRenderCode()
+  {
+    RenderCode = JNodeBuilder.JNodesToCode(JNodes, langOptions);
+  }
+}

@@ -4,6 +4,7 @@ public class JNode
 {
   public JNodeType Type;
   public string LineageKey { get; }
+  public string ParentKey { get; }
   public string Name { get; }
   public List<JNodeKvp> KeyValues { get; }
   public List<JNode> Children { get; set; }
@@ -13,14 +14,14 @@ public class JNode
   public string? CollectionAs { get; set; }
   public int TotalNestedSelected { get; set; }
 
-  public JNode(string lineageKey, string name, List<JNodeKvp> keyValues, JNode? parent, ILanguageOptions langOptions)
+  public JNode(string lineageKey, string parentKey, string name, List<JNodeKvp> keyValues, ILanguageOptions langOptions)
   {
-    Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
+    Type = lineageKey.EndsWith("{}") ? JNodeType.Object : JNodeType.Array;
     Name = name.Replace("{}", null).Replace("[]", null);
     LineageKey = lineageKey;
+    ParentKey = parentKey;
     KeyValues = keyValues;
     Children = new();
-    Parent = parent;
     CollectionAs = Type == JNodeType.Array ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
   }
 
