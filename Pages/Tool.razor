@@ -197,18 +197,20 @@
   void LoadJson(string json)
   {
     RootName = RootName is null ? "Root" : RootName;
+    var rootType = Json.StartsWith('{') ? "{}" : "[]";
     JNodes = JNodeBuilder.CreateFromJson(json, LangOptions, RootName)!;
-    Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{{}}" || x.LineageKey == $"{RootName}[]");
+    Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{rootType}");
 
     if (Root is null)
     {
-      Root = new JNode($"{RootName}{{}}", string.Empty, RootName, new(), langOptions);
+      Root = new JNode($"{RootName}{rootType}", string.Empty, RootName, new(), langOptions);
 
       foreach (var jn in JNodes)
       {
-        if (jn.ParentKey == $"{RootName}{{}}" || jn.ParentKey == $"{RootName}[]")
+        if (jn.ParentKey == $"{RootName}{rootType}")
         {
           Root.Children.Add(jn);
+          jn.Parent = Root;
         }
       }
     }

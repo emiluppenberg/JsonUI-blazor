@@ -44,7 +44,7 @@
     ],
     "surface_pressure_kpa": 101.325
   },
-  "continents": [
+  "continent": [
     {
       "name": "Africa",
       "population": 1400000000,
@@ -104,7 +104,7 @@
   ],
   "surface_temperature_k": 288,
   "natural_satellites_history": [],
-  "moons": [
+  "moon": [
     {
       "moon_id": 301,
       "name": "Moon",

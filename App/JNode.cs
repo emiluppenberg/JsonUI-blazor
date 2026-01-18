@@ -16,7 +16,7 @@ public class JNode
 
   public JNode(string lineageKey, string parentKey, string name, List<JNodeKvp> keyValues, ILanguageOptions langOptions)
   {
-    Type = name.Contains("{}") ? JNodeType.Object : JNodeType.Array;
+    Type = lineageKey.EndsWith("{}") ? JNodeType.Object : JNodeType.Array;
     Name = name.Replace("{}", null).Replace("[]", null);
     LineageKey = lineageKey;
     ParentKey = parentKey;

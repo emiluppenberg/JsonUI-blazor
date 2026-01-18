@@ -242,6 +242,7 @@ public static class JNodeBuilder
             model[currentObject].Add(currentProperty, value);
           }
         }
+
       }
 
       var result = new List<JNode>();
@@ -253,7 +254,6 @@ public static class JNodeBuilder
         var lineage = k.Split('-');
 
         var parentKey = String.Join("", lineage.Take(lineage.Length - 1));
-        var _parentKey = String.Join('-', lineage.Take(lineage.Length - 1));
         var lineageKey = parentKey + lineage.Last();
 
         var jNodeKvps = new List<JNodeKvp>();
@@ -271,7 +271,11 @@ public static class JNodeBuilder
           childLookup.Add(lineageKey, new());
         }
 
-        if (childLookup.TryGetValue(parentKey, out var parent))
+        if (!childLookup.TryGetValue(parentKey, out var _))
+        {
+          childLookup.Add(parentKey, new() { jNode });
+        }
+        else if (childLookup.TryGetValue(parentKey, out var parent))
         {
           parent.Add(jNode);
         }
@@ -279,17 +283,42 @@ public static class JNodeBuilder
         result.Add(jNode);
       }
 
-      foreach (var r in result)
+      for (int i = 0; i < result.Count; i++)
       {
-        r.Parent = result.FirstOrDefault(x => x.LineageKey == r.ParentKey);
+        var item = result[i];
+        item.Parent = result.FirstOrDefault(x => x.LineageKey == item.ParentKey);
 
-        if (r.Parent is not null && !r.Parent.Children.Contains(r))
+        if (item.Parent is null && item.ParentKey.Length > rootName.Length + 2)
         {
-          r.Parent.Children.Add(r);
+          string parentParentKey = "";
+          string parentName = "";
+
+          foreach (var k in model.Keys)
+          {
+            var split = k.Split('-');
+            var join = String.Join("", split);
+
+            if (join == item.LineageKey)
+            {
+              parentParentKey = String.Join("", split.Take(split.Length - 2));
+              parentName = split.ElementAt(split.Length - 2);
+              break;
+            }
+          }
+
+          var jNode = new JNode(item.ParentKey, parentParentKey, parentName, new(), langOptions);
+          item.Parent = jNode;
+          jNode.Children.Add(item);
+          result.Add(jNode);
         }
 
-        var unaddedChildren = childLookup[r.LineageKey].Where(x => !r.Children.Contains(x));
-        r.Children.AddRange(unaddedChildren);
+        if (item.Parent is not null && !item.Parent.Children.Contains(item))
+        {
+          item?.Parent?.Children.Add(item);
+        }
+
+        var unaddedChildren = childLookup[item.LineageKey].Where(x => !item.Children.Contains(x)).ToList();
+        item.Children.AddRange(unaddedChildren);
       }
 
       return result;
