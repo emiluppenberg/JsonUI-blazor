@@ -13,6 +13,7 @@ public static class JNodeBuilder
     var model = new Dictionary<string, Dictionary<string, string>>();
     var modelCurrentParents = new List<string>() { rootName };
     var arrayCurrentParents = new List<KeyValuePair<string, List<string>>>();
+    string rootType = "";
 
     var isArray = false;
     var bytes = Encoding.UTF8.GetBytes(rawContent);
@@ -22,6 +23,11 @@ public static class JNodeBuilder
     {
       while (reader.Read())
       {
+        if (reader.BytesConsumed == 1)
+        {
+          rootType = reader.TokenType == JsonTokenType.StartArray ? "[]" : "{}";
+        }
+
         if (reader.TokenType == JsonTokenType.EndObject && !isArray)
         {
           modelCurrentParents.RemoveAt(modelCurrentParents.Count() - 1);
@@ -41,25 +47,53 @@ public static class JNodeBuilder
           continue;
         }
 
-        if (reader.TokenType == JsonTokenType.EndArray)
+        if (reader.TokenType == JsonTokenType.StartArray && !isArray)
+        {
+          var lineage = new List<string>(modelCurrentParents);
+
+          arrayCurrentParents.Add(new(modelCurrentParents.Last(), lineage));
+          isArray = true;
+          continue;
+        }
+
+        if (reader.TokenType == JsonTokenType.EndArray && arrayCurrentParents.Count() > 0)
         {
           var currentArray = arrayCurrentParents.Last();
-          var currentArrayParentKey = currentArray.Value[currentArray.Value.Count - 2];
 
-          for (int i = model.Keys.Count - 1; i >= 0; i--)
+          if (currentArray.Value.Count > 1)
           {
-            var key = model.Keys.ElementAt(i);
-            var replacedKey = key.Replace("{}", "").Replace("[]", "");
-            var arrayObjectKey = key + $"-{currentArray.Key}[]";
+            var currentArrayParentKey = currentArray.Value[currentArray.Value.Count - 2];
+            var currentProperty = currentArray.Key;
 
-            if (replacedKey.EndsWith(currentArrayParentKey))
+            if (model.Keys.Count > 0)
             {
-              if (!model[key].ContainsKey(currentArray.Key) && !model.ContainsKey(arrayObjectKey))
+              for (int i = model.Keys.Count - 1; i >= 0; i--)
               {
-                model[key].Add(currentArray.Key, "object[]");
+                var key = model.Keys.ElementAt(i);
+                var replacedKey = key.Replace("{}", "").Replace("[]", "");
+                var arrayObjectKey = key + $"-{currentProperty}[]";
+
+                if (replacedKey.EndsWith(currentArrayParentKey))
+                {
+                  // if (model[key].ContainsKey(currentProperty) && model[key][currentProperty] != "object[]")
+                  // {
+                  //   currentProperty += "_object[]";
+                  //   model[key].Add(currentProperty, "object[]");
+                  //   continue;
+                  // }
+                  if (!model[key].ContainsKey(currentProperty) && !model.ContainsKey(arrayObjectKey))
+                  {
+                    model[key].Add(currentProperty, "object[]");
+                  }
+                }
               }
             }
+            else
+            {
+              model.Add($"{currentArrayParentKey}{rootType}", new() { [currentProperty] = "object[]" });
+            }
           }
+
 
           arrayCurrentParents.RemoveAt(arrayCurrentParents.Count() - 1);
 
@@ -136,7 +170,15 @@ public static class JNodeBuilder
 
           if (!model.ContainsKey(currentObject))
           {
-            model.Add(currentObject, new Dictionary<string, string> { [currentProperty] = value });
+            model.Add(currentObject, new() { [currentProperty] = value });
+          }
+          else if (model[currentObject].ContainsKey(currentProperty))
+          {
+            if (model[currentObject][currentProperty] != value)
+            {
+              currentProperty += $"_{value}";
+              model[currentObject].Add(currentProperty, value);
+            }
           }
           else
           {
@@ -183,9 +225,17 @@ public static class JNodeBuilder
           currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
           value += "[]";
 
-          if (model[currentObject].ContainsKey(currentProperty))
+          if (!model.ContainsKey(currentObject))
           {
-            continue;
+            model.Add(currentObject, new() { [currentProperty] = value });
+          }
+          else if (model[currentObject].ContainsKey(currentProperty))
+          {
+            if (model[currentObject][currentProperty] != value)
+            {
+              currentProperty += $"_{value.Replace("[]", "")}";
+              model[currentObject].Add(currentProperty, value);
+            }
           }
           else
           {
@@ -196,7 +246,7 @@ public static class JNodeBuilder
 
       var result = new List<JNode>();
       var childLookup = new Dictionary<string, List<JNode>>();
-      childLookup.Add($"{rootName}{{}}", new());
+      childLookup.Add($"{rootName}{rootType}", new());
 
       foreach (var k in model.Keys)
       {
@@ -238,7 +288,8 @@ public static class JNodeBuilder
           r.Parent.Children.Add(r);
         }
 
-        r.Children.AddRange(childLookup[r.LineageKey]);
+        var unaddedChildren = childLookup[r.LineageKey].Where(x => !r.Children.Contains(x));
+        r.Children.AddRange(unaddedChildren);
       }
 
       return result;

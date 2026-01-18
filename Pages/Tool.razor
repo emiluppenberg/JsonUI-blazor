@@ -198,7 +198,21 @@
   {
     RootName = RootName is null ? "Root" : RootName;
     JNodes = JNodeBuilder.CreateFromJson(json, LangOptions, RootName)!;
-    Root = JNodes.First(x => x.LineageKey == $"{RootName}{{}}");
+    Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{{}}" || x.LineageKey == $"{RootName}[]");
+
+    if (Root is null)
+    {
+      Root = new JNode($"{RootName}{{}}", string.Empty, RootName, new(), langOptions);
+
+      foreach (var jn in JNodes)
+      {
+        if (jn.ParentKey == $"{RootName}{{}}" || jn.ParentKey == $"{RootName}[]")
+        {
+          Root.Children.Add(jn);
+        }
+      }
+    }
+
     NodeContainerHeight = (Root.KeyValues.Count + Root.Children.Count) * General.RowHeightPx;
     LoadingText = false;
     LoadingUrl = false;
