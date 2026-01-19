@@ -27,7 +27,7 @@
     @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
     {
       <div>
-        <button class="sticky-option-button" @onclick='async () => await SetNode("nullable")'>
+        <button class="sticky-option-button" @onclick='async () => await SetNode("nullable", CurrentNode)'>
           <label class="sticky-option-label">Nullable</label>
           <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
         </button>
@@ -35,7 +35,7 @@
       @if (CurrentNode.Type == JNodeType.Array)
       {
         <select class="sticky-option-select" @bind="CurrentNode.CollectionAs"
-          @bind:after='async () => await SetNode("collection")'>
+          @bind:after='async () => await OnRenderCode.InvokeAsync()'>
           @foreach (var o in LangOptions.GetCollectionOptions())
           {
             <option value="@o">@o.ToString()</option>
@@ -73,14 +73,15 @@
         @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
         {
           <div>
-            <button class="node-option-button">
+            <button class="node-option-button" @onclick='async () => await SetNode("nullable", child)'>
               <label class="node-option-label">Nullable</label>
               <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
             </button>
           </div>
           @if (child.Type == JNodeType.Array)
           {
-            <select class="node-option-select" @bind="child.CollectionAs">
+            <select class="node-option-select" @bind="child.CollectionAs"
+              @bind:after='async () => await OnRenderCode.InvokeAsync()'>
               @foreach (var o in LangOptions.GetCollectionOptions())
               {
                 <option value="@o">@o.ToString()</option>
@@ -207,15 +208,11 @@
     }
   }
 
-  async Task SetNode(string action)
+  async Task SetNode(string action, JNode node)
   {
     if (action == "nullable")
     {
-      CurrentNode.Nullable = !CurrentNode.Nullable;
-      await OnRenderCode.InvokeAsync();
-    }
-    if (action == "collection")
-    {
+      node.Nullable = !node.Nullable;
       await OnRenderCode.InvokeAsync();
     }
   }

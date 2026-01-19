@@ -37,7 +37,7 @@
   }
 
   .button-node {
-    @apply w-(--kvp-w) h-6 flex flex-1 items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-(--inp-h) flex flex-1 items-center divide-dotted divide-x;
   }
 
   .node-option-label {
@@ -45,23 +45,23 @@
   }
 
   .node-option-button {
-    @apply px-1 flex h-6 w-20 items-center hover:border hover:border-black;
+    @apply px-1 flex h-(--inp-h) w-20 items-center hover:border;
   }
 
   .node-option-checkbox {
-    @apply w-5 h-6 pointer-events-none;
+    @apply w-5 h-(--inp-h) pointer-events-none;
   }
 
   .node-option-select {
-    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
+    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
   }
 
   .button-kvp {
-    @apply w-(--kvp-w) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .button-kvp-selected {
-    @apply w-(--kvp-w) h-6 flex items-center divide-dotted divide-x;
+    @apply w-(--kvp-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .div-kvp {
@@ -77,47 +77,47 @@
   }
 
   .kvp-option-button {
-    @apply px-1 flex h-6 w-20 items-center hover:border hover:border-black;
+    @apply px-1 flex h-(--inp-h) w-20 items-center hover:border;
   }
 
   .kvp-option-checkbox {
-    @apply w-5 h-6 pointer-events-none;
+    @apply w-5 h-(--inp-h) pointer-events-none;
   }
 
   .kvp-option-select {
-    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
+    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
   }
 
   .button-sticky-inactive {
-    @apply box-border border border-white min-w-(--sticky-w) max-w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--sticky-w) max-w-(--sticky-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-inactive-selected {
-    @apply box-border border border-white min-w-(--sticky-w)  max-w-(--sticky-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--sticky-w)  max-w-(--sticky-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active {
-    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .button-sticky-active-selected {
-    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-6 flex items-center divide-dotted divide-x;
+    @apply box-border border border-white min-w-(--col-w) max-w-(--col-w) h-(--inp-h) flex items-center divide-dotted divide-x;
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-inactive-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .div-sticky-active {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-active-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-6 items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
   }
 
   .sticky-option-label {
@@ -125,23 +125,23 @@
   }
 
   .sticky-option-button {
-    @apply px-1 flex h-6 w-20 items-center justify-center hover:border hover:border-black;
+    @apply px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border;
   }
 
   .sticky-option-checkbox {
-    @apply w-5 h-6 pointer-events-none;
+    @apply w-5 h-(--inp-h) pointer-events-none;
   }
 
   .sticky-option-select {
-    @apply w-20 h-6 text-xs font-medium hover:border hover:border-black;
+    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
   }
 
   .div-count {
-    @apply w-4 h-6 flex items-center justify-center bg-white/40;
+    @apply w-4 h-(--inp-h) flex items-center justify-center bg-white/40;
   }
 
   .div-count-hidden {
-    @apply w-4 h-6 opacity-100;
+    @apply w-4 h-(--inp-h) opacity-100;
   }
 
   .span-count {
