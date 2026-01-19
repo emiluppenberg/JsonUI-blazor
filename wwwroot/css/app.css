@@ -291,10 +291,6 @@
   .flex {
     display: flex;
   }
-  .size-40 {
-    width: calc(var(--spacing) * 40);
-    height: calc(var(--spacing) * 40);
-  }
   .h-0 {
     height: calc(var(--spacing) * 0);
   }
@@ -521,6 +517,11 @@
       @media (hover: hover) {
         color: var(--color-blue-500);
       }
+    }
+  }
+  .md\:w-80 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 80);
     }
   }
   .md\:w-auto {
