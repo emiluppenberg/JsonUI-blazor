@@ -16,14 +16,17 @@
   --sticky: var(--color-teal-600);
   --sticky-hov: var(--color-teal-700);
   --sticky-hov-ol: var(--color-teal-100);
+  --sticky-selection-active: var(--color-teal-800);
   --node: var(--color-teal-400);
   --node-hov: var(--color-teal-500);
   --node-hov-ol: var(--color-teal-100);
+  --node-selection-active: var(--color-teal-600);
   --kvp: var(--color-teal-200);
   --kvp-hov: var(--color-teal-300);
   --kvp-sel: var(--color-cyan-400);
   --kvp-sel-hov: var(--color-cyan-500);
   --kvp-sel-hov-ol: var(--color-cyan-100);
+  --kvp-selection-active: var(--color-cyan-600);
   --bg-primary: var(--color-slate-800);
 }
 
@@ -217,7 +220,7 @@
   }
 
   .main-page {
-    @apply pt-5 flex flex-col w-screen h-screen bg-cyan-900;
+    @apply pt-5 pb-12 flex flex-col w-screen h-screen bg-cyan-900;
   }
 
   .node-col-container {
@@ -233,7 +236,7 @@
   }
 
   .app-container {
-    @apply flex flex-col px-2 w-full h-11/12 overflow-y-auto relative;
+    @apply flex flex-col px-2 pb-2 w-full h-11/12 overflow-y-auto relative;
   }
 
   .json-container {
@@ -252,9 +255,17 @@
     @apply flex space-x-2 w-90 md:w-200 bg-cyan-600 text-white text-xs md:text-sm p-5 items-center select-none;
   }
 
+  .bottom-container {
+    @apply px-2 pb-2 flex items-center w-full min-h-1/12 max-h-1/12;
+  }
+
   @media (min-width: 768px) {
+    .main-page {
+      @apply pb-0;
+    }
+
     .app-container {
-      @apply pb-2 flex-row;
+      @apply flex-row;
     }
 
     .json-container {
@@ -266,16 +277,8 @@
     }
   }
 
-  .bottom-container {
-    @apply p-2 flex items-center w-full min-h-1/12 max-h-1/12;
-  }
-
   .bottom-content {
     @apply flex items-center w-full h-full bg-(--bg-primary) select-none overflow-hidden;
-  }
-
-  .main-ads-container {
-    @apply flex flex-1 w-full justify-around items-center bg-(--bg-primary);
   }
 
   .nav-container {

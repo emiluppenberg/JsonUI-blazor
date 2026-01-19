@@ -27,20 +27,17 @@
     @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
     {
       <div>
-        <button class="sticky-option-button" @onclick='async () => await SetNode("nullable", CurrentNode)'>
+        <button class="sticky-option-button" @onclick='async () => await SetNodeNullable(CurrentNode)'>
           <label class="sticky-option-label">Nullable</label>
           <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
         </button>
       </div>
       @if (CurrentNode.Type == JNodeType.Array)
       {
-        <select class="sticky-option-select" @bind="CurrentNode.CollectionAs"
-          @bind:after='async () => await OnRenderCode.InvokeAsync()'>
-          @foreach (var o in LangOptions.GetCollectionOptions())
-          {
-            <option value="@o">@o.ToString()</option>
-          }
-        </select>
+        <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--sticky)"
+          SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
+          CurrentSelected="@CurrentNode.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
+          IsSticky="true" />
       }
     }
   </div>
@@ -73,20 +70,16 @@
         @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
         {
           <div>
-            <button class="node-option-button" @onclick='async () => await SetNode("nullable", child)'>
+            <button class="node-option-button" @onclick='async () => await SetNodeNullable(child)'>
               <label class="node-option-label">Nullable</label>
               <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
             </button>
           </div>
           @if (child.Type == JNodeType.Array)
           {
-            <select class="node-option-select" @bind="child.CollectionAs"
-              @bind:after='async () => await OnRenderCode.InvokeAsync()'>
-              @foreach (var o in LangOptions.GetCollectionOptions())
-              {
-                <option value="@o">@o.ToString()</option>
-              }
-            </select>
+            <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--node)"
+              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
+              CurrentSelected="@child.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(child, arg))" />
           }
         }
       </div>
@@ -97,27 +90,23 @@
       <div class="transition-gen @(jnKvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
         @onmouseover="() => { IsMouseOverKvp = jnKvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
         <button @key="jnKvp" class="transition-gen @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
-          @onclick='async () => await SetKvp("selected", jnKvp)'>
+          @onclick='async () => await SetKvpSelected(jnKvp)'>
           <span class="key-kvp">@jnKvp.Kvp.Key</span>
           <span class="value-kvp">@jnKvp.Kvp.Value</span>
         </button>
         @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
         {
           <div>
-            <button class="kvp-option-button" @onclick='async () => await SetKvp("nullable", jnKvp)'>
+            <button class="kvp-option-button" @onclick='async () => await SetKvpNullable(jnKvp)'>
               <label class="kvp-option-label">Nullable</label>
               <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
             </button>
           </div>
           @if (jnKvp.IsArray())
           {
-            <select class="kvp-option-select" @bind="jnKvp.CollectionAs"
-              @bind:after='async () => await SetKvp("collection", jnKvp)'>
-              @foreach (var o in LangOptions.GetCollectionOptions())
-              {
-                <option value="@o">@o.ToString()</option>
-              }
-            </select>
+            <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--kvp-sel)"
+              SelectedColor="bg-(--kvp-selection-active)" OutlineColor="outline-(--kvp-sel-hov-ol)"
+              CurrentSelected="@jnKvp.CollectionAs" OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))" />
           }
         }
       </div>
@@ -188,35 +177,37 @@
     await OnNodeToggled.InvokeAsync(node);
   }
 
-  async Task SetKvp(string action, JNodeKvp jnKvp)
+  async Task SetKvpSelected(JNodeKvp kvp)
   {
-    if (action == "selected")
-    {
-      jnKvp.IsSelected = !jnKvp.IsSelected;
-      var args = new KvpSelectedArgs(CurrentNode, jnKvp.IsSelected);
-      await OnKvpSelected.InvokeAsync(args);
-      await OnRenderCode.InvokeAsync();
-    }
-    if (action == "nullable")
-    {
-      jnKvp.Nullable = !jnKvp.Nullable;
-      await OnRenderCode.InvokeAsync();
-    }
-    if (action == "collection")
-    {
-      await OnRenderCode.InvokeAsync();
-    }
+    kvp.IsSelected = !kvp.IsSelected;
+    var args = new KvpSelectedArgs(CurrentNode, kvp.IsSelected);
+    await OnKvpSelected.InvokeAsync(args);
+    await OnRenderCode.InvokeAsync();
   }
 
-  async Task SetNode(string action, JNode node)
+  async Task SetKvpNullable(JNodeKvp kvp)
   {
-    if (action == "nullable")
-    {
-      node.Nullable = !node.Nullable;
-      await OnRenderCode.InvokeAsync();
-    }
+    kvp.Nullable = !kvp.Nullable;
+    await OnRenderCode.InvokeAsync();
   }
 
+  async Task SetKvpCollection(JNodeKvp kvp, string collection)
+  {
+    kvp.CollectionAs = collection;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeNullable(JNode node)
+  {
+    node.Nullable = !node.Nullable;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeCollection(JNode node, string collection)
+  {
+    node.CollectionAs = collection;
+    await OnRenderCode.InvokeAsync();
+  }
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
   async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);

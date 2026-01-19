@@ -1,12 +1,19 @@
 <div class="relative">
-  <div class="flex flex-col absolute top-(--inp-h) left-0 w-20 h-fit text-xs font-medium hover:border @BackgroundColor">
-    @foreach (var option in Collection)
+  <div
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @(IsSticky ? "-translate-y-[calc(var(--inp-h)/2)]" : "")"
+    @onclick="() => { IsToggled = !IsToggled; }">
+    <button
+      class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
+    @if (IsToggled)
     {
-      <button
-        class="w-full h-(--inp-h) hover:border truncate @HoverColor @(option.ToString() == CurrentSelected ? SelectedColor : "")"
-        @onclick="async () => await OnSelected.InvokeAsync(option.ToString())">
-        @option.ToString()
-      </button>
+      @foreach (var option in Collection)
+      {
+        <button
+          class="w-full h-(--inp-h) hover:border truncate @(option.ToString() == CurrentSelected ? "bg-white opacity-50" : "")"
+          @onclick="async () => await OnSelected.InvokeAsync(option.ToString())" @onclick:stopPropagation="true">
+          @option.ToString()
+        </button>
+      }
     }
   </div>
 </div>
@@ -17,12 +24,16 @@
   [Parameter]
   public required string BackgroundColor { get; set; }
   [Parameter]
-  public required string HoverColor { get; set; }
+  public required string OutlineColor { get; set; }
   [Parameter]
   public required string SelectedColor { get; set; }
   [Parameter]
   public required string CurrentSelected { get; set; }
+  [Parameter]
+  public bool IsSticky { get; set; }
 
   [Parameter]
   public EventCallback<string> OnSelected { get; set; }
+
+  public bool IsToggled { get; set; }
 }
