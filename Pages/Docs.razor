@@ -1,6 +1,6 @@
-@page "/documentation"
+@page "/docs"
 
-<PageTitle>Documentation</PageTitle>
+<PageTitle>PickJSON - Docs</PageTitle>
 
 <div class="w-full px-5 md:px-50 py-12 text-white overflow-y-scroll">
 
@@ -29,15 +29,29 @@
 
   <p class="mb-6 leading-relaxed">
     Press <strong>Load URL</strong> and paste a URL into the input field.<br />
-    If needed, provide any additional headers required for authorization etc.<br /><br />
-    <strong>Example: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Bearer
-      -your-token-</i><br /><br />
-    If the URL uses <strong>Basic</strong> authorization, set Header value to:<br />
-    <i>Basic -username:password-</i> and check Base64.<br />
-    OR -<br />
-    <i>Basic -your-base64-login-</i><br />
-    Press <strong>OK</strong>.
+    If needed, provide any additional headers required for authorization etc.
   </p>
+
+  <p class="leading-relaxed">
+    <strong>Example: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Bearer
+      -your-token-</i>
+  </p>
+  <img src="docs-header-ex-1.png" class="w-100 mb-6" />
+
+  <p class="mb-2 leading-relaxed">
+    If the URL uses <strong>Basic</strong> authorization
+  </p>
+
+  <p class="leading-relaxed">
+    <strong>Example 1: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Basic -username:password-</i>
+  </p>
+  <img src="docs-header-ex-2.png" class="w-100 mb-6" />
+
+  <p class="leading-relaxed">
+    <strong>Example 2: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Basic -base64-key-</i>,
+    <u>check Base64</u>
+  </p>
+  <img src="docs-header-ex-3.png" class="w-100 mb-6" />
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
     Select key-value-pairs

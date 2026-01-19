@@ -6,7 +6,7 @@
 @using System.IO.IsolatedStorage
 @inject HttpClient httpClient
 
-<PageTitle>Tool</PageTitle>
+<PageTitle>PickJSON - Tool</PageTitle>
 
 <div class="app-container" id="app-container">
 
@@ -46,9 +46,9 @@
           </div>
           <div class="w-1/2 flex">
             <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
-            <button class="load-button" @onclick="() => { header.ConvertToBase64 = !header.ConvertToBase64; }">
+            <button class="load-button" @onclick="() => { header.IsBase64 = !header.IsBase64; }">
               <label class="load-label">Base64</label>
-              <input type="checkbox" @bind="header.ConvertToBase64" class="load-checkbox" />
+              <input type="checkbox" @bind="header.IsBase64" class="load-checkbox" />
             </button>
           </div>
         </div>
@@ -122,6 +122,28 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<div class="bottom-container">
+  <div class="bottom-content text-xs text-cyan-400 md:text-base md:justify-between">
+    <h1 class="ml-2 text-xl font-medium">PickJSON</h1>
+
+    <div class="mx-0 flex flex-none flex-col scale-50 md:scale-100 md:flex-row md:space-x-10">
+      <p class="text-start italic">
+        Visualize JSON data
+      </p>
+
+      <p class="ml-5 md:ml-0 text-start italic">
+        Pick properties interactively
+      </p>
+
+      <p class="ml-10 md:ml-0 text-start italic">
+        Generate clean, configurable code
+      </p>
+    </div>
+
+    <img src="pickjson.png" class="w-10 md:w-12 md:mr-2" />
   </div>
 </div>
 
@@ -236,7 +258,7 @@
       {
         var value = ch.Value;
 
-        if (ch.ConvertToBase64)
+        if (!ch.IsBase64)
         {
           var splitVal = ch.Value.Split(' ');
           var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(splitVal[1]));

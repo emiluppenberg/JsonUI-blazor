@@ -16,7 +16,7 @@ public class CustomHeader
 {
   public string Key { get; set; } = "";
   public string Value { get; set; } = "";
-  public bool ConvertToBase64 { get; set; }
+  public bool IsBase64 { get; set; }
 }
 
 public static class General

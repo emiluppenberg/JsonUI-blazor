@@ -1,0 +1,16 @@
+{
+  "name": "PickJSON",
+  "short_name": "PickJSON",
+  "start_url": "/",
+  "description": "Visualize JSON data - Pick properties interactively - Generate clean, configurable code.",
+  "icons": [
+    {
+      "src": "pickjson.png",
+      "sizes": "911x911",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#0f172a",
+  "scope": "/",
+  "display": "standalone"
+}
