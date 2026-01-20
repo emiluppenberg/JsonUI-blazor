@@ -163,7 +163,6 @@
   public string? RootName { get; set; }
 
   public bool CookieConsent { get; set; }
-
   private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
 
   protected override async Task OnInitializedAsync()
