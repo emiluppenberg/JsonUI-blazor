@@ -53,17 +53,18 @@ public class TypeScriptOptions : ILanguageOptions
 
     for (int i = 0; i < jnc.Kvps.Count; i++)
     {
-      var datatype = jnc.Kvps[i].Kvp.Value;
+      var jnKvp = jnc.Kvps[i];
+      var datatype = jnKvp.Kvp.Value;
 
-      datatype = jnc.Kvps[i].Nested ?
-        this.NamingConvention.Parse(datatype) : datatype;
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
-      datatype = jnc.Kvps[i].CollectionAs is not null ?
-        ConfigureCollection(datatype, jnc.Kvps[i].Nullable, jnc.Kvps[i].CollectionAs!, jnc.Kvps[i].CollectionItemNullable!.Value) : datatype;
-      datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is null ? $"{datatype} | null" : datatype;
+      datatype = jnKvp.CollectionAs is not null ?
+        ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) : datatype;
 
-      var propName = this.NamingConvention.Parse(jnc.Kvps[i].Kvp.Key);
-      var optional = jnc.Kvps[i].Optional ? "?" : "";
+      datatype = jnKvp.Nullable && jnKvp.CollectionAs is null ? $"{datatype} | null" : datatype;
+
+      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
+      var optional = jnKvp.Optional ? "?" : "";
       var propLine = $"  {propName}{optional}: {datatype};{Environment.NewLine}";
 
       typestr += propLine;

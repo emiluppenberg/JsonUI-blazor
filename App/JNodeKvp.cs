@@ -24,6 +24,7 @@ public class JNodeKvp
     Kvp = new KeyValuePair<string, string>(node.Name, datatype);
     Nested = node.Parent is not null;
     Nullable = node.Nullable;
+    Optional = node.Optional;
     CollectionAs = node.CollectionAs;
     CollectionItemNullable = node.CollectionItemNullable;
   }

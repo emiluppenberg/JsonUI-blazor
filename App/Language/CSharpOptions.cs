@@ -38,24 +38,23 @@ public class CSharpOptions : ILanguageOptions
 
     for (int i = 0; i < jnc.Kvps.Count; i++)
     {
-      var datatype = jnc.Kvps[i].Kvp.Value;
+      var jnKvp = jnc.Kvps[i];
+      var datatype = jnKvp.Kvp.Value;
 
-      datatype = jnc.Kvps[i].Nested ?
-        this.NamingConvention.Parse(datatype) : datatype;
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
 
-      datatype = jnc.Kvps[i].Nullable ? $"{datatype}?" : datatype;
-      datatype = jnc.Kvps[i].CollectionAs is not null ?
-        ConfigureCollection(datatype, jnc.Kvps[i].Nullable, jnc.Kvps[i].CollectionAs!, jnc.Kvps[i].CollectionItemNullable!.Value) : datatype;
+      datatype = jnKvp.CollectionAs is not null ?
+        ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) :
+        datatype;
 
-      datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null && jnc.Kvps[i].CollectionAs is not "Array" ? $"{datatype}?" : datatype;
+      datatype = jnKvp.Nullable ? $"{datatype}?" : datatype;
 
-      var propName = this.NamingConvention.Parse(jnc.Kvps[i].Kvp.Key);
+      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
 
       var jsonAnnotation = this.CSharpJsonOptions is not null && this.NamingConvention.Name is not "None" ?
-        $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" :
-        "";
+        $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" : "";
 
       var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
       var newLine = jsonAnnotation.Length > 0 && i != jnc.Kvps.Count - 1 ? Environment.NewLine : "";
@@ -74,25 +73,19 @@ public class CSharpOptions : ILanguageOptions
     {
       case CSharpCollections.List:
         datatype = datatype.Replace("[]", "");
-        datatype = $"List<{datatype}>";
+        datatype = collectionItemNullable ? $"List<{datatype}?>" : $"List<{datatype}>";
         break;
       case CSharpCollections.IEnumerable:
         datatype = datatype.Replace("[]", "");
-        datatype = $"IEnumerable<{datatype}>";
+        datatype = collectionItemNullable ? $"IEnumerable<{datatype}?>" : $"IEnumerable<{datatype}>";
         break;
       case CSharpCollections.ICollection:
         datatype = datatype.Replace("[]", "");
-        datatype = $"ICollection<{datatype}>";
+        datatype = collectionItemNullable ? $"ICollection<{datatype}?>" : $"ICollection<{datatype}>";
         break;
       case CSharpCollections.Array:
-        var split = datatype.Contains('?') ?
-        new[]
-        {
-          datatype.Substring(0, datatype.IndexOf('[')),
-          datatype.Substring(datatype.IndexOf('['))
-        } :
-        null;
-        datatype = split is not null ? $"{split[0]}?{split[1]}" : $"{datatype}";
+        datatype = datatype.Replace("[]", "");
+        datatype = collectionItemNullable ? $"{datatype}?[]" : $"{datatype}[]";
         break;
     }
 

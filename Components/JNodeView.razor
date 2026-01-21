@@ -100,7 +100,7 @@
               BackgroundColor="bg-(--node)" SelectedColor="bg-(--node-selection-active)"
               OutlineColor="outline-(--node-hov-ol)" CurrentSelected="@child.CollectionAs"
               OnSelected="@(async arg => await SetNodeCollection(child, arg))"
-              OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)" />
+              OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)" />
           }
         }
       </div>

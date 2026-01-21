@@ -114,7 +114,7 @@
       }
 
       <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
-        @if (LangOptions.Language == "CSharpOptions")
+        @if (LangOptions.Language == "C#")
         {
           <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
             OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
