@@ -2,7 +2,7 @@
   "name": "PickJSON",
   "short_name": "PickJSON",
   "start_url": "/",
-  "description": "Visualize JSON data - Pick properties interactively - Generate clean, configurable code.",
+  "description": "Visualize JSON data – Pick properties interactively – Generate clean, configurable code. Supported languages: C#, TypeScript",
   "icons": [
     {
       "src": "pickjson.png",
