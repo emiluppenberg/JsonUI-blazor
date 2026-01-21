@@ -22,7 +22,7 @@ public static class JNodeMaster
 
     var langNumber = langOptions.Language == "C#" ? "int" : "number";
     var langBoolean = langOptions.Language == "C#" ? "bool" : "boolean";
-    var langDate = langOptions.Language == "C#" ? "DateTime" : "date";
+    var langDate = langOptions.Language == "C#" ? "DateTime" : "Date";
     var langNull = langOptions.Language == "C#" ? "object" : "any";
 
     try
@@ -245,29 +245,26 @@ public static class JNodeMaster
 
           var lineage = currentObject.Split('-');
           currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
-          value += "[]";
 
           if (!model.ContainsKey(currentObject))
           {
-            model.Add(currentObject, new() { [currentProperty] = value });
+            model.Add(currentObject, new() { [currentProperty] = $"{value}[]" });
             continue;
           }
           else if (model[currentObject].ContainsKey(currentProperty))
           {
             if (model[currentObject][currentProperty].Contains(langNull))
             {
-              model[currentObject][currentProperty] = value;
+              model[currentObject][currentProperty] = $"{value}[]";
               continue;
             }
-            else if (model[currentObject][currentProperty] != value)
+            else if (!model[currentObject][currentProperty].Contains(value))
             {
               switch (langOptions.Language)
               {
                 case "TypeScript":
-                  if (!model[currentObject][currentProperty].Contains(value))
-                  {
-                    model[currentObject][currentProperty] += $" | {value}";
-                  }
+                  var oldUnions = model[currentObject][currentProperty].Replace("[]", "").Replace("(", "").Replace(")", "");
+                  model[currentObject][currentProperty] = $"({oldUnions} | {value})[]";
                   break;
                 case "C#":
                   currentProperty += $"_{value.Replace("[]", "")}";

@@ -28,13 +28,11 @@ public class TypeScriptOptions : ILanguageOptions
     switch (_collection)
     {
       case TypeScriptCollections.Set:
-        datatype = datatype.Replace("[]", "");
+        datatype = isNullable ? $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")})" : datatype.Replace("[]", "");
         datatype = isNullable ? $"Set<{datatype}> | null" : $"Set<{datatype}>";
         break;
       case TypeScriptCollections.Array:
-        datatype = datatype.Replace("[]", "");
-        datatype = datatype.Replace(" | null", "").Contains("|") ? $"({datatype})[]" : $"{datatype}[]";
-        datatype = isNullable ? $"{datatype} | null" : datatype;
+        datatype = isNullable ? $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")})[] | null" : datatype;
         break;
     }
 
