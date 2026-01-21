@@ -32,12 +32,22 @@
           <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
         </button>
       </div>
+      @if (LangOptions.Language == "TypeScript")
+      {
+        <div>
+          <button class="sticky-option-button" @onclick='async () => await SetNodeOptional(CurrentNode)'>
+            <label class="sticky-option-label">Optional</label>
+            <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Optional" />
+          </button>
+        </div>
+      }
       @if (CurrentNode.Type == JNodeType.Array)
       {
-        <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--sticky)"
+        <Selection CollectionItemNullable="CurrentNode.CollectionItemNullable"
+          Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--sticky)"
           SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
           CurrentSelected="@CurrentNode.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
-          IsSticky="true" />
+          OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)" IsSticky="true" />
       }
     }
   </div>
@@ -75,11 +85,22 @@
               <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
             </button>
           </div>
+          @if (LangOptions.Language == "TypeScript")
+          {
+            <div>
+              <button class="node-option-button" @onclick='async () => await SetNodeOptional(child)'>
+                <label class="node-option-label">Optional</label>
+                <input class="node-option-checkbox" type="checkbox" @bind="child.Optional" />
+              </button>
+            </div>
+          }
           @if (child.Type == JNodeType.Array)
           {
-            <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--node)"
-              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
-              CurrentSelected="@child.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(child, arg))" />
+            <Selection CollectionItemNullable="child.CollectionItemNullable" Collection="LangOptions.GetCollectionOptions()"
+              BackgroundColor="bg-(--node)" SelectedColor="bg-(--node-selection-active)"
+              OutlineColor="outline-(--node-hov-ol)" CurrentSelected="@child.CollectionAs"
+              OnSelected="@(async arg => await SetNodeCollection(child, arg))"
+              OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)" />
           }
         }
       </div>
@@ -103,11 +124,22 @@
               <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
             </button>
           </div>
+          @if (LangOptions.Language == "TypeScript")
+          {
+            <div>
+              <button class="kvp-option-button" @onclick='async () => await SetKvpOptional(jnKvp)'>
+                <label class="kvp-option-label">Optional</label>
+                <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Optional" />
+              </button>
+            </div>
+          }
           @if (jnKvp.IsArray())
           {
-            <Selection Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--kvp-sel)"
-              SelectedColor="bg-(--kvp-selection-active)" OutlineColor="outline-(--kvp-sel-hov-ol)"
-              CurrentSelected="@jnKvp.CollectionAs" OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))" />
+            <Selection CollectionItemNullable="jnKvp.CollectionItemNullable" Collection="LangOptions.GetCollectionOptions()"
+              BackgroundColor="bg-(--kvp-sel)" SelectedColor="bg-(--kvp-selection-active)"
+              OutlineColor="outline-(--kvp-sel-hov-ol)" CurrentSelected="@jnKvp.CollectionAs"
+              OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
+              OnSetCollectionItemNullable="async () => await SetKvpCollectionItemNullable(jnKvp)" />
           }
         }
       </div>
@@ -192,9 +224,21 @@
     await OnRenderCode.InvokeAsync();
   }
 
+  async Task SetKvpOptional(JNodeKvp kvp)
+  {
+    kvp.Optional = !kvp.Optional;
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task SetKvpCollection(JNodeKvp kvp, string collection)
   {
     kvp.CollectionAs = collection;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetKvpCollectionItemNullable(JNodeKvp kvp)
+  {
+    kvp.CollectionItemNullable = !kvp.CollectionItemNullable;
     await OnRenderCode.InvokeAsync();
   }
 
@@ -204,11 +248,24 @@
     await OnRenderCode.InvokeAsync();
   }
 
+  async Task SetNodeOptional(JNode node)
+  {
+    node.Optional = !node.Optional;
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task SetNodeCollection(JNode node, string collection)
   {
     node.CollectionAs = collection;
     await OnRenderCode.InvokeAsync();
   }
+
+  async Task SetNodeCollectionItemNullable(JNode node)
+  {
+    node.CollectionItemNullable = !node.CollectionItemNullable;
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
 
   async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);

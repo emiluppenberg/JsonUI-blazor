@@ -81,21 +81,67 @@
   <p class="mb-6 leading-relaxed">
     Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
     Primitive types and arrays are noted as-is.<br />
-    Primitive types noted as 'object' or 'object[]' means the JSON value was null or an empty array, meaning the
-    datatype
-    cannot be inferred.
+    When the JSON value is null or an empty array, the type is noted as 'object' or 'object[]' (C#), 'any' or 'any[]'
+    (TypeScript).
   </p>
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
     Configure generated code
   </h2>
 
-  <p class="mb-6 leading-relaxed">
-    Configure the language-specific options to suit your application.
-  </p>
+  <h3 class="mt-6 mb-2 text-lg font-light italic">
+    General language options
+  </h3>
+
+  <div class="px-6">
+
+    <h4 class="mt-4 mb-2 font-light">
+      Collections
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6 leading-relaxed">
+      <div class="flex">
+        <p class="w-25"><i>C#</i></p>
+        <p>List, IEnumerable, ICollection, Array</p>
+      </div>
+      <div class="flex">
+        <p class="w-25"><i>TypeScript</i></p>
+        <p>Array, Set</p>
+      </div>
+
+      <p class="mt-3 mb-3">
+        Selecting a collection type in the menu will set all collections across all classes
+        to that type.
+      </p>
+
+      <p class="mb-3">
+        Selecting a collection type in the rendered tree will set that specific
+        key-value-pair to that type.
+      </p>
+
+      <p class="mb-3">
+        Collections can be set to allow null items
+      </p>
+    </ul>
+
+    <h4 class="mt-4 mb-2 font-light">
+      Nullable
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6 leading-relaxed">
+      <p class="mb-3">
+        Setting nullable in the menu will toggle nullable for all properties across all classes.
+      </p>
+
+      <p class="mb-3">
+        Setting nullable in the rendered tree will toggle nullable for that specific
+        property.
+      </p>
+    </ul>
+  </div>
 
   <h3 class="mt-6 mb-2 text-lg font-light italic">
-    C#
+    C# options
   </h3>
 
   <div class="px-6">
@@ -119,38 +165,7 @@
       </p>
     </ul>
 
-    <h4 class="mt-4 mb-2 font-light">
-      Collection type
-    </h4>
-
-    <ul class="mb-6 list-disc space-y-1 pl-6">
-      <p class="mb-3 leading-relaxed">
-        Selecting a collection type in the menu will set all collections across all classes
-        to that type.
-      </p>
-
-      <p class="mb-6 leading-relaxed">
-        Selecting a collection type in the rendered tree will set that specific
-        key-value-pair to that type.
-      </p>
-    </ul>
-
-    <h4 class="mt-4 mb-2 font-light">
-      Nullable type
-    </h4>
-
-    <ul class="mb-6 list-disc space-y-1 pl-6">
-      <p class="mb-3 leading-relaxed">
-        Setting nullable in the menu will toggle nullable for all properties across all classes.
-      </p>
-
-      <p class="mb-6 leading-relaxed">
-        Setting nullable in the rendered tree will toggle nullable for that specific
-        key-value-pair.
-      </p>
-    </ul>
-
-    <h4 class="mt-4 mb-2 font-light">
+    @* <h4 class="mt-4 mb-2 font-light">
       Annotations (coming soon)
     </h4>
 
@@ -158,16 +173,29 @@
       <p class="mb-6 leading-relaxed">
         Select the annotations you need for any key-value-pair.
       </p>
-    </ul>
+    </ul> *@
   </div>
 
   <h3 class="mt-8 mb-2 text-lg font-light italic">
-    TypeScript
+    TypeScript options
   </h3>
 
-  <p class="mb-6 leading-relaxed">
-    TypeScript support coming soon.
-  </p>
+  <div class="px-6">
+    <h4 class="mt-4 mb-2 font-light">
+      Optional
+    </h4>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6 leading-relaxed">
+      <p class="mb-3">
+        Setting optional in the menu will toggle optional for all properties across all classes.
+      </p>
+
+      <p class="mb-6">
+        Setting optional in the rendered tree will toggle optional for that specific
+        property.
+      </p>
+    </ul>
+  </div>
 </div>
 
 @code {

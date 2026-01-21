@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Formats.Asn1;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,6 +19,11 @@ public static class JNodeMaster
     var isArray = false;
     var bytes = Encoding.UTF8.GetBytes(rawContent);
     var reader = new Utf8JsonReader(bytes);
+
+    var langNumber = langOptions.Language == "C#" ? "int" : "number";
+    var langBoolean = langOptions.Language == "C#" ? "bool" : "boolean";
+    var langDate = langOptions.Language == "C#" ? "DateTime" : "Date";
+    var langNull = langOptions.Language == "C#" ? "object" : "any";
 
     try
     {
@@ -77,14 +83,14 @@ public static class JNodeMaster
                 {
                   if (!model[key].ContainsKey(currentProperty) && !model.ContainsKey(arrayObjectKey))
                   {
-                    model[key].Add(currentProperty, "object[]");
+                    model[key].Add(currentProperty, $"{langNull}[]");
                   }
                 }
               }
             }
             else
             {
-              model.Add($"{currentArrayParentKey}{rootType}", new() { [currentProperty] = "object[]" });
+              model.Add($"{currentArrayParentKey}{rootType}", new() { [currentProperty] = $"{langNull}[]" });
             }
           }
 
@@ -126,7 +132,7 @@ public static class JNodeMaster
             continue;
           }
 
-          var value = "object";
+          var value = langNull;
 
           if (reader.TokenType == JsonTokenType.String)
           {
@@ -136,18 +142,18 @@ public static class JNodeMaster
 
             if (DateTime.TryParse(parseString, out _))
             {
-              value = langOptions.Language == "C#" ? "DateTime" : "date";
+              value = langDate;
             }
           }
 
           if (reader.TokenType == JsonTokenType.Number)
           {
-            value = "int";
+            value = langNumber;
           }
 
           if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
           {
-            value = "bool";
+            value = langBoolean;
           }
 
           string? currentObject = null;
@@ -172,18 +178,26 @@ public static class JNodeMaster
           if (!model.ContainsKey(currentObject))
           {
             model.Add(currentObject, new() { [currentProperty] = value });
+            continue;
           }
           else if (model[currentObject].ContainsKey(currentProperty))
           {
-            if (model[currentObject][currentProperty] != value)
+            if (model[currentObject][currentProperty].Contains(langNull))
+            {
+              model[currentObject][currentProperty] = value;
+              continue;
+            }
+            else if (model[currentObject][currentProperty] != value)
             {
               currentProperty += $"_{value}";
               model[currentObject].Add(currentProperty, value);
+              continue;
             }
           }
           else
           {
             model[currentObject].Add(currentProperty, value);
+            continue;
           }
 
           continue;
@@ -195,7 +209,7 @@ public static class JNodeMaster
           isArray && reader.TokenType == JsonTokenType.True ||
           isArray && reader.TokenType == JsonTokenType.False)
         {
-          var value = "object";
+          var value = langNull;
 
           if (reader.TokenType == JsonTokenType.String)
           {
@@ -205,18 +219,18 @@ public static class JNodeMaster
 
             if (DateTime.TryParse(parseString, out _))
             {
-              value = langOptions.Language == "C#" ? "DateTime" : "date";
+              value = langDate;
             }
           }
 
           if (reader.TokenType == JsonTokenType.Number)
           {
-            value = "int";
+            value = langNumber;
           }
 
           if (reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False)
           {
-            value = "bool";
+            value = langBoolean;
           }
 
           string? currentObject = null;
@@ -231,23 +245,45 @@ public static class JNodeMaster
 
           var lineage = currentObject.Split('-');
           currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
-          value += "[]";
 
           if (!model.ContainsKey(currentObject))
           {
-            model.Add(currentObject, new() { [currentProperty] = value });
+            model.Add(currentObject, new() { [currentProperty] = $"{value}[]" });
+            continue;
           }
           else if (model[currentObject].ContainsKey(currentProperty))
           {
-            if (model[currentObject][currentProperty] != value)
+            if (model[currentObject][currentProperty].Contains(langNull))
             {
-              currentProperty += $"_{value.Replace("[]", "")}";
-              model[currentObject].Add(currentProperty, value);
+              model[currentObject][currentProperty] = $"{value}[]";
+              continue;
+            }
+            else if (!model[currentObject][currentProperty].Contains(value))
+            {
+              switch (langOptions.Language)
+              {
+                case "TypeScript":
+                  var oldUnions = model[currentObject][currentProperty].Replace("[]", "").Replace("()", "").Replace(")", "");
+                  model[currentObject][currentProperty] = $"({oldUnions} | {value})[]";
+                  break;
+                case "C#":
+                  currentProperty += $"_{value.Replace("[]", "")}";
+
+                  if (!model[currentObject].ContainsKey(currentProperty))
+                  {
+                    model[currentObject].Add(currentProperty, value);
+                  }
+
+                  break;
+              }
+
+              continue;
             }
           }
           else
           {
             model[currentObject].Add(currentProperty, value);
+            continue;
           }
         }
 
@@ -441,7 +477,7 @@ public static class JNodeMaster
     {
       var jnc = kvp.Value;
 
-      cs += options.GetClass(kvp.Value);
+      cs += options.ParseObject(kvp.Value);
     }
 
     return cs;
