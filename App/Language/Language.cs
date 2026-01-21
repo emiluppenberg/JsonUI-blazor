@@ -7,6 +7,7 @@ public enum CSharpCollections
 
 public interface ILanguageOptions
 {
+  public string Language { get; set; }
   public INamingConvention NamingConvention { get; set; }
   public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
 

@@ -92,7 +92,8 @@
         <button @key="jnKvp" class="transition-gen @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
           @onclick='async () => await SetKvpSelected(jnKvp)'>
           <span class="key-kvp">@jnKvp.Kvp.Key</span>
-          <span class="value-kvp">@jnKvp.Kvp.Value</span>
+          <span
+            class="value-kvp @(jnKvp.Kvp.Value.ToLower().Contains("date") ? "text-[0.55rem]" : "")">@jnKvp.Kvp.Value</span>
         </button>
         @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
         {

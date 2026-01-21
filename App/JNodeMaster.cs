@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using static General;
 
-public static class JNodeBuilder
+public static class JNodeMaster
 {
   public static List<JNode>? CreateFromJson(string rawContent, ILanguageOptions langOptions, string rootName)
   {
@@ -75,12 +75,6 @@ public static class JNodeBuilder
 
                 if (replacedKey.EndsWith(currentArrayParentKey))
                 {
-                  // if (model[key].ContainsKey(currentProperty) && model[key][currentProperty] != "object[]")
-                  // {
-                  //   currentProperty += "_object[]";
-                  //   model[key].Add(currentProperty, "object[]");
-                  //   continue;
-                  // }
                   if (!model[key].ContainsKey(currentProperty) && !model.ContainsKey(arrayObjectKey))
                   {
                     model[key].Add(currentProperty, "object[]");
@@ -137,6 +131,13 @@ public static class JNodeBuilder
           if (reader.TokenType == JsonTokenType.String)
           {
             value = "string";
+
+            var parseString = reader.GetString();
+
+            if (DateTime.TryParse(parseString, out _))
+            {
+              value = langOptions.Language == "C#" ? "DateTime" : "date";
+            }
           }
 
           if (reader.TokenType == JsonTokenType.Number)
@@ -199,6 +200,13 @@ public static class JNodeBuilder
           if (reader.TokenType == JsonTokenType.String)
           {
             value = "string";
+
+            var parseString = reader.GetString();
+
+            if (DateTime.TryParse(parseString, out _))
+            {
+              value = langOptions.Language == "C#" ? "DateTime" : "date";
+            }
           }
 
           if (reader.TokenType == JsonTokenType.Number)

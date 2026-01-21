@@ -211,7 +211,7 @@
   {
     RootName = RootName is null ? "Root" : RootName;
     var rootType = Json.StartsWith('{') ? "{}" : "[]";
-    JNodes = JNodeBuilder.CreateFromJson(json, LangOptions, RootName)!;
+    JNodes = JNodeMaster.CreateFromJson(json, LangOptions, RootName)!;
     Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{rootType}");
 
     if (Root is null)
@@ -335,6 +335,6 @@
 
   void HandleRenderCode()
   {
-    RenderCode = JNodeBuilder.JNodesToCode(JNodes, langOptions);
+    RenderCode = JNodeMaster.JNodesToCode(JNodes, langOptions);
   }
 }
