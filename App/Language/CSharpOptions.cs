@@ -1,18 +1,18 @@
-public interface ICSharpJsonOptions
+public interface ICSharpJsonOption
 {
   public string Name { get; }
   public string Using { get; }
   public string PropertyAnnotation { get; }
 }
 
-public class SystemTextJsonOption : ICSharpJsonOptions
+public class SystemTextJsonOption : ICSharpJsonOption
 {
   public string Name => "System.Text.Json";
   public string Using => "System.Text.Json.Serialization";
   public string PropertyAnnotation => "JsonPropertyName";
 }
 
-public class NewtonsoftJsonOption : ICSharpJsonOptions
+public class NewtonsoftJsonOption : ICSharpJsonOption
 {
   public string Name => "Newtonsoft.Json";
   public string Using => "Newtonsoft.Json";
@@ -23,9 +23,10 @@ public class CSharpOptions : ILanguageOptions
 {
   public string Language { get; } = "C#";
 
-  public INamingConvention NamingConvention { get; set; } = new LowerSnakeCase();
+  public INamingConvention NamingConvention { get; set; } = new AsIsCase();
 
-  public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
+  public ICSharpJsonOption? CSharpJsonOptions { get; set; }
+  public ITypeOption? TypeOption { get; set; }
 
   public Array GetCollectionOptions() => Enum.GetValues<CSharpCollections>();
 
@@ -33,8 +34,7 @@ public class CSharpOptions : ILanguageOptions
   {
     var className = this.NamingConvention.Parse(jnc.Name);
 
-    var classStr = $"public class {className} {Environment.NewLine}" +
-       $"{{{Environment.NewLine}";
+    var classStr = $"public class {className}{Environment.NewLine}{{{Environment.NewLine}";
 
     for (int i = 0; i < jnc.Kvps.Count; i++)
     {
@@ -65,11 +65,11 @@ public class CSharpOptions : ILanguageOptions
     return classStr + $"}}{Environment.NewLine}{Environment.NewLine}";
   }
 
-  public string ConfigureCollection(string datatype, string collectionAs)
+  public string ConfigureCollection(string datatype, string collection)
   {
-    var _collectionAs = Enum.Parse(typeof(CSharpCollections), collectionAs);
+    var _collection = Enum.Parse(typeof(CSharpCollections), collection);
 
-    switch (_collectionAs)
+    switch (_collection)
     {
       case CSharpCollections.List:
         datatype = datatype.Replace("[]", "");

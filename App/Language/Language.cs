@@ -14,23 +14,29 @@ public interface ILanguageOptions
 {
   public string Language { get; }
   public INamingConvention NamingConvention { get; set; }
-  public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
+  public ICSharpJsonOption? CSharpJsonOptions { get; set; }
+  public ITypeOption? TypeOption { get; set; }
 
   string ParseObject(JNodeClass jnc);
   Array GetCollectionOptions();
-  string ConfigureCollection(string datatype, string collectionAs);
+  string ConfigureCollection(string datatype, string collection);
 }
 
 public static class Language
 {
   public static List<INamingConvention> GetNamingConventions()
   {
-    return new List<INamingConvention> { new LowerSnakeCase(), new UpperSnakeCase(), new PascalCase() };
+    return new List<INamingConvention> { new AsIsCase(), new LowerSnakeCase(), new UpperSnakeCase(), new PascalCase() };
   }
 
-  public static List<ICSharpJsonOptions> GetCSharpJsonOptions()
+  public static List<ICSharpJsonOption> GetCSharpJsonOptions()
   {
-    return new List<ICSharpJsonOptions> { new SystemTextJsonOption(), new NewtonsoftJsonOption() };
+    return new List<ICSharpJsonOption> { new SystemTextJsonOption(), new NewtonsoftJsonOption() };
+  }
+
+  public static List<ITypeOption> GetTypeOptions()
+  {
+    return new List<ITypeOption> { new InterfaceTypeOption() };
   }
 }
 
@@ -38,6 +44,12 @@ public interface INamingConvention
 {
   public string Name { get; }
   public string Parse(string name);
+}
+
+public class AsIsCase : INamingConvention
+{
+  public string Name => "No naming convention";
+  public string Parse(string name) => name;
 }
 
 public class LowerSnakeCase : INamingConvention

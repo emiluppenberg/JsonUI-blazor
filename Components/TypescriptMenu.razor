@@ -1,5 +1,4 @@
-<select class="select-base" @bind="SetNamingConvention" @bind:after="async () => await HandleSetNamingConvention()"
-  disabled="@(LangOptions.CSharpJsonOptions is null)">
+<select class="select-base" @bind="setNamingConvention" @bind:after="async () => await HandleSetNamingConvention()">
   @foreach (var nc in Language.GetNamingConventions())
   {
     <option value="@nc.Name">@nc.Name</option>
@@ -8,7 +7,7 @@
 
 <button class="transition-gen button-base" @onclick="async () => await HandleSetNullable()">Nullable</button>
 
-<select class="select-base" @bind="SetCollection" @bind:after="async () => await HandleSetCollection()">
+<select class="select-base" @bind="setCollection" @bind:after="async () => await HandleSetCollection()">
   @for (int i = 0; i < LangOptions.GetCollectionOptions().Length; i++)
   {
     var collectionAs = LangOptions.GetCollectionOptions().GetValue(i)!.ToString();
@@ -16,13 +15,17 @@
   }
 </select>
 
-<select class="select-base" @bind="SetCSharpJsonOption" @bind:after="async () => await HandleSetCSharpJsonOption()">
-  <option selected value="null">No JSON library</option>
-  @foreach (var csjo in Language.GetCSharpJsonOptions())
+<select class="select-base" @bind="setTypeOption" @bind:after="async () => await HandleSetTypeOption()">
+  @foreach (var typeOption in Language.GetTypeOptions())
   {
-    <option value="@csjo.Name">@csjo.Name</option>
+    <option value="@typeOption.Name">@typeOption.Name</option>
   }
 </select>
+
+@if (setTypeOption == "Interface")
+{
+  <button class="transition-gen button-base" @onclick="async () => await HandleSetNullable()">Nullable</button>
+}
 
 @code {
   [Parameter]
@@ -32,7 +35,7 @@
   [Parameter]
   public EventCallback<bool> OnSetNullable { get; set; }
   [Parameter]
-  public EventCallback<ICSharpJsonOption?> OnSetCSharpJsonOption { get; set; }
+  public EventCallback<ITypeOption> OnSetTypeOption { get; set; }
   [Parameter]
   public EventCallback<INamingConvention> OnSetNamingConvention { get; set; }
 
@@ -43,18 +46,13 @@
     await OnSetNullable.InvokeAsync(setNullable);
   }
 
-  private string setCSharpJsonOption = null!;
-  public string SetCSharpJsonOption
+  private string setTypeOption = null!;
+  async Task HandleSetTypeOption()
   {
-    get => setCSharpJsonOption;
-    set => setCSharpJsonOption = value;
-  }
-  async Task HandleSetCSharpJsonOption()
-  {
-    var cSharpJsonOptions = Language.GetCSharpJsonOptions()
-    .FirstOrDefault(x => x.Name == setCSharpJsonOption);
+    var typeOption = Language.GetTypeOptions()
+    .FirstOrDefault(x => x.Name == setTypeOption);
 
-    if (cSharpJsonOptions is null)
+    if (typeOption is null)
     {
       var namingConvention = Language.GetNamingConventions()
       .First(x => x.Name == "No naming convention");
@@ -63,15 +61,10 @@
       await OnSetNamingConvention.InvokeAsync(namingConvention);
     }
 
-    await OnSetCSharpJsonOption.InvokeAsync(cSharpJsonOptions);
+    await OnSetTypeOption.InvokeAsync(typeOption);
   }
 
   private string setNamingConvention = null!;
-  public string SetNamingConvention
-  {
-    get => setNamingConvention;
-    set => setNamingConvention = value;
-  }
   async Task HandleSetNamingConvention()
   {
     var namingConvention = Language.GetNamingConventions()
@@ -81,11 +74,6 @@
   }
 
   private string setCollection = null!;
-  public string SetCollection
-  {
-    get => setCollection;
-    set => setCollection = value;
-  }
   async Task HandleSetCollection()
   {
     await OnSetCollection.InvokeAsync(setCollection);

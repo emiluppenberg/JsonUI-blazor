@@ -11,7 +11,10 @@
     "1492-10-12",
     "1969-07-20",
     "2000-01-01",
-    "2020-01-01"
+    "2020-01-01",
+    1,
+    2,
+    3
   ],
   "atmosphere": {
     "exists": true,
@@ -57,7 +60,7 @@
       "population": 0,
       "highest_peak": "Vinson Massif",
       "countries": [],
-      "major_rivers": [],
+      "major_rivers": [1, 2, 3],
       "last_census_date": null
     },
     {
@@ -65,7 +68,7 @@
       "population": 4600000000,
       "highest_peak": "Mount Everest",
       "countries": [],
-      "major_rivers": [],
+      "major_rivers": ["abc", "abc"],
       "last_census_date": "2020-01-01"
     },
     {

@@ -29,7 +29,7 @@
     <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
       <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
       <div class="flex w-full bg-(--bg-primary)">
-        <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson(Json)">OK</button>
+        <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson()">OK</button>
         <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
       </div>
     </div>
@@ -87,9 +87,9 @@
 
     <div class="code-menu">
 
-      <select class="select-base">
-        <option selected>C#</option>
-        @* <option>TypeScript</option> *@
+      <select class="select-base" @bind="SelectedLanguage" @bind:after="HandleSelectedLanguage">
+        <option selected value="C#">C#</option>
+        <option value="TypeScript">TypeScript</option>
       </select>
 
       <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
@@ -114,10 +114,15 @@
       }
 
       <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
-        @if (LangOptions.GetType().Name == "CSharpOptions")
+        @if (LangOptions.Language == "CSharpOptions")
         {
           <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
             OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
+        }
+        @if (LangOptions.Language == "TypeScript")
+        {
+          <TypescriptMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection"
+            OnSetNullable="HandleSetNullable" OnSetNamingConvention="HandleSetNamingConvention" />
         }
       </div>
 
@@ -165,11 +170,7 @@
   public bool CookieConsent { get; set; }
   private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
 
-  protected override async Task OnInitializedAsync()
-  {
-    Json = await httpClient.GetStringAsync("example.json");
-  }
-
+  private string SelectedLanguage { get; set; } = "C#";
   private ILanguageOptions langOptions = new CSharpOptions();
   public ILanguageOptions LangOptions
   {
@@ -181,10 +182,36 @@
     }
   }
 
+  protected override async Task OnInitializedAsync()
+  {
+    Json = await httpClient.GetStringAsync("example.json");
+  }
 
-  private void HandleSetCSharpJsonOption(ICSharpJsonOptions? cSharpJsonOptions)
+  private void HandleSelectedLanguage()
+  {
+    switch (SelectedLanguage)
+    {
+      case "C#":
+        LangOptions = new CSharpOptions();
+        break;
+      case "TypeScript":
+        LangOptions = new TypeScriptOptions();
+        break;
+    }
+
+    LoadJson();
+    HandleRenderCode();
+  }
+
+  private void HandleSetCSharpJsonOption(ICSharpJsonOption? cSharpJsonOptions)
   {
     LangOptions.CSharpJsonOptions = cSharpJsonOptions;
+    HandleRenderCode();
+  }
+
+  private void HandleSetTypeOption(ITypeOption typeOption)
+  {
+    LangOptions.TypeOption = typeOption;
     HandleRenderCode();
   }
 
@@ -207,11 +234,11 @@
     HandleRenderCode();
   }
 
-  void LoadJson(string json)
+  void LoadJson()
   {
     RootName = RootName is null ? "Root" : RootName;
     var rootType = Json.StartsWith('{') ? "{}" : "[]";
-    JNodes = JNodeMaster.CreateFromJson(json, LangOptions, RootName)!;
+    JNodes = JNodeMaster.CreateFromJson(Json, LangOptions, RootName)!;
     Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{rootType}");
 
     if (Root is null)
@@ -285,8 +312,8 @@
       var response = await httpClient.SendAsync(request);
       response.EnsureSuccessStatusCode();
 
-      var json = await response.Content.ReadAsStringAsync();
-      LoadJson(json);
+      Json = await response.Content.ReadAsStringAsync();
+      LoadJson();
     }
     catch (Exception ex)
     {
