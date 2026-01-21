@@ -1,9 +1,9 @@
-<select class="select-base" @bind="setNamingConvention" @bind:after="async () => await HandleSetNamingConvention()">
+@* <select class="select-base" @bind="setNamingConvention" @bind:after="async () => await HandleSetNamingConvention()">
   @foreach (var nc in Language.GetNamingConventions())
   {
     <option value="@nc.Name">@nc.Name</option>
   }
-</select>
+</select> *@
 
 <button class="transition-gen button-base" @onclick="async () => await HandleSetNullable()">Nullable</button>
 
