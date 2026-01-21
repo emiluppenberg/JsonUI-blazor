@@ -6,6 +6,13 @@
   "orbit_index": 3,
   "mean_radius_km": 6371.0,
   "mass_earths": 1.0,
+  "significant_dates": [
+    "0001-01-01",
+    "1492-10-12",
+    "1969-07-20",
+    "2000-01-01",
+    "2020-01-01"
+  ],
   "atmosphere": {
     "exists": true,
     "gas": [

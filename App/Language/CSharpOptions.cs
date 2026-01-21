@@ -21,6 +21,8 @@ public class NewtonsoftJsonOption : ICSharpJsonOptions
 
 public class CSharpOptions : ILanguageOptions
 {
+  public string Language { get; set; } = "C#";
+
   public INamingConvention NamingConvention { get; set; } = new None();
 
   public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
@@ -40,7 +42,9 @@ public class CSharpOptions : ILanguageOptions
 
       datatype = jnc.Kvps[i].Nested ?
         this.NamingConvention.ToCSharp(datatype) :
-        datatype.ToLower();
+        datatype;
+
+      datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
 
       datatype = jnc.Kvps[i].Nullable ? $"{datatype}?" : datatype;
       datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!) : datatype;
