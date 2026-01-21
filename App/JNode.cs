@@ -11,7 +11,9 @@ public class JNode
   public JNode? Parent { get; set; }
   public bool IsExpanded { get; set; }
   public bool Nullable { get; set; }
+  public bool Optional { get; set; }
   public string? CollectionAs { get; set; }
+  public bool? CollectionItemNullable { get; set; }
   public int TotalNestedSelected { get; set; }
 
   public JNode(string lineageKey, string parentKey, string name, List<JNodeKvp> keyValues, ILanguageOptions langOptions)
@@ -23,6 +25,7 @@ public class JNode
     KeyValues = keyValues;
     Children = new();
     CollectionAs = Type == JNodeType.Array ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
+    CollectionItemNullable = Type == JNodeType.Array ? false : null;
   }
 
   public void SetNullable(bool nullable)

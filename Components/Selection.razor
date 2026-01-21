@@ -14,11 +14,19 @@
           @option.ToString()
         </button>
       }
+      <button class="w-full h-(--inp-h) hover:border truncate flex items-center"
+        @onclick="async () => await OnSetCollectionItemNullable.InvokeAsync()" @onclick:stopPropagation="true">
+        <label class="text-[0.5rem] font-medium text-center w-15">Nullable items</label>
+        <input type="checkbox" class="w-5 h-(--inp-h) pointer-events-none" @bind="CollectionItemNullable" />
+      </button>
     }
   </div>
 </div>
 
 @code {
+  [Parameter]
+  public bool? CollectionItemNullable { get; set; }
+
   [Parameter]
   public required Array Collection { get; set; }
   [Parameter]
@@ -34,6 +42,8 @@
 
   [Parameter]
   public EventCallback<string> OnSelected { get; set; }
+  [Parameter]
+  public EventCallback OnSetCollectionItemNullable { get; set; }
 
   public bool IsToggled { get; set; }
 }

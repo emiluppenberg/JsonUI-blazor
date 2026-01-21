@@ -41,13 +41,14 @@ public class CSharpOptions : ILanguageOptions
       var datatype = jnc.Kvps[i].Kvp.Value;
 
       datatype = jnc.Kvps[i].Nested ?
-        this.NamingConvention.Parse(datatype) :
-        datatype;
+        this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
 
       datatype = jnc.Kvps[i].Nullable ? $"{datatype}?" : datatype;
-      datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!) : datatype;
+      datatype = jnc.Kvps[i].CollectionAs is not null ?
+        ConfigureCollection(datatype, jnc.Kvps[i].Nullable, jnc.Kvps[i].CollectionAs!, jnc.Kvps[i].CollectionItemNullable!.Value) : datatype;
+
       datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null && jnc.Kvps[i].CollectionAs is not "Array" ? $"{datatype}?" : datatype;
 
       var propName = this.NamingConvention.Parse(jnc.Kvps[i].Kvp.Key);
@@ -65,7 +66,7 @@ public class CSharpOptions : ILanguageOptions
     return classStr + $"}}{Environment.NewLine}{Environment.NewLine}";
   }
 
-  public string ConfigureCollection(string datatype, string collection)
+  public string ConfigureCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable)
   {
     var _collection = Enum.Parse(typeof(CSharpCollections), collection);
 

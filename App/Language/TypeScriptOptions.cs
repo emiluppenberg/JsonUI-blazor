@@ -20,19 +20,25 @@ public class TypeScriptOptions : ILanguageOptions
 
   public ITypeOption? TypeOption { get; set; } = new InterfaceTypeOption();
 
-  public string ConfigureCollection(string datatype, string collection)
+  public string ConfigureCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable)
   {
     var _collection = Enum.Parse(typeof(TypeScriptCollections), collection);
-    var isNullable = datatype.Contains(" | null");
 
     switch (_collection)
     {
       case TypeScriptCollections.Set:
-        datatype = isNullable ? $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")})" : datatype.Replace("[]", "");
-        datatype = isNullable ? $"Set<{datatype}> | null" : $"Set<{datatype}>";
+        datatype = collectionItemNullable ?
+        $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")} | null)" :
+        datatype;
+
+        datatype = datatypeNullable ? $"Set<{datatype}> | null" : $"Set<{datatype}>";
         break;
       case TypeScriptCollections.Array:
-        datatype = isNullable ? $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")})[] | null" : datatype;
+        datatype = collectionItemNullable ?
+        $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")} | null)[]" :
+        datatype;
+
+        datatype = datatypeNullable ? $"{datatype} | null" : datatype;
         break;
     }
 
@@ -50,16 +56,15 @@ public class TypeScriptOptions : ILanguageOptions
       var datatype = jnc.Kvps[i].Kvp.Value;
 
       datatype = jnc.Kvps[i].Nested ?
-        this.NamingConvention.Parse(datatype) :
-        datatype;
+        this.NamingConvention.Parse(datatype) : datatype;
 
-      datatype = jnc.Kvps[i].Nullable ? $"{datatype} | null" : datatype;
-      datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!) : datatype;
-      // datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null && jnc.Kvps[i].CollectionAs is not "Array" ? $"{datatype}?" : datatype;
+      datatype = jnc.Kvps[i].CollectionAs is not null ?
+        ConfigureCollection(datatype, jnc.Kvps[i].Nullable, jnc.Kvps[i].CollectionAs!, jnc.Kvps[i].CollectionItemNullable!.Value) : datatype;
+      datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is null ? $"{datatype} | null" : datatype;
 
       var propName = this.NamingConvention.Parse(jnc.Kvps[i].Kvp.Key);
-
-      var propLine = $"  {propName}: {datatype};{Environment.NewLine}";
+      var optional = jnc.Kvps[i].Optional ? "?" : "";
+      var propLine = $"  {propName}{optional}: {datatype};{Environment.NewLine}";
 
       typestr += propLine;
     }

@@ -19,7 +19,7 @@ public interface ILanguageOptions
 
   string ParseObject(JNodeClass jnc);
   Array GetCollectionOptions();
-  string ConfigureCollection(string datatype, string collection);
+  string ConfigureCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable);
 }
 
 public static class Language

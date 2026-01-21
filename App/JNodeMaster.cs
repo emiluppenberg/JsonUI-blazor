@@ -263,7 +263,7 @@ public static class JNodeMaster
               switch (langOptions.Language)
               {
                 case "TypeScript":
-                  var oldUnions = model[currentObject][currentProperty].Replace("[]", "").Replace("(", "").Replace(")", "");
+                  var oldUnions = model[currentObject][currentProperty].Replace("[]", "").Replace("()", "").Replace(")", "");
                   model[currentObject][currentProperty] = $"({oldUnions} | {value})[]";
                   break;
                 case "C#":
