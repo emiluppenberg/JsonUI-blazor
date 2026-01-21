@@ -21,17 +21,17 @@ public class NewtonsoftJsonOption : ICSharpJsonOptions
 
 public class CSharpOptions : ILanguageOptions
 {
-  public string Language { get; set; } = "C#";
+  public string Language { get; } = "C#";
 
-  public INamingConvention NamingConvention { get; set; } = new None();
+  public INamingConvention NamingConvention { get; set; } = new LowerSnakeCase();
 
   public ICSharpJsonOptions? CSharpJsonOptions { get; set; }
 
   public Array GetCollectionOptions() => Enum.GetValues<CSharpCollections>();
 
-  public string GetClass(JNodeClass jnc)
+  public string ParseObject(JNodeClass jnc)
   {
-    var className = this.NamingConvention.ToCSharp(jnc.Name);
+    var className = this.NamingConvention.Parse(jnc.Name);
 
     var classStr = $"public class {className} {Environment.NewLine}" +
        $"{{{Environment.NewLine}";
@@ -41,7 +41,7 @@ public class CSharpOptions : ILanguageOptions
       var datatype = jnc.Kvps[i].Kvp.Value;
 
       datatype = jnc.Kvps[i].Nested ?
-        this.NamingConvention.ToCSharp(datatype) :
+        this.NamingConvention.Parse(datatype) :
         datatype;
 
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
@@ -50,7 +50,7 @@ public class CSharpOptions : ILanguageOptions
       datatype = jnc.Kvps[i].CollectionAs is not null ? ConfigureCollection(datatype, jnc.Kvps[i].CollectionAs!) : datatype;
       datatype = jnc.Kvps[i].Nullable && jnc.Kvps[i].CollectionAs is not null && jnc.Kvps[i].CollectionAs is not "Array" ? $"{datatype}?" : datatype;
 
-      var propName = this.NamingConvention.ToCSharp(jnc.Kvps[i].Kvp.Key);
+      var propName = this.NamingConvention.Parse(jnc.Kvps[i].Kvp.Key);
 
       var jsonAnnotation = this.CSharpJsonOptions is not null && this.NamingConvention.Name is not "None" ?
         $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" :

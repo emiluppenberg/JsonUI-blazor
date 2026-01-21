@@ -441,7 +441,7 @@ public static class JNodeMaster
     {
       var jnc = kvp.Value;
 
-      cs += options.GetClass(kvp.Value);
+      cs += options.ParseObject(kvp.Value);
     }
 
     return cs;
