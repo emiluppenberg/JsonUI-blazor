@@ -71,7 +71,7 @@
       {
         <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
           OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
-          LangOptions="LangOptions" />
+          LangOptions="langOptions" />
       }
       else
       {
@@ -114,14 +114,14 @@
       }
 
       <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
-        @if (LangOptions.Language == "C#")
+        @if (langOptions.Language == "C#")
         {
-          <CSharpMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
+          <CSharpMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
             OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
         }
-        @if (LangOptions.Language == "TypeScript")
+        @if (langOptions.Language == "TypeScript")
         {
-          <TypescriptMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection"
+          <TypescriptMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection"
             OnSetNullable="HandleSetNullable" OnSetTypeOption="HandleSetTypeOption"
             OnSetClassPrimaryConstructor="HandleSetTypeScriptClassPrimaryConstructor"
             OnSetClassRegularConstructor="HandleSetTypeScriptClassRegularConstructor"
@@ -157,6 +157,9 @@
 
 
 @code {
+  public bool CookieConsent { get; set; }
+  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
+
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
   public bool IsOptions { get; set; }
@@ -170,20 +173,8 @@
   public JNode? Root { get; set; }
   public string? RootName { get; set; }
 
-  public bool CookieConsent { get; set; }
-  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
-
   private string SelectedLanguage { get; set; } = "C#";
   private ILanguageOptions langOptions = new CSharpOptions();
-  public ILanguageOptions LangOptions
-  {
-    get => langOptions;
-    set
-    {
-      langOptions = value;
-      HandleSetCollection(value.GetCollectionOptions().GetValue(0)!.ToString()!);
-    }
-  }
 
   protected override async Task OnInitializedAsync()
   {
@@ -195,20 +186,23 @@
     switch (SelectedLanguage)
     {
       case "C#":
-        LangOptions = new CSharpOptions();
+        langOptions = new CSharpOptions();
+        JNodes.ForEach(x => x.TypeOption = null);
         break;
       case "TypeScript":
-        LangOptions = new TypeScriptOptions();
+        langOptions = new TypeScriptOptions();
+        JNodes.ForEach(x => x.TypeOption = langOptions.TypeOption);
         break;
     }
 
+    HandleSetCollection(langOptions.GetCollectionOptions().GetValue(0)!.ToString()!);
     LoadJson();
     HandleRenderCode();
   }
 
   private void HandleSetCSharpJsonOption(ICSharpJsonOption? cSharpJsonOptions)
   {
-    LangOptions.CSharpJsonOptions = cSharpJsonOptions;
+    langOptions.CSharpJsonOptions = cSharpJsonOptions;
     HandleRenderCode();
   }
 
@@ -217,38 +211,38 @@
     var typeOption = Language.GetTypeOptions()
     .FirstOrDefault(x => x.Name == setTypeOption);
 
-    LangOptions.TypeOption = typeOption;
+    langOptions.TypeOption = typeOption;
     JNodes.ForEach(x => x.TypeOption = typeOption);
     HandleRenderCode();
   }
 
   private void HandleSetTypeScriptClassPrimaryConstructor()
   {
-    LangOptions.TypeOption!.UsePrimaryConstructor = true;
-    LangOptions.TypeOption!.UseRegularConstructor = false;
-    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption);
+    langOptions.TypeOption!.UsePrimaryConstructor = true;
+    langOptions.TypeOption!.UseRegularConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = langOptions.TypeOption);
     HandleRenderCode();
   }
 
   private void HandleSetTypeScriptClassRegularConstructor()
   {
-    LangOptions.TypeOption!.UseRegularConstructor = true;
-    LangOptions.TypeOption!.UsePrimaryConstructor = false;
-    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption!);
+    langOptions.TypeOption!.UseRegularConstructor = true;
+    langOptions.TypeOption!.UsePrimaryConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = langOptions.TypeOption!);
     HandleRenderCode();
   }
 
   private void HandleSetTypeScriptClassNoConstructor()
   {
-    LangOptions.TypeOption!.UsePrimaryConstructor = false;
-    LangOptions.TypeOption!.UseRegularConstructor = false;
-    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption!);
+    langOptions.TypeOption!.UsePrimaryConstructor = false;
+    langOptions.TypeOption!.UseRegularConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = langOptions.TypeOption!);
     HandleRenderCode();
   }
 
   private void HandleSetNamingConvention(INamingConvention namingConvention)
   {
-    LangOptions.NamingConvention = namingConvention;
+    langOptions.NamingConvention = namingConvention;
     HandleRenderCode();
   }
 
@@ -269,7 +263,7 @@
   {
     RootName = RootName is null ? "Root" : RootName;
     var rootType = Json.StartsWith('{') ? "{}" : "[]";
-    JNodes = JNodeMaster.CreateFromJson(Json, LangOptions, RootName)!;
+    JNodes = JNodeMaster.CreateFromJson(Json, langOptions, RootName)!;
     Root = JNodes.FirstOrDefault(x => x.LineageKey == $"{RootName}{rootType}");
 
     if (Root is null)

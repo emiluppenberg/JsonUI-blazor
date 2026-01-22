@@ -40,9 +40,9 @@ public class CSharpOptions : ILanguageOptions
       var jnKvp = jnc.Kvps[i];
       var datatype = jnKvp.Kvp.Value;
 
-      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
-
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
+
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = jnKvp.CollectionAs is not null ?
         ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) :
