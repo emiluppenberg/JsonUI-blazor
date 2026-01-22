@@ -7,7 +7,8 @@
 
 <button class="transition-gen button-base" @onclick="async () => await HandleSetNullable()">Nullable</button>
 
-<select class="select-base" @bind="setCollection" @bind:after="async () => await HandleSetCollection()">
+<select class="select-base" @bind="setCollection"
+  @bind:after="async () => await OnSetCollection.InvokeAsync(setCollection)">
   @for (int i = 0; i < LangOptions.GetCollectionOptions().Length; i++)
   {
     var collectionAs = LangOptions.GetCollectionOptions().GetValue(i)!.ToString();
@@ -15,16 +16,22 @@
   }
 </select>
 
-<select class="select-base" @bind="setTypeOption" @bind:after="async () => await HandleSetTypeOption()">
+<select class="select-base" @bind="setTypeOption"
+  @bind:after="async () => await OnSetTypeOption.InvokeAsync(setTypeOption)">
   @foreach (var typeOption in Language.GetTypeOptions())
   {
     <option value="@typeOption.Name">@typeOption.Name</option>
   }
 </select>
 
-@if (setTypeOption == "Interface")
+@if (setTypeOption == "class")
 {
-  <button class="transition-gen button-base" @onclick="async () => await HandleSetNullable()">Nullable</button>
+  <button class="transition-gen button-base text-[0.5rem]"
+    @onclick="async () => await OnSetClassPrimaryConstructor.InvokeAsync()">Primary constructor</button>
+  <button class="transition-gen button-base text-[0.5rem]"
+    @onclick="async () => await OnSetClassRegularConstructor.InvokeAsync()">Regular constructor</button>
+  <button class="transition-gen button-base text-[0.5rem]"
+    @onclick="async () => await OnSetClassNoConstructor.InvokeAsync()">No constructor</button>
 }
 
 @code {
@@ -35,47 +42,21 @@
   [Parameter]
   public EventCallback<bool> OnSetNullable { get; set; }
   [Parameter]
-  public EventCallback<ITypeOption> OnSetTypeOption { get; set; }
+  public EventCallback<string> OnSetTypeOption { get; set; }
   [Parameter]
-  public EventCallback<INamingConvention> OnSetNamingConvention { get; set; }
+  public EventCallback<bool> OnSetClassPrimaryConstructor { get; set; }
+  [Parameter]
+  public EventCallback<bool> OnSetClassRegularConstructor { get; set; }
+  [Parameter]
+  public EventCallback<bool> OnSetClassNoConstructor { get; set; }
 
+  private string setCollection = null!;
+  private string setTypeOption = null!;
   private bool setNullable = false;
+
   async Task HandleSetNullable()
   {
     setNullable = !setNullable;
     await OnSetNullable.InvokeAsync(setNullable);
-  }
-
-  private string setTypeOption = null!;
-  async Task HandleSetTypeOption()
-  {
-    var typeOption = Language.GetTypeOptions()
-    .FirstOrDefault(x => x.Name == setTypeOption);
-
-    if (typeOption is null)
-    {
-      var namingConvention = Language.GetNamingConventions()
-      .First(x => x.Name == "No naming convention");
-
-      setNamingConvention = namingConvention.Name;
-      await OnSetNamingConvention.InvokeAsync(namingConvention);
-    }
-
-    await OnSetTypeOption.InvokeAsync(typeOption);
-  }
-
-  private string setNamingConvention = null!;
-  async Task HandleSetNamingConvention()
-  {
-    var namingConvention = Language.GetNamingConventions()
-    .First(x => x.Name == setNamingConvention);
-
-    await OnSetNamingConvention.InvokeAsync(namingConvention);
-  }
-
-  private string setCollection = null!;
-  async Task HandleSetCollection()
-  {
-    await OnSetCollection.InvokeAsync(setCollection);
   }
 }

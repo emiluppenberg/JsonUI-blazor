@@ -412,7 +412,7 @@ public static class JNodeMaster
     return currentObject;
   }
 
-  public static string JNodesToCode(List<JNode> jNodes, ILanguageOptions options)
+  public static string JNodesToCode(List<JNode> jNodes, ILanguageOptions langOptions)
   {
     var classes = new Dictionary<string, JNodeClass>();
 
@@ -438,7 +438,7 @@ public static class JNodeMaster
 
         if (!classes.TryGetValue(jn.Name, out var _))
         {
-          var newJnc = new JNodeClass(jn.Name, jnKvps);
+          var newJnc = new JNodeClass(jn, jnKvps);
           classes.Add(jn.Name, newJnc);
         }
 
@@ -462,7 +462,7 @@ public static class JNodeMaster
             if (!classes.TryGetValue(iteratingNode.Name, out var _))
             {
               var _jnKvps = new List<JNodeKvp>() { new JNodeKvp(previousNode) };
-              var newJnc = new JNodeClass(iteratingNode.Name, _jnKvps);
+              var newJnc = new JNodeClass(iteratingNode, _jnKvps);
               classes.Add(iteratingNode.Name, newJnc);
             }
           }
@@ -470,14 +470,14 @@ public static class JNodeMaster
       }
     }
 
-    var usingStr = options.CSharpJsonOptions is not null ? $"using {options.CSharpJsonOptions.Using};{Environment.NewLine}{Environment.NewLine}" : "";
+    var usingStr = langOptions.CSharpJsonOptions is not null ? $"using {langOptions.CSharpJsonOptions.Using};{Environment.NewLine}{Environment.NewLine}" : "";
     var cs = usingStr;
 
     foreach (var kvp in classes)
     {
       var jnc = kvp.Value;
 
-      cs += options.ParseObject(kvp.Value);
+      cs += langOptions.ParseObject(kvp.Value);
     }
 
     return cs;

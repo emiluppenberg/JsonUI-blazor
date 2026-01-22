@@ -122,7 +122,10 @@
         @if (LangOptions.Language == "TypeScript")
         {
           <TypescriptMenu LangOptions="LangOptions" OnSetCollection="HandleSetCollection"
-            OnSetNullable="HandleSetNullable" OnSetNamingConvention="HandleSetNamingConvention" />
+            OnSetNullable="HandleSetNullable" OnSetTypeOption="HandleSetTypeOption"
+            OnSetClassPrimaryConstructor="HandleSetTypeScriptClassPrimaryConstructor"
+            OnSetClassRegularConstructor="HandleSetTypeScriptClassRegularConstructor"
+            OnSetClassNoConstructor="HandleSetTypeScriptClassNoConstructor" />
         }
       </div>
 
@@ -209,9 +212,37 @@
     HandleRenderCode();
   }
 
-  private void HandleSetTypeOption(ITypeOption typeOption)
+  private void HandleSetTypeOption(string setTypeOption)
   {
+    var typeOption = Language.GetTypeOptions()
+    .FirstOrDefault(x => x.Name == setTypeOption);
+
     LangOptions.TypeOption = typeOption;
+    JNodes.ForEach(x => x.TypeOption = typeOption);
+    HandleRenderCode();
+  }
+
+  private void HandleSetTypeScriptClassPrimaryConstructor()
+  {
+    LangOptions.TypeOption!.UsePrimaryConstructor = true;
+    LangOptions.TypeOption!.UseRegularConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption);
+    HandleRenderCode();
+  }
+
+  private void HandleSetTypeScriptClassRegularConstructor()
+  {
+    LangOptions.TypeOption!.UseRegularConstructor = true;
+    LangOptions.TypeOption!.UsePrimaryConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption!);
+    HandleRenderCode();
+  }
+
+  private void HandleSetTypeScriptClassNoConstructor()
+  {
+    LangOptions.TypeOption!.UsePrimaryConstructor = false;
+    LangOptions.TypeOption!.UseRegularConstructor = false;
+    JNodes.ForEach(x => x.TypeOption = LangOptions.TypeOption!);
     HandleRenderCode();
   }
 
@@ -221,10 +252,10 @@
     HandleRenderCode();
   }
 
-  private void HandleSetCollection(string collectionAs)
+  private void HandleSetCollection(string collection)
   {
-    JNodes.ForEach(x => x.SetNodeCollectionAs(collectionAs));
-    JNodes.ForEach(x => x.SetKvpsCollectionAs(collectionAs));
+    JNodes.ForEach(x => x.SetNodeCollectionAs(collection));
+    JNodes.ForEach(x => x.SetKvpsCollectionAs(collection));
     HandleRenderCode();
   }
 

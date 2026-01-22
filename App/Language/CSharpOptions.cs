@@ -22,11 +22,10 @@ public class NewtonsoftJsonOption : ICSharpJsonOption
 public class CSharpOptions : ILanguageOptions
 {
   public string Language { get; } = "C#";
-
+  public bool? UseRaw { get; set; }
   public INamingConvention NamingConvention { get; set; } = new AsIsCase();
-
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
-  public ITypeOption? TypeOption { get; set; }
+  public ITypeScriptTypeOption? TypeOption { get; set; }
 
   public Array GetCollectionOptions() => Enum.GetValues<CSharpCollections>();
 
