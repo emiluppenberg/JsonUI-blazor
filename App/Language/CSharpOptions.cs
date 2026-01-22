@@ -22,11 +22,10 @@ public class NewtonsoftJsonOption : ICSharpJsonOption
 public class CSharpOptions : ILanguageOptions
 {
   public string Language { get; } = "C#";
-
+  public bool? UseRaw { get; set; }
   public INamingConvention NamingConvention { get; set; } = new AsIsCase();
-
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
-  public ITypeOption? TypeOption { get; set; }
+  public ITypeScriptTypeOption? TypeOption { get; set; }
 
   public Array GetCollectionOptions() => Enum.GetValues<CSharpCollections>();
 
@@ -41,9 +40,9 @@ public class CSharpOptions : ILanguageOptions
       var jnKvp = jnc.Kvps[i];
       var datatype = jnKvp.Kvp.Value;
 
-      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
-
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
+
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = jnKvp.CollectionAs is not null ?
         ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) :

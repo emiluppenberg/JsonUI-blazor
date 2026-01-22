@@ -1,24 +1,39 @@
-public interface ITypeOption
+public interface ITypeScriptTypeOption
 {
   public string Name { get; }
-  public bool UseRawType { get; set; }
+  public bool? UsePrimaryConstructor { get; set; }
+  public bool? UseRegularConstructor { get; set; }
 }
 
-public class InterfaceTypeOption : ITypeOption
+public class InterfaceTypeOption : ITypeScriptTypeOption
 {
-  public string Name { get; } = "Interface";
-  public bool UseRawType { get; set; }
+  public string Name { get; } = "interface";
+  public bool? UsePrimaryConstructor { get; set; }
+  public bool? UseRegularConstructor { get; set; }
+}
+
+public class TypeTypeOption : ITypeScriptTypeOption
+{
+  public string Name { get; } = "type";
+  public bool? UsePrimaryConstructor { get; set; }
+  public bool? UseRegularConstructor { get; set; }
+}
+
+public class ClassTypeOption : ITypeScriptTypeOption
+{
+  public string Name { get; } = "class";
+  public bool? UsePrimaryConstructor { get; set; } = false;
+  public bool? UseRegularConstructor { get; set; } = false;
 }
 
 public class TypeScriptOptions : ILanguageOptions
 {
   public string Language { get; } = "TypeScript";
-
+  public bool? UseRaw { get; set; } = false;
   public INamingConvention NamingConvention { get; set; } = new AsIsCase();
-
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
-
-  public ITypeOption? TypeOption { get; set; } = new InterfaceTypeOption();
+  public ITypeScriptTypeOption? TypeOption { get; set; } = new InterfaceTypeOption();
+  public Array GetCollectionOptions() => Enum.GetValues<TypeScriptCollections>();
 
   public string ConfigureCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable)
   {
@@ -28,10 +43,10 @@ public class TypeScriptOptions : ILanguageOptions
     {
       case TypeScriptCollections.Set:
         datatype = collectionItemNullable ?
-        $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")} | null)" :
+        $"({datatype.Replace("(", "").Replace(")", "")} | null)" :
         datatype;
 
-        datatype = datatypeNullable ? $"Set<{datatype}> | null" : $"Set<{datatype}>";
+        datatype = datatypeNullable ? $"Set<{datatype.Replace("[]", "")}> | null" : $"Set<{datatype.Replace("[]", "")}>";
         break;
       case TypeScriptCollections.Array:
         datatype = collectionItemNullable ?
@@ -48,8 +63,20 @@ public class TypeScriptOptions : ILanguageOptions
   public string ParseObject(JNodeClass jnc)
   {
     var typename = this.NamingConvention.Parse(jnc.Name);
+    string typeheader = "";
 
-    var typestr = $"{this.TypeOption!.Name.ToLower()} {typename} {{{Environment.NewLine}";
+    if (jnc.TypeOption!.Name == "interface") typeheader = $"interface {typename}";
+    if (jnc.TypeOption!.Name == "type") typeheader = $"type {typename} =";
+    if (jnc.TypeOption!.Name == "class") typeheader = $"class {typename}";
+
+    var typestr = $"{typeheader} {{{Environment.NewLine}";
+
+    if (jnc.TypeOption.UsePrimaryConstructor.GetValueOrDefault() == true)
+    {
+      typestr = ParseClassPrimaryConstructor(jnc.Kvps, typestr);
+
+      return typestr + $"}}{Environment.NewLine}{Environment.NewLine}";
+    }
 
     for (int i = 0; i < jnc.Kvps.Count; i++)
     {
@@ -70,8 +97,74 @@ public class TypeScriptOptions : ILanguageOptions
       typestr += propLine;
     }
 
+    if (jnc.TypeOption.UseRegularConstructor.GetValueOrDefault() == true)
+    {
+      typestr = ParseClassRegularConstructor(jnc.Kvps, typestr);
+    }
+
     return typestr + $"}}{Environment.NewLine}{Environment.NewLine}";
   }
 
-  public Array GetCollectionOptions() => Enum.GetValues<TypeScriptCollections>();
+  private string ParseClassRegularConstructor(List<JNodeKvp> jncKvps, string typestr)
+  {
+    typestr += $"{Environment.NewLine}  constructor({Environment.NewLine}";
+
+    for (int i = 0; i < jncKvps.Count; i++)
+    {
+      var jnKvp = jncKvps[i];
+      var datatype = jnKvp.Kvp.Value;
+
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
+
+      datatype = jnKvp.CollectionAs is not null ?
+        ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) : datatype;
+
+      datatype = jnKvp.Nullable && jnKvp.CollectionAs is null ? $"{datatype} | null" : datatype;
+
+      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
+      var optional = jnKvp.Optional ? "?" : "";
+      var propLine = $"    {propName}{optional}: {datatype},{Environment.NewLine}";
+
+      typestr += propLine;
+    }
+
+    typestr += $"  ) {{{Environment.NewLine}";
+
+    for (int i = 0; i < jncKvps.Count; i++)
+    {
+      var jnKvp = jncKvps[i];
+      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
+      var propLine = $"      this.{propName} = {propName};{Environment.NewLine}";
+
+      typestr += propLine;
+    }
+
+    return typestr + $"  }} {{{Environment.NewLine}";
+  }
+
+  private string ParseClassPrimaryConstructor(List<JNodeKvp> jncKvps, string typestr)
+  {
+    typestr += $"  constructor({Environment.NewLine}";
+
+    for (int i = 0; i < jncKvps.Count; i++)
+    {
+      var jnKvp = jncKvps[i];
+      var datatype = jnKvp.Kvp.Value;
+
+      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
+
+      datatype = jnKvp.CollectionAs is not null ?
+        ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) : datatype;
+
+      datatype = jnKvp.Nullable && jnKvp.CollectionAs is null ? $"{datatype} | null" : datatype;
+
+      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
+      var optional = jnKvp.Optional ? "?" : "";
+      var propLine = $"    public {propName}{optional}: {datatype},{Environment.NewLine}";
+
+      typestr += propLine;
+    }
+
+    return typestr + $"  ) {{}}{Environment.NewLine}";
+  }
 }

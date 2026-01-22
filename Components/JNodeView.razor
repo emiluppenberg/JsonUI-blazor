@@ -40,10 +40,14 @@
             <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Optional" />
           </button>
         </div>
+        <TypeSelection Types="Language.GetTypeOptions()" BackgroundColor="bg-(--sticky)"
+          SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
+          CurrentSelected="@CurrentNode.TypeOption!.Name"
+          OnSelected="@(async arg => await SetNodeTypeOption(CurrentNode, arg))" IsSticky="true" />
       }
       @if (CurrentNode.Type == JNodeType.Array)
       {
-        <Selection CollectionItemNullable="CurrentNode.CollectionItemNullable"
+        <CollectionSelection CollectionItemNullable="CurrentNode.CollectionItemNullable"
           Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--sticky)"
           SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
           CurrentSelected="@CurrentNode.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
@@ -93,13 +97,16 @@
                 <input class="node-option-checkbox" type="checkbox" @bind="child.Optional" />
               </button>
             </div>
+            <TypeSelection Types="Language.GetTypeOptions()" BackgroundColor="bg-(--node)"
+              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
+              CurrentSelected="@child.TypeOption!.Name" OnSelected="@(async arg => await SetNodeTypeOption(child, arg))" />
           }
           @if (child.Type == JNodeType.Array)
           {
-            <Selection CollectionItemNullable="child.CollectionItemNullable" Collection="LangOptions.GetCollectionOptions()"
-              BackgroundColor="bg-(--node)" SelectedColor="bg-(--node-selection-active)"
-              OutlineColor="outline-(--node-hov-ol)" CurrentSelected="@child.CollectionAs"
-              OnSelected="@(async arg => await SetNodeCollection(child, arg))"
+            <CollectionSelection CollectionItemNullable="child.CollectionItemNullable"
+              Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--node)"
+              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
+              CurrentSelected="@child.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(child, arg))"
               OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)" />
           }
         }
@@ -135,10 +142,10 @@
           }
           @if (jnKvp.IsArray())
           {
-            <Selection CollectionItemNullable="jnKvp.CollectionItemNullable" Collection="LangOptions.GetCollectionOptions()"
-              BackgroundColor="bg-(--kvp-sel)" SelectedColor="bg-(--kvp-selection-active)"
-              OutlineColor="outline-(--kvp-sel-hov-ol)" CurrentSelected="@jnKvp.CollectionAs"
-              OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
+            <CollectionSelection CollectionItemNullable="jnKvp.CollectionItemNullable"
+              Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--kvp-sel)"
+              SelectedColor="bg-(--kvp-selection-active)" OutlineColor="outline-(--kvp-sel-hov-ol)"
+              CurrentSelected="@jnKvp.CollectionAs" OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
               OnSetCollectionItemNullable="async () => await SetKvpCollectionItemNullable(jnKvp)" />
           }
         }
@@ -248,12 +255,6 @@
     await OnRenderCode.InvokeAsync();
   }
 
-  async Task SetNodeOptional(JNode node)
-  {
-    node.Optional = !node.Optional;
-    await OnRenderCode.InvokeAsync();
-  }
-
   async Task SetNodeCollection(JNode node, string collection)
   {
     node.CollectionAs = collection;
@@ -263,6 +264,19 @@
   async Task SetNodeCollectionItemNullable(JNode node)
   {
     node.CollectionItemNullable = !node.CollectionItemNullable;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  // TypeScript
+  async Task SetNodeOptional(JNode node)
+  {
+    node.Optional = !node.Optional;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeTypeOption(JNode node, ITypeScriptTypeOption typeOption)
+  {
+    node.TypeOption = typeOption;
     await OnRenderCode.InvokeAsync();
   }
 

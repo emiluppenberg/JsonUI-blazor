@@ -13,9 +13,10 @@ public enum TypeScriptCollections
 public interface ILanguageOptions
 {
   public string Language { get; }
+  public bool? UseRaw { get; set; }
   public INamingConvention NamingConvention { get; set; }
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
-  public ITypeOption? TypeOption { get; set; }
+  public ITypeScriptTypeOption? TypeOption { get; set; }
 
   string ParseObject(JNodeClass jnc);
   Array GetCollectionOptions();
@@ -34,9 +35,9 @@ public static class Language
     return new List<ICSharpJsonOption> { new SystemTextJsonOption(), new NewtonsoftJsonOption() };
   }
 
-  public static List<ITypeOption> GetTypeOptions()
+  public static List<ITypeScriptTypeOption> GetTypeOptions()
   {
-    return new List<ITypeOption> { new InterfaceTypeOption() };
+    return new List<ITypeScriptTypeOption> { new InterfaceTypeOption(), new TypeTypeOption(), new ClassTypeOption() };
   }
 }
 
