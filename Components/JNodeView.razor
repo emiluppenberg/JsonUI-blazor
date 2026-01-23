@@ -1,4 +1,4 @@
-@inject IJSRuntime js
+@inject IJSRuntime JS
 @using System.Threading.Tasks
 
 <div class="transition-gen node-col"
@@ -7,50 +7,33 @@
   <div class="sentinel" @ref="_sentinel"></div>
   <div class="@GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
     @onmouseleave="() => { IsMouseOver = false; }">
-    <button class="@GetButtonStickyClass()" @onclick="() => ToggleNode(CurrentNode, 0)"
-      disabled="@(CurrentNode.Name == RootName)">
-      <span class="key-node">@CurrentNode.Name</span>
-      <div class="div-value-node">
-        <span class="value-node">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</span>
-        @if (AnyNestedSelected)
-        {
-          <div class="div-count">
-            <span class="span-count">@CurrentNode.TotalNestedSelected</span>
-          </div>
-        }
-        @if (!AnyNestedSelected)
-        {
-          <div class="div-count-hidden"></div>
-        }
+    <button class="@GetButtonStickyClass() @(NodeToggledOptions == CurrentNode ? "border-r-0" : "")"
+      @onclick="() => ToggleNode(CurrentNode, 0)">
+      <span class="key font-bold">@CurrentNode.Name</span>
+      <div class="div-value">
+        <div class="value font-medium">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</div>
+        <div class="div-count transition-val @(AnyNestedSelected ? "scale-x-100" : "scale-x-0")">
+          <div class="count">@CurrentNode.TotalNestedSelected</div>
+        </div>
       </div>
     </button>
-    @if (AnyNestedSelected && CurrentNode.Name != RootName && IsMouseOver)
-    {
-      <div>
-        <button class="sticky-option-button" @onclick='async () => await SetNodeNullable(CurrentNode)'>
-          <label class="sticky-option-label">Nullable</label>
-          <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Nullable" />
-        </button>
-      </div>
-      @if (LangOptions.Language == "TypeScript")
+    <div class="relative">
+      <button id="toggle-options"
+        class="-translate-y-[calc(var(--inp-h)/2)] button-options bg-(--sticky-btn-opt) transition-val @(IsMouseOver && AnyNestedSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+        @onclick="() => { NodeToggledOptions = CurrentNode; }"
+        disabled="@(NodeToggledOptions == CurrentNode)">*</button>
+      @if (NodeToggledOptions == CurrentNode)
       {
-        <div>
-          <button class="sticky-option-button" @onclick='async () => await SetNodeOptional(CurrentNode)'>
-            <label class="sticky-option-label">Optional</label>
-            <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Optional" />
-          </button>
-        </div>
-        <TypeSelection Types="Language.GetTypeOptions()" Target="sticky" CurrentSelected="@CurrentNode.TypeOption!.Name"
-          OnSelected="@(async arg => await SetNodeTypeOption(CurrentNode, arg))" />
+        <NodeKvpOptions LangOptions="LangOptions" Node="CurrentNode" Target="sticky"
+          ParentHover="@(IsMouseOver ? "outline-2" : "")"
+          ForwardSetNodeNullable="async () => await SetNodeNullable(CurrentNode)"
+          ForwardSetNodeOptional="async () => await SetNodeOptional(CurrentNode)"
+          ForwardSetNodeCollection="@(async arg => await SetNodeCollection(CurrentNode, arg))"
+          ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)"
+          ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
+          OnClose="() => {NodeToggledOptions = null;}" />
       }
-      @if (CurrentNode.Type == JNodeType.Array)
-      {
-        <CollectionSelection CollectionItemNullable="CurrentNode.CollectionItemNullable"
-          Collection="LangOptions.GetCollectionOptions()" Target="sticky" CurrentSelected="@CurrentNode.CollectionAs"
-          OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
-          OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)" />
-      }
-    }
+    </div>
   </div>
 
   <div class="node-col-container">
@@ -62,87 +45,60 @@
         @onmouseover="() => { IsMouseOverNode = child; }" @onmouseleave="() => { IsMouseOverNode = null; }">
         <button @key="child" class="transition-gen button-node"
           @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
-          <span class="key-node">@child.Name</span>
-          <div class="div-value-node">
-            <span class="value-node">@(child.Type == JNodeType.Object ? "{}" :
-                          "[]")</span>
-            @if (child.TotalNestedSelected > 0)
-            {
-              <div class="div-count">
-                <span class="span-count">@child.TotalNestedSelected</span>
-              </div>
-            }
-            @if (child.TotalNestedSelected < 1)
-            {
-              <div class="div-count-hidden"></div>
-            }
+          <span class="key font-bold">@child.Name</span>
+          <div class="div-value">
+            <div class="value font-medium">@(child.Type == JNodeType.Object ? "{}" : "[]")</div>
+            <div class="div-count transition-val @(child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0")">
+              <div class="count">@child.TotalNestedSelected</div>
+            </div>
           </div>
         </button>
-        @if (child.TotalNestedSelected > 0 && IsMouseOverNode == child)
-        {
-          <div>
-            <button class="node-option-button" @onclick='async () => await SetNodeNullable(child)'>
-              <label class="node-option-label">Nullable</label>
-              <input class="node-option-checkbox" type="checkbox" @bind="child.Nullable" />
-            </button>
-          </div>
-          @if (LangOptions.Language == "TypeScript")
+        <div class="relative">
+          <button id="toggle-options"
+            class="button-options bg-(--node-btn-opt) transition-val @(NodeToggledOptions == child ? "pointer-events-none" : "") @(IsMouseOverNode == child && child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+            @onclick="() => { NodeToggledOptions = child; }">*</button>
+          @if (NodeToggledOptions == child)
           {
-            <div>
-              <button class="node-option-button" @onclick='async () => await SetNodeOptional(child)'>
-                <label class="node-option-label">Optional</label>
-                <input class="node-option-checkbox" type="checkbox" @bind="child.Optional" />
-              </button>
-            </div>
-            <TypeSelection Types="Language.GetTypeOptions()" Target="node" CurrentSelected="@child.TypeOption!.Name"
-              OnSelected="@(async arg => await SetNodeTypeOption(child, arg))" />
+            <NodeKvpOptions LangOptions="LangOptions" Node="child" Target="node"
+              ParentHover="@(IsMouseOverNode == child ? "outline-3" : "")"
+              ForwardSetNodeNullable="async () => await SetNodeNullable(child)"
+              ForwardSetNodeOptional="async () => await SetNodeOptional(child)"
+              ForwardSetNodeCollection="@(async arg => await SetNodeCollection(child, arg))"
+              ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)"
+              ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
+              OnClose="() => {NodeToggledOptions = null;}" />
           }
-          @if (child.Type == JNodeType.Array)
-          {
-            <CollectionSelection CollectionItemNullable="child.CollectionItemNullable"
-              Collection="LangOptions.GetCollectionOptions()" Target="node" CurrentSelected="@child.CollectionAs"
-              OnSelected="@(async arg => await SetNodeCollection(child, arg))"
-              OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)" />
-          }
-        }
+        </div>
       </div>
     }
 
-    @foreach (var jnKvp in CurrentNode.KeyValues)
+    @foreach (var kvp in CurrentNode.KeyValues)
     {
-      <div class="transition-gen @(jnKvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
-        @onmouseover="() => { IsMouseOverKvp = jnKvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
-        <button @key="jnKvp" class="transition-gen @(jnKvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
-          @onclick='async () => await SetKvpSelected(jnKvp)'>
-          <span class="key-kvp">@jnKvp.Kvp.Key</span>
-          <span
-            class="value-kvp @(jnKvp.Kvp.Value.ToLower().Contains("date") ? "text-[0.55rem]" : "")">@jnKvp.Kvp.Value</span>
-        </button>
-        @if (jnKvp.IsSelected && IsMouseOverKvp == jnKvp)
-        {
-          <div>
-            <button class="kvp-option-button" @onclick='async () => await SetKvpNullable(jnKvp)'>
-              <label class="kvp-option-label">Nullable</label>
-              <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Nullable" />
-            </button>
+      <div class="transition-gen @(kvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
+        @onmouseover="() => { IsMouseOverKvp = kvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
+        <button @key="kvp" class="transition-gen @(kvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
+          @onclick='async () => await SetKvpSelected(kvp)'>
+          <span class="key font-light">@kvp.Kvp.Key</span>
+          <div class="div-value">
+            <div class="value italic truncate @(kvp.Kvp.Value.ToLower().Contains("date") ? "text-[0.55rem]" : "")">
+              @kvp.Kvp.Value</div>
           </div>
-          @if (LangOptions.Language == "TypeScript")
+        </button>
+        <div class="relative">
+          <button id="toggle-options"
+            class="button-options transition-val bg-(--kvp-btn-opt) @(IsMouseOverKvp == kvp && kvp.IsSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+            @onclick="() => { KvpToggledOptions = kvp; }">*</button>
+          @if (KvpToggledOptions == kvp)
           {
-            <div>
-              <button class="kvp-option-button" @onclick='async () => await SetKvpOptional(jnKvp)'>
-                <label class="kvp-option-label">Optional</label>
-                <input class="kvp-option-checkbox" type="checkbox" @bind="jnKvp.Optional" />
-              </button>
-            </div>
+            <NodeKvpOptions LangOptions="LangOptions" Kvp="kvp" Target="kvp"
+              ParentHover="@(IsMouseOverKvp == kvp ? "outline-3" : "")"
+              ForwardSetKvpNullable="async () => await SetKvpNullable(kvp)"
+              ForwardSetKvpOptional="async() => await SetKvpOptional(kvp)"
+              ForwardSetKvpCollection="@(async arg => await SetKvpCollection(kvp, arg))"
+              ForwardSetKvpCollectionItemNullable="async () => await SetKvpCollectionItemNullable(kvp)"
+              OnClose="() => {KvpToggledOptions = null;}" />
           }
-          @if (jnKvp.IsArray())
-          {
-            <CollectionSelection CollectionItemNullable="jnKvp.CollectionItemNullable"
-              Collection="LangOptions.GetCollectionOptions()" Target="kvp" CurrentSelected="@jnKvp.CollectionAs"
-              OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
-              OnSetCollectionItemNullable="async () => await SetKvpCollectionItemNullable(jnKvp)" />
-          }
-        }
+        </div>
       </div>
     }
 
@@ -180,6 +136,8 @@
   private JNodeKvp? IsMouseOverKvp { get; set; }
   private JNode? IsMouseOverNode { get; set; }
 
+  private JNode? NodeToggledOptions { get; set; }
+  private JNodeKvp? KvpToggledOptions { get; set; }
 
   public int NextRowOffset { get; set; }
   public JNode? NextNode { get; set; } = null;
@@ -193,7 +151,7 @@
     if (firstRender)
     {
       _dotNetRef = DotNetObjectReference.Create(this);
-      _observerHandle = await js.InvokeAsync<IJSObjectReference>("createStickyObserver", _sentinel, _dotNetRef);
+      _observerHandle = await JS.InvokeAsync<IJSObjectReference>("createStickyObserver", _sentinel, _dotNetRef);
     }
   }
 
@@ -204,8 +162,13 @@
     InvokeAsync(StateHasChanged);
   }
 
-  async Task ToggleNode(JNode? node, int nodeIndex)
+  async Task ToggleNode(JNode node, int nodeIndex)
   {
+    if (node?.Name == RootName)
+    {
+      return;
+    }
+
     NextNode = node;
     NextRowOffset = RowOffset + (nodeIndex + 1);
     await OnNodeToggled.InvokeAsync(node);
@@ -274,7 +237,7 @@
     await OnRenderCode.InvokeAsync();
   }
 
-  async Task ToggleScroll() => await js.InvokeVoidAsync("scrollToElement", _sentinel);
+  async Task ToggleScroll() => await JS.InvokeVoidAsync("scrollToElement", _sentinel);
 
   async Task ForwardNodeToggled(JNode node) => await OnNodeToggled.InvokeAsync(node);
   async Task ForwardKvpSelected(KvpSelectedArgs args) => await OnKvpSelected.InvokeAsync(args);

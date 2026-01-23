@@ -1,37 +1,167 @@
-<div class="relative">
+@inject IJSRuntime JS
+@implements IAsyncDisposable
 
+<div tabindex="0" @ref="Ref"
+  class="transition-opt @Transition flex flex-col z-30 space-y-[3px] absolute top-0 left-0 w-20 h-fit text-xs font-medium hover:@ParentHover @ParentHover @OutlineColor @BackgroundColor @StickyClass @(StickyClass.Length > 1 ? "border border-white" : "")">
+
+  @if (Kvp is not null)
+  {
+    <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+      @onclick="async () => await ForwardSetKvpNullable.InvokeAsync()">
+      <label class="text-xs font-medium text-center w-15">Nullable</label>
+      <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.Nullable" />
+    </button>
+    @if (LangOptions.Language == "TypeScript")
+    {
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+        @onclick="async () => await ForwardSetKvpOptional.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">Optional</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.Optional" />
+      </button>
+    }
+    @if (Kvp.IsArray())
+    {
+      <CollectionSelection CollectionItemNullable="Kvp.CollectionItemNullable"
+        Collection="LangOptions.GetCollectionOptions()" Target="kvp" CurrentSelected="@Kvp.CollectionAs"
+        OnSelected="@(async arg => await ForwardSetKvpCollection.InvokeAsync(arg))"
+        OnSetCollectionItemNullable="async () => await ForwardSetKvpCollectionItemNullable.InvokeAsync()" />
+    }
+  }
+
+  @if (Node is not null && Node.Parent is not null)
+  {
+    <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+      @onclick="async () => await ForwardSetNodeNullable.InvokeAsync()">
+      <label class="text-xs font-medium text-center w-15">Nullable</label>
+      <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.Nullable" />
+    </button>
+    @if (LangOptions.Language == "TypeScript")
+    {
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+        @onclick="async () => await ForwardSetNodeOptional.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">Optional</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.Optional" />
+      </button>
+      <TypeSelection Types="Language.GetTypeOptions()" Target="@Target" CurrentSelected="@Node.TypeOption!.Name"
+        OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" />
+    }
+    @if (Node.Type == JNodeType.Array)
+    {
+      <CollectionSelection CollectionItemNullable="Node.CollectionItemNullable"
+        Collection="LangOptions.GetCollectionOptions()" Target="@Target" CurrentSelected="@Node.CollectionAs"
+        OnSelected="@(async arg => await ForwardSetNodeCollection.InvokeAsync( arg))"
+        OnSetCollectionItemNullable="async () => await ForwardSetNodeCollectionItemNullable.InvokeAsync()" />
+    }
+  }
+
+  @if (Node is not null && Node.Parent is null)
+  {
+    @if (LangOptions.Language == "TypeScript")
+    {
+      <TypeSelection Types="Language.GetTypeOptions()" Target="@Target" CurrentSelected="@Node.TypeOption!.Name"
+        OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" />
+    }
+  }
 </div>
 
 @code {
+  [Parameter]
+  public required ILanguageOptions LangOptions { get; set; }
   [Parameter]
   public JNode? Node { get; set; }
   [Parameter]
   public JNodeKvp? Kvp { get; set; }
   [Parameter]
   public required string Target { get; set; }
+  [Parameter]
+  public required string ParentHover { get; set; }
+
+  private string Transition = "scale-x-0";
+  private ElementReference Ref;
+  private DotNetObjectReference<NodeKvpOptions>? DotNetRef;
+  [Parameter]
+  public EventCallback OnClose { get; set; }
+
+  [Parameter]
+  public EventCallback ForwardSetKvpNullable { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpOptional { get; set; }
+  [Parameter]
+  public EventCallback<string> ForwardSetKvpCollection { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpCollectionItemNullable { get; set; }
+
+  [Parameter]
+  public EventCallback ForwardSetNodeNullable { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeOptional { get; set; }
+  [Parameter]
+  public EventCallback<string> ForwardSetNodeCollection { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeCollectionItemNullable { get; set; }
+  [Parameter]
+  public EventCallback<ITypeScriptTypeOption> ForwardSetNodeTypeOption { get; set; }
 
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
+  private string HoverColor = null!;
   private string StickyClass = "";
   private bool IsToggled = false;
 
-  protected override void OnInitialized()
+  [JSInvokable]
+  public async Task OnClickOutside()
+  {
+    Transition = "scale-x-0";
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(50);
+    await OnClose.InvokeAsync();
+  }
+
+  protected override async Task OnInitializedAsync()
   {
     if (Target == "kvp")
     {
       BackgroundColor = "bg-(--kvp-sel)";
       OutlineColor = "outline-(--kvp-sel-hov-ol)";
+      HoverColor = "hover:bg-(--kvp-sel-hov)";
     }
     if (Target == "node")
     {
       BackgroundColor = "bg-(--node)";
       OutlineColor = "outline-(--node-hov-ol)";
+      HoverColor = "hover:bg-(--node-hov)";
     }
     if (Target == "sticky")
     {
       BackgroundColor = "bg-(--sticky)";
       OutlineColor = "outline-(--sticky-hov-ol)";
+      HoverColor = "hover:bg-(--sticky-hov)";
       StickyClass = "-translate-y-[calc(var(--inp-h)/2)]";
+    }
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      await Task.Delay(50);
+      Transition = "scale-x-100";
+      StateHasChanged();
+
+      DotNetRef = DotNetObjectReference.Create(this);
+      await JS.InvokeVoidAsync(
+      "registerClickOutside",
+      Ref,
+      DotNetRef);
+    }
+  }
+
+  public async ValueTask DisposeAsync()
+  {
+    if (DotNetRef is not null)
+    {
+      await JS.InvokeVoidAsync("unregisterClickOutside", Ref);
+      DotNetRef.Dispose();
     }
   }
 }

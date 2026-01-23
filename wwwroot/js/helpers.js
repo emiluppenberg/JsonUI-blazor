@@ -21,10 +21,10 @@ window.createStickyObserver = (sentinel, dotNetRef) => {
 
       dotNetRef.invokeMethodAsync(
         "OnStickyStateChanged",
-        !entry.isIntersecting
+        !entry.isIntersecting,
       );
     },
-    { threshold: 1 }
+    { threshold: 1 },
   );
 
   observer.observe(sentinel);
@@ -62,4 +62,22 @@ window.loadAdSense = () => {
   }
 
   (adsbygoogle = window.adsbygoogle || []).push({});
+};
+
+window.registerClickOutside = (element, dotNetRef) => {
+  const handler = (e) => {
+    if (!element.contains(e.target)) {
+      dotNetRef.invokeMethodAsync("OnClickOutside");
+    }
+  };
+
+  window.addEventListener("click", handler);
+
+  element._outsideHandler = handler;
+};
+
+window.unregisterClickOutside = (element) => {
+  if (element._outsideHandler) {
+    window.removeEventListener("click", element._outsideHandler);
+  }
 };

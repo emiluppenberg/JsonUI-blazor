@@ -1,15 +1,14 @@
-<div class="relative w-20">
+<div class="relative w-20 h-(--inp-h)">
   <div
-    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @StickyClass"
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "")"
     @onclick="() => { IsToggled = !IsToggled; }">
-    <button
-      class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
+    <button class="w-full h-(--inp-h) hover:border truncate">@CurrentSelected</button>
     @if (IsToggled)
     {
       @foreach (var option in Types)
       {
         <button
-          class="w-full h-(--inp-h) hover:border truncate @(option.Name == CurrentSelected ? "bg-white opacity-50" : "")"
+          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.Name == CurrentSelected ? "bg-white" : "")"
           @onclick="async () => await OnSelected.InvokeAsync(option)" @onclick:stopPropagation="true">
           @option.Name
         </button>
@@ -33,20 +32,19 @@
   private string StickyClass = "";
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
-  private string SelectedColor = null!;
+
 
   protected override void OnInitialized()
   {
-    if (Target == "node")
-    {
-      BackgroundColor = "bg-(--node)";
-      OutlineColor = "outline-(--node-hov-ol)";
-    }
     if (Target == "sticky")
     {
-      BackgroundColor = "bg-(--sticky)";
       OutlineColor = "outline-(--sticky-hov-ol)";
-      StickyClass = "-translate-y-[calc(var(--inp-h)/2)]";
+      BackgroundColor = "bg-(--sticky-selection)";
+    }
+    if (Target == "node")
+    {
+      OutlineColor = "outline-(--node-hov-ol)";
+      BackgroundColor = "bg-(--node-selection)";
     }
   }
 }

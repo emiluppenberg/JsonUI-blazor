@@ -1,6 +1,6 @@
-<div class="relative w-20">
+<div class="relative w-20 h-(--inp-h)">
   <div
-    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @StickyClass"
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "") @StickyClass"
     @onclick="() => { IsToggled = !IsToggled; }">
     <button
       class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
@@ -9,12 +9,12 @@
       @foreach (var option in Collection)
       {
         <button
-          class="w-full h-(--inp-h) hover:border truncate @(option.ToString() == CurrentSelected ? "bg-white opacity-50" : "")"
+          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.ToString() == CurrentSelected ? "bg-white" : "")"
           @onclick="async () => await OnSelected.InvokeAsync(option.ToString())" @onclick:stopPropagation="true">
           @option.ToString()
         </button>
       }
-      <button class="w-full h-(--inp-h) hover:border truncate flex items-center"
+      <button class="z-50 w-full h-(--inp-h) hover:border truncate flex items-center @BackgroundColor"
         @onclick="async () => await OnSetCollectionItemNullable.InvokeAsync()" @onclick:stopPropagation="true">
         <label class="text-[0.5rem] font-medium text-center w-15">Nullable items</label>
         <input type="checkbox" class="w-5 h-(--inp-h) pointer-events-none" @bind="CollectionItemNullable" />
@@ -48,19 +48,18 @@
   {
     if (Target == "kvp")
     {
-      BackgroundColor = "bg-(--kvp-sel)";
+      BackgroundColor = "bg-(--kvp-selection)";
       OutlineColor = "outline-(--kvp-sel-hov-ol)";
     }
     if (Target == "node")
     {
-      BackgroundColor = "bg-(--node)";
+      BackgroundColor = "bg-(--node-selection)";
       OutlineColor = "outline-(--node-hov-ol)";
     }
     if (Target == "sticky")
     {
-      BackgroundColor = "bg-(--sticky)";
+      BackgroundColor = "bg-(--sticky-selection)";
       OutlineColor = "outline-(--sticky-hov-ol)";
-      StickyClass = "-translate-y-[calc(var(--inp-h)/2)]";
     }
   }
 }
