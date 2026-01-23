@@ -1,15 +1,14 @@
 <div class="relative w-20 h-(--inp-h)">
   <div
     class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "") @StickyClass"
-    @onclick="() => { IsToggled = !IsToggled; }">
-    <button
-      class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
+    @onclick="async () => await OnToggled.InvokeAsync()">
+    <button class="w-full h-(--inp-h) hover:border truncate">@CurrentSelected</button>
     @if (IsToggled)
     {
       @foreach (var option in Collection)
       {
         <button
-          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.ToString() == CurrentSelected ? "bg-white" : "")"
+          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.ToString() == CurrentSelected ? $"{SelectedColor} text-white" : "")"
           @onclick="async () => await OnSelected.InvokeAsync(option.ToString())" @onclick:stopPropagation="true">
           @option.ToString()
         </button>
@@ -32,13 +31,16 @@
   public required string Target { get; set; }
   [Parameter]
   public required string CurrentSelected { get; set; }
+  [Parameter]
+  public bool IsToggled { get; set; }
 
+  [Parameter]
+  public EventCallback OnToggled { get; set; }
   [Parameter]
   public EventCallback<string> OnSelected { get; set; }
   [Parameter]
   public EventCallback OnSetCollectionItemNullable { get; set; }
 
-  private bool IsToggled = false;
   private string StickyClass = "";
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
@@ -49,16 +51,19 @@
     if (Target == "kvp")
     {
       BackgroundColor = "bg-(--kvp-selection)";
+      SelectedColor = "bg-(--kvp-selection-active)";
       OutlineColor = "outline-(--kvp-sel-hov-ol)";
     }
     if (Target == "node")
     {
       BackgroundColor = "bg-(--node-selection)";
+      SelectedColor = "bg-(--node-selection-active)";
       OutlineColor = "outline-(--node-hov-ol)";
     }
     if (Target == "sticky")
     {
       BackgroundColor = "bg-(--sticky-selection)";
+      SelectedColor = "bg-(--sticky-selection-active)";
       OutlineColor = "outline-(--sticky-hov-ol)";
     }
   }

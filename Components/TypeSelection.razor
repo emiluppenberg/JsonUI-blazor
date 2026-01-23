@@ -1,7 +1,7 @@
 <div class="relative w-20 h-(--inp-h)">
   <div
     class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "")"
-    @onclick="() => { IsToggled = !IsToggled; }">
+    @onclick="async () => await OnToggled.InvokeAsync()">
     <button class="w-full h-(--inp-h) hover:border truncate">@CurrentSelected</button>
     @if (IsToggled)
     {
@@ -24,11 +24,14 @@
   public required string CurrentSelected { get; set; }
   [Parameter]
   public required string Target { get; set; }
+  [Parameter]
+  public bool IsToggled { get; set; }
 
+  [Parameter]
+  public EventCallback OnToggled { get; set; }
   [Parameter]
   public EventCallback<ITypeScriptTypeOption> OnSelected { get; set; }
 
-  private bool IsToggled = false;
   private string StickyClass = "";
   private string BackgroundColor = null!;
   private string OutlineColor = null!;

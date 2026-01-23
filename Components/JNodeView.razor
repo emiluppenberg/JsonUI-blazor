@@ -11,7 +11,7 @@
       @onclick="() => ToggleNode(CurrentNode, 0)">
       <span class="key font-bold">@CurrentNode.Name</span>
       <div class="div-value">
-        <div class="value font-medium">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</div>
+        <div class="value text-base">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</div>
         <div class="div-count transition-val @(AnyNestedSelected ? "scale-x-100" : "scale-x-0")">
           <div class="count">@CurrentNode.TotalNestedSelected</div>
         </div>
@@ -20,8 +20,14 @@
     <div class="relative">
       <button id="toggle-options"
         class="-translate-y-[calc(var(--inp-h)/2)] button-options bg-(--sticky-btn-opt) transition-val @(IsMouseOver && AnyNestedSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-        @onclick="() => { NodeToggledOptions = CurrentNode; }"
-        disabled="@(NodeToggledOptions == CurrentNode)">*</button>
+        @onclick="() => { NodeToggledOptions = CurrentNode; }">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
+      </button>
       @if (NodeToggledOptions == CurrentNode)
       {
         <NodeKvpOptions LangOptions="LangOptions" Node="CurrentNode" Target="sticky"
@@ -31,6 +37,9 @@
           ForwardSetNodeCollection="@(async arg => await SetNodeCollection(CurrentNode, arg))"
           ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)"
           ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
+          ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
+          ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
+          ForwardSetNodeClassNoConstructor="async () => await SetNodeClassNoConstructor(CurrentNode)"
           OnClose="() => {NodeToggledOptions = null;}" />
       }
     </div>
@@ -47,7 +56,7 @@
           @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
           <span class="key font-bold">@child.Name</span>
           <div class="div-value">
-            <div class="value font-medium">@(child.Type == JNodeType.Object ? "{}" : "[]")</div>
+            <div class="value text-base">@(child.Type == JNodeType.Object ? "{}" : "[]")</div>
             <div class="div-count transition-val @(child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0")">
               <div class="count">@child.TotalNestedSelected</div>
             </div>
@@ -55,8 +64,15 @@
         </button>
         <div class="relative">
           <button id="toggle-options"
-            class="button-options bg-(--node-btn-opt) transition-val @(NodeToggledOptions == child ? "pointer-events-none" : "") @(IsMouseOverNode == child && child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-            @onclick="() => { NodeToggledOptions = child; }">*</button>
+            class="button-options bg-(--node-btn-opt) transition-val @(IsMouseOverNode == child && child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+            @onclick="() => { NodeToggledOptions = child; }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
           @if (NodeToggledOptions == child)
           {
             <NodeKvpOptions LangOptions="LangOptions" Node="child" Target="node"
@@ -66,6 +82,9 @@
               ForwardSetNodeCollection="@(async arg => await SetNodeCollection(child, arg))"
               ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)"
               ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
+              ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
+              ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
+              ForwardSetNodeClassNoConstructor="async () => await SetNodeClassNoConstructor(child)"
               OnClose="() => {NodeToggledOptions = null;}" />
           }
         </div>
@@ -80,14 +99,21 @@
           @onclick='async () => await SetKvpSelected(kvp)'>
           <span class="key font-light">@kvp.Kvp.Key</span>
           <div class="div-value">
-            <div class="value italic truncate @(kvp.Kvp.Value.ToLower().Contains("date") ? "text-[0.55rem]" : "")">
+            <div class="value italic truncate">
               @kvp.Kvp.Value</div>
           </div>
         </button>
         <div class="relative">
           <button id="toggle-options"
             class="button-options transition-val bg-(--kvp-btn-opt) @(IsMouseOverKvp == kvp && kvp.IsSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-            @onclick="() => { KvpToggledOptions = kvp; }">*</button>
+            @onclick="() => { KvpToggledOptions = kvp; }">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="4" y1="7" x2="20" y2="7" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
           @if (KvpToggledOptions == kvp)
           {
             <NodeKvpOptions LangOptions="LangOptions" Kvp="kvp" Target="kvp"
@@ -234,6 +260,27 @@
   async Task SetNodeTypeOption(JNode node, ITypeScriptTypeOption typeOption)
   {
     node.TypeOption = typeOption;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeClassPrimaryConstructor(JNode node)
+  {
+    node.TypeOption!.UsePrimaryConstructor = true;
+    node.TypeOption!.UseRegularConstructor = false;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeClassRegularConstructor(JNode node)
+  {
+    node.TypeOption!.UseRegularConstructor = true;
+    node.TypeOption!.UsePrimaryConstructor = false;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeClassNoConstructor(JNode node)
+  {
+    node.TypeOption!.UsePrimaryConstructor = false;
+    node.TypeOption!.UseRegularConstructor = false;
     await OnRenderCode.InvokeAsync();
   }
 
