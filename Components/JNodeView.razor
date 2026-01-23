@@ -40,18 +40,15 @@
             <input class="sticky-option-checkbox" type="checkbox" @bind="CurrentNode.Optional" />
           </button>
         </div>
-        <TypeSelection Types="Language.GetTypeOptions()" BackgroundColor="bg-(--sticky)"
-          SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
-          CurrentSelected="@CurrentNode.TypeOption!.Name"
-          OnSelected="@(async arg => await SetNodeTypeOption(CurrentNode, arg))" IsSticky="true" />
+        <TypeSelection Types="Language.GetTypeOptions()" Target="sticky" CurrentSelected="@CurrentNode.TypeOption!.Name"
+          OnSelected="@(async arg => await SetNodeTypeOption(CurrentNode, arg))" />
       }
       @if (CurrentNode.Type == JNodeType.Array)
       {
         <CollectionSelection CollectionItemNullable="CurrentNode.CollectionItemNullable"
-          Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--sticky)"
-          SelectedColor="bg-(--sticky-selection-active)" OutlineColor="outline-(--sticky-hov-ol)"
-          CurrentSelected="@CurrentNode.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
-          OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)" IsSticky="true" />
+          Collection="LangOptions.GetCollectionOptions()" Target="sticky" CurrentSelected="@CurrentNode.CollectionAs"
+          OnSelected="@(async arg => await SetNodeCollection(CurrentNode, arg))"
+          OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)" />
       }
     }
   </div>
@@ -97,16 +94,14 @@
                 <input class="node-option-checkbox" type="checkbox" @bind="child.Optional" />
               </button>
             </div>
-            <TypeSelection Types="Language.GetTypeOptions()" BackgroundColor="bg-(--node)"
-              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
-              CurrentSelected="@child.TypeOption!.Name" OnSelected="@(async arg => await SetNodeTypeOption(child, arg))" />
+            <TypeSelection Types="Language.GetTypeOptions()" Target="node" CurrentSelected="@child.TypeOption!.Name"
+              OnSelected="@(async arg => await SetNodeTypeOption(child, arg))" />
           }
           @if (child.Type == JNodeType.Array)
           {
             <CollectionSelection CollectionItemNullable="child.CollectionItemNullable"
-              Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--node)"
-              SelectedColor="bg-(--node-selection-active)" OutlineColor="outline-(--node-hov-ol)"
-              CurrentSelected="@child.CollectionAs" OnSelected="@(async arg => await SetNodeCollection(child, arg))"
+              Collection="LangOptions.GetCollectionOptions()" Target="node" CurrentSelected="@child.CollectionAs"
+              OnSelected="@(async arg => await SetNodeCollection(child, arg))"
               OnSetCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)" />
           }
         }
@@ -143,9 +138,8 @@
           @if (jnKvp.IsArray())
           {
             <CollectionSelection CollectionItemNullable="jnKvp.CollectionItemNullable"
-              Collection="LangOptions.GetCollectionOptions()" BackgroundColor="bg-(--kvp-sel)"
-              SelectedColor="bg-(--kvp-selection-active)" OutlineColor="outline-(--kvp-sel-hov-ol)"
-              CurrentSelected="@jnKvp.CollectionAs" OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
+              Collection="LangOptions.GetCollectionOptions()" Target="kvp" CurrentSelected="@jnKvp.CollectionAs"
+              OnSelected="@(async arg => await SetKvpCollection(jnKvp, arg))"
               OnSetCollectionItemNullable="async () => await SetKvpCollectionItemNullable(jnKvp)" />
           }
         }

@@ -1,6 +1,6 @@
 <div class="relative w-20">
   <div
-    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @(IsSticky ? "-translate-y-[calc(var(--inp-h)/2)]" : "")"
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @StickyClass"
     @onclick="() => { IsToggled = !IsToggled; }">
     <button
       class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
@@ -22,18 +22,31 @@
   [Parameter]
   public required List<ITypeScriptTypeOption> Types { get; set; }
   [Parameter]
-  public required string BackgroundColor { get; set; }
-  [Parameter]
-  public required string OutlineColor { get; set; }
-  [Parameter]
-  public required string SelectedColor { get; set; }
-  [Parameter]
   public required string CurrentSelected { get; set; }
   [Parameter]
-  public bool IsSticky { get; set; }
+  public required string Target { get; set; }
 
   [Parameter]
   public EventCallback<ITypeScriptTypeOption> OnSelected { get; set; }
 
-  public bool IsToggled { get; set; }
+  private bool IsToggled = false;
+  private string StickyClass = "";
+  private string BackgroundColor = null!;
+  private string OutlineColor = null!;
+  private string SelectedColor = null!;
+
+  protected override void OnInitialized()
+  {
+    if (Target == "node")
+    {
+      BackgroundColor = "bg-(--node)";
+      OutlineColor = "outline-(--node-hov-ol)";
+    }
+    if (Target == "sticky")
+    {
+      BackgroundColor = "bg-(--sticky)";
+      OutlineColor = "outline-(--sticky-hov-ol)";
+      StickyClass = "-translate-y-[calc(var(--inp-h)/2)]";
+    }
+  }
 }

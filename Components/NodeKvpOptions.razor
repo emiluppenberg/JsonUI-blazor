@@ -1,0 +1,37 @@
+<div class="relative">
+
+</div>
+
+@code {
+  [Parameter]
+  public JNode? Node { get; set; }
+  [Parameter]
+  public JNodeKvp? Kvp { get; set; }
+  [Parameter]
+  public required string Target { get; set; }
+
+  private string BackgroundColor = null!;
+  private string OutlineColor = null!;
+  private string StickyClass = "";
+  private bool IsToggled = false;
+
+  protected override void OnInitialized()
+  {
+    if (Target == "kvp")
+    {
+      BackgroundColor = "bg-(--kvp-sel)";
+      OutlineColor = "outline-(--kvp-sel-hov-ol)";
+    }
+    if (Target == "node")
+    {
+      BackgroundColor = "bg-(--node)";
+      OutlineColor = "outline-(--node-hov-ol)";
+    }
+    if (Target == "sticky")
+    {
+      BackgroundColor = "bg-(--sticky)";
+      OutlineColor = "outline-(--sticky-hov-ol)";
+      StickyClass = "-translate-y-[calc(var(--inp-h)/2)]";
+    }
+  }
+}
