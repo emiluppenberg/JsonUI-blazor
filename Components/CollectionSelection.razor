@@ -1,20 +1,19 @@
-<div class="relative w-20">
+<div class="relative w-20 h-(--inp-h)">
   <div
-    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @(IsSticky ? "-translate-y-[calc(var(--inp-h)/2)]" : "")"
-    @onclick="() => { IsToggled = !IsToggled; }">
-    <button
-      class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "") @StickyClass"
+    @onclick="async () => await OnToggled.InvokeAsync()">
+    <button class="w-full h-(--inp-h) hover:border truncate">@CurrentSelected</button>
     @if (IsToggled)
     {
       @foreach (var option in Collection)
       {
         <button
-          class="w-full h-(--inp-h) hover:border truncate @(option.ToString() == CurrentSelected ? "bg-white opacity-50" : "")"
+          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.ToString() == CurrentSelected ? $"{SelectedColor} text-white" : "")"
           @onclick="async () => await OnSelected.InvokeAsync(option.ToString())" @onclick:stopPropagation="true">
           @option.ToString()
         </button>
       }
-      <button class="w-full h-(--inp-h) hover:border truncate flex items-center"
+      <button class="z-50 w-full h-(--inp-h) hover:border truncate flex items-center @BackgroundColor"
         @onclick="async () => await OnSetCollectionItemNullable.InvokeAsync()" @onclick:stopPropagation="true">
         <label class="text-[0.5rem] font-medium text-center w-15">Nullable items</label>
         <input type="checkbox" class="w-5 h-(--inp-h) pointer-events-none" @bind="CollectionItemNullable" />
@@ -26,24 +25,46 @@
 @code {
   [Parameter]
   public bool? CollectionItemNullable { get; set; }
-
   [Parameter]
   public required Array Collection { get; set; }
   [Parameter]
-  public required string BackgroundColor { get; set; }
-  [Parameter]
-  public required string OutlineColor { get; set; }
-  [Parameter]
-  public required string SelectedColor { get; set; }
+  public required string Target { get; set; }
   [Parameter]
   public required string CurrentSelected { get; set; }
   [Parameter]
-  public bool IsSticky { get; set; }
+  public bool IsToggled { get; set; }
 
+  [Parameter]
+  public EventCallback OnToggled { get; set; }
   [Parameter]
   public EventCallback<string> OnSelected { get; set; }
   [Parameter]
   public EventCallback OnSetCollectionItemNullable { get; set; }
 
-  public bool IsToggled { get; set; }
+  private string StickyClass = "";
+  private string BackgroundColor = null!;
+  private string OutlineColor = null!;
+  private string SelectedColor = null!;
+
+  protected override void OnInitialized()
+  {
+    if (Target == "kvp")
+    {
+      BackgroundColor = "bg-(--kvp-selection)";
+      SelectedColor = "bg-(--kvp-selection-active)";
+      OutlineColor = "outline-(--kvp-sel-hov-ol)";
+    }
+    if (Target == "node")
+    {
+      BackgroundColor = "bg-(--node-selection)";
+      SelectedColor = "bg-(--node-selection-active)";
+      OutlineColor = "outline-(--node-hov-ol)";
+    }
+    if (Target == "sticky")
+    {
+      BackgroundColor = "bg-(--sticky-selection)";
+      SelectedColor = "bg-(--sticky-selection-active)";
+      OutlineColor = "outline-(--sticky-hov-ol)";
+    }
+  }
 }

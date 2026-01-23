@@ -1,15 +1,14 @@
-<div class="relative w-20">
+<div class="relative w-20 h-(--inp-h)">
   <div
-    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium outline-3 @BackgroundColor @OutlineColor @(IsSticky ? "-translate-y-[calc(var(--inp-h)/2)]" : "")"
-    @onclick="() => { IsToggled = !IsToggled; }">
-    <button
-      class="w-full h-(--inp-h) hover:border truncate @(IsToggled ? $"{SelectedColor}" : "")">@CurrentSelected</button>
+    class="flex flex-col absolute top-0 left-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "")"
+    @onclick="async () => await OnToggled.InvokeAsync()">
+    <button class="w-full h-(--inp-h) hover:border truncate">@CurrentSelected</button>
     @if (IsToggled)
     {
       @foreach (var option in Types)
       {
         <button
-          class="w-full h-(--inp-h) hover:border truncate @(option.Name == CurrentSelected ? "bg-white opacity-50" : "")"
+          class="z-50 w-full h-(--inp-h) hover:border truncate @BackgroundColor @(option.Name == CurrentSelected ? "bg-white" : "")"
           @onclick="async () => await OnSelected.InvokeAsync(option)" @onclick:stopPropagation="true">
           @option.Name
         </button>
@@ -22,18 +21,33 @@
   [Parameter]
   public required List<ITypeScriptTypeOption> Types { get; set; }
   [Parameter]
-  public required string BackgroundColor { get; set; }
-  [Parameter]
-  public required string OutlineColor { get; set; }
-  [Parameter]
-  public required string SelectedColor { get; set; }
-  [Parameter]
   public required string CurrentSelected { get; set; }
   [Parameter]
-  public bool IsSticky { get; set; }
+  public required string Target { get; set; }
+  [Parameter]
+  public bool IsToggled { get; set; }
 
+  [Parameter]
+  public EventCallback OnToggled { get; set; }
   [Parameter]
   public EventCallback<ITypeScriptTypeOption> OnSelected { get; set; }
 
-  public bool IsToggled { get; set; }
+  private string StickyClass = "";
+  private string BackgroundColor = null!;
+  private string OutlineColor = null!;
+
+
+  protected override void OnInitialized()
+  {
+    if (Target == "sticky")
+    {
+      OutlineColor = "outline-(--sticky-hov-ol)";
+      BackgroundColor = "bg-(--sticky-selection)";
+    }
+    if (Target == "node")
+    {
+      OutlineColor = "outline-(--node-hov-ol)";
+      BackgroundColor = "bg-(--node-selection)";
+    }
+  }
 }

@@ -16,17 +16,23 @@
   --sticky: var(--color-teal-600);
   --sticky-hov: var(--color-teal-700);
   --sticky-hov-ol: var(--color-teal-100);
-  --sticky-selection-active: var(--color-teal-800);
+  --sticky-selection: var(--color-teal-400);
+  --sticky-selection-active: var(--color-teal-300);
+  --sticky-btn-opt: var(--color-teal-800);
   --node: var(--color-teal-400);
   --node-hov: var(--color-teal-500);
   --node-hov-ol: var(--color-teal-100);
-  --node-selection-active: var(--color-teal-600);
+  --node-selection: var(--color-teal-300);
+  --node-selection-active: var(--color-teal-200);
+  --node-btn-opt: var(--color-teal-600);
   --kvp: var(--color-teal-200);
   --kvp-hov: var(--color-teal-300);
   --kvp-sel: var(--color-cyan-400);
   --kvp-sel-hov: var(--color-cyan-500);
   --kvp-sel-hov-ol: var(--color-cyan-100);
-  --kvp-selection-active: var(--color-cyan-600);
+  --kvp-selection: var(--color-cyan-300);
+  --kvp-selection-active: var(--color-cyan-200);
+  --kvp-btn-opt: var(--color-cyan-600);
   --bg-primary: var(--color-slate-800);
 }
 
@@ -36,27 +42,11 @@
   }
 
   .div-node-selected {
-    @apply flex flex-1 w-fit mb-1 bg-(--node) hover:bg-(--node-hov) hover:z-50 hover:outline-3 hover:outline-(--node-hov-ol) divide-x-3 divide-solid divide-(--node-hov-ol);
+    @apply flex flex-1 w-fit mb-1 bg-(--node) hover:bg-(--node-hov) hover:z-30 hover:outline-3 hover:outline-(--node-hov-ol);
   }
 
   .button-node {
     @apply w-(--kvp-w) h-(--inp-h) flex flex-1 items-center divide-dotted divide-x;
-  }
-
-  .node-option-label {
-    @apply text-xs font-medium text-center w-15;
-  }
-
-  .node-option-button {
-    @apply px-1 flex h-(--inp-h) w-20 items-center hover:border;
-  }
-
-  .node-option-checkbox {
-    @apply w-5 h-(--inp-h) pointer-events-none;
-  }
-
-  .node-option-select {
-    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
   }
 
   .button-kvp {
@@ -72,23 +62,7 @@
   }
 
   .div-kvp-selected {
-    @apply flex flex-1 w-fit mb-1 bg-(--kvp-sel) hover:bg-(--kvp-sel-hov) divide-x-3 divide-solid divide-(--kvp-sel-hov-ol) hover:z-50 hover:outline-3 hover:outline-(--kvp-sel-hov-ol);
-  }
-
-  .kvp-option-label {
-    @apply text-xs font-medium text-center w-15;
-  }
-
-  .kvp-option-button {
-    @apply px-1 flex h-(--inp-h) w-20 items-center hover:border;
-  }
-
-  .kvp-option-checkbox {
-    @apply w-5 h-(--inp-h) pointer-events-none;
-  }
-
-  .kvp-option-select {
-    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
+    @apply flex flex-1 w-fit mb-1 bg-(--kvp-sel) hover:bg-(--kvp-sel-hov) hover:z-30 hover:outline-3 hover:outline-(--kvp-sel-hov-ol);
   }
 
   .button-sticky-inactive {
@@ -112,7 +86,7 @@
   }
 
   .div-sticky-inactive-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
   }
 
   .div-sticky-active {
@@ -120,55 +94,31 @@
   }
 
   .div-sticky-active-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-50 hover:outline-3 hover:outline-(--sticky-hov-ol) divide-x-3 divide-solid divide-(--sticky-hov-ol);
-  }
-
-  .sticky-option-label {
-    @apply text-xs font-medium text-center w-15;
-  }
-
-  .sticky-option-button {
-    @apply px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border;
-  }
-
-  .sticky-option-checkbox {
-    @apply w-5 h-(--inp-h) pointer-events-none;
-  }
-
-  .sticky-option-select {
-    @apply w-20 h-(--inp-h) text-xs font-medium hover:border;
+    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
   }
 
   .div-count {
-    @apply w-4 h-(--inp-h) flex items-center justify-center bg-white/40;
+    @apply w-4 h-(--inp-h) flex items-center justify-center bg-white/40 border-r border-white;
   }
 
-  .div-count-hidden {
-    @apply w-4 h-(--inp-h) opacity-100;
-  }
-
-  .span-count {
+  .count {
     @apply px-1 text-xs font-medium font-mono text-sky-900;
   }
 
-  .key-node {
-    @apply px-1 flex flex-1 items-center h-full text-start text-xs font-bold truncate;
+  .key {
+    @apply px-1 flex flex-1 items-center h-full text-start text-xs truncate;
   }
 
-  .value-node {
-    @apply px-1 flex items-center text-start text-xs font-medium;
+  .value {
+    @apply px-1 text-start text-[0.5rem];
   }
 
-  .div-value-node {
-    @apply w-12 flex items-center justify-between h-full text-center text-xs font-medium truncate;
+  .div-value {
+    @apply relative min-w-12 max-w-12 flex justify-between items-center h-full;
   }
 
-  .key-kvp {
-    @apply px-1 flex flex-1 items-center h-full text-start text-xs font-light truncate;
-  }
-
-  .value-kvp {
-    @apply px-1 w-12 flex items-center h-full text-start text-xs italic truncate;
+  .button-options {
+    @apply absolute flex items-center justify-center left-0 top-0 w-6 h-(--inp-h) text-center text-xs -translate-x-6;
   }
 
   .node-col {
@@ -213,6 +163,14 @@
 
   .transition-gen {
     @apply transition-all duration-50;
+  }
+
+  .transition-val {
+    @apply transition-all duration-50 origin-right;
+  }
+
+  .transition-opt {
+    @apply transition-all duration-100 origin-left;
   }
 
   .sentinel {
