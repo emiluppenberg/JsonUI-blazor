@@ -471,7 +471,8 @@ public static class JNodeMaster
     }
 
     var usingStr = langOptions.CSharpJsonOptions is not null ? $"using {langOptions.CSharpJsonOptions.Using};{Environment.NewLine}{Environment.NewLine}" : "";
-    var cs = usingStr;
+    var zodStr = classes.Any(x => x.Value.TypeOption is not null && x.Value.TypeOption.UseZodSchema == true) ? $"import * as z from \"zod\";{Environment.NewLine}{Environment.NewLine}" : "";
+    var cs = usingStr + zodStr;
 
     foreach (var kvp in classes)
     {

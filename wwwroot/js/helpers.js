@@ -67,7 +67,6 @@ window.loadAdSense = () => {
 window.registerClickOutside = (element, dotNetRef) => {
   const handler = (e) => {
     if (!element.contains(e.target)) {
-      console.log(e.target);
       dotNetRef.invokeMethodAsync("OnClickOutside");
     }
   };

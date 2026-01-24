@@ -82,19 +82,19 @@
   }
 
   .div-sticky-inactive {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
+    @apply sticky top-1 z-20 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-inactive-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
+    @apply sticky top-1 z-20 flex flex-1 w-fit max-h-(--inp-h) -translate-x-(--kvp-w) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
   }
 
   .div-sticky-active {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
+    @apply sticky top-1 z-20 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov);
   }
 
   .div-sticky-active-selected {
-    @apply sticky top-1 z-40 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
+    @apply sticky top-1 z-20 flex flex-1 w-fit max-h-(--inp-h) items-center mb-1 bg-(--sticky) hover:bg-(--sticky-hov) hover:z-30 hover:outline-2 hover:outline-(--sticky-hov-ol);
   }
 
   .div-count {

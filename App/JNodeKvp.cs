@@ -7,15 +7,20 @@ public class JNodeKvp
   public bool IsSelected { get; set; }
   public bool Nullable { get; set; }
   public bool Optional { get; set; }
-  public bool Nested { get; set; } = false;
+  public bool AllowUndefined { get; set; }
+  public bool Nested { get; set; }
+  public bool IsUnion { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
+  public bool? CollectionItemAllowUndefined { get; set; }
 
   public JNodeKvp(KeyValuePair<string, string> kvp, ILanguageOptions langOptions)
   {
     Kvp = kvp;
     CollectionAs = kvp.Value.Contains("[]") ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
     CollectionItemNullable = kvp.Value.Contains("[]") ? false : null;
+    CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;
+    IsUnion = kvp.Value.Contains("|") ? true : false;
   }
 
   public JNodeKvp(JNode node)
@@ -25,8 +30,10 @@ public class JNodeKvp
     Nested = node.Parent is not null;
     Nullable = node.Nullable;
     Optional = node.Optional;
+    AllowUndefined = node.AllowUndefined;
     CollectionAs = node.CollectionAs;
     CollectionItemNullable = node.CollectionItemNullable;
+    CollectionItemAllowUndefined = node.CollectionItemAllowUndefined;
   }
 
   public bool IsArray() => CollectionAs is not null;
