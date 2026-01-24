@@ -11,12 +11,12 @@ public class JNode
   public JNode? Parent { get; set; }
   public bool IsExpanded { get; set; }
   public bool Nullable { get; set; }
+  public bool Optional { get; set; }
+  public bool AllowUndefined { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
+  public bool? CollectionItemAllowUndefined { get; set; }
   public int TotalNestedSelected { get; set; }
-
-  // TypeScript
-  public bool Optional { get; set; }
   public ITypeScriptTypeOption? TypeOption { get; set; }
 
   public JNode(string lineageKey, string parentKey, string name, List<JNodeKvp> keyValues, ILanguageOptions langOptions)
@@ -29,7 +29,7 @@ public class JNode
     Children = new();
     CollectionAs = Type == JNodeType.Array ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
     CollectionItemNullable = Type == JNodeType.Array ? false : null;
-
+    CollectionItemAllowUndefined = Type == JNodeType.Array && langOptions.Language == "TypeScript" ? false : null;
     TypeOption = langOptions.Language == "TypeScript" ? langOptions.TypeOption : null;
   }
 

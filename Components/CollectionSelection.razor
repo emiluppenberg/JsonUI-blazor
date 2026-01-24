@@ -15,18 +15,28 @@
       }
       <button class="z-50 w-full h-(--inp-h) hover:border truncate flex items-center @BackgroundColor"
         @onclick="async () => await OnSetCollectionItemNullable.InvokeAsync()" @onclick:stopPropagation="true">
-        <label class="text-[0.5rem] font-medium text-center w-15">Nullable items</label>
+        <label class="text-[0.5rem] font-medium text-center w-15">Allow null items</label>
         <input type="checkbox" class="w-5 h-(--inp-h) pointer-events-none" @bind="CollectionItemNullable" />
       </button>
+      @if (LangOptions.Language == "TypeScript")
+      {
+        <button class="z-50 w-full h-(--inp-h) hover:border truncate flex items-center @BackgroundColor"
+          @onclick="async () => await OnSetCollectionItemAllowUndefined.InvokeAsync()" @onclick:stopPropagation="true">
+          <label class="text-[0.5rem] font-medium text-center w-15">Allow undefined items</label>
+          <input type="checkbox" class="w-5 h-(--inp-h) pointer-events-none" @bind="CollectionItemAllowUndefined" />
+        </button>
+      }
     }
   </div>
 </div>
 
 @code {
   [Parameter]
+  public required ILanguageOptions LangOptions { get; set; }
+  [Parameter]
   public bool? CollectionItemNullable { get; set; }
   [Parameter]
-  public required Array Collection { get; set; }
+  public bool? CollectionItemAllowUndefined { get; set; }
   [Parameter]
   public required string Target { get; set; }
   [Parameter]
@@ -40,7 +50,10 @@
   public EventCallback<string> OnSelected { get; set; }
   [Parameter]
   public EventCallback OnSetCollectionItemNullable { get; set; }
+  [Parameter]
+  public EventCallback OnSetCollectionItemAllowUndefined { get; set; }
 
+  private Array Collection { get; set; } = null!;
   private string StickyClass = "";
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
@@ -48,6 +61,8 @@
 
   protected override void OnInitialized()
   {
+    Collection = LangOptions.GetCollectionOptions();
+
     if (Target == "kvp")
     {
       BackgroundColor = "bg-(--kvp-selection)";

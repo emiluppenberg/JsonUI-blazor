@@ -26,7 +26,7 @@ public class ClassTypeOption : ITypeScriptTypeOption
 {
   public string Name { get; } = "class";
   public bool UseZodSchema { get; set; }
-  public bool? UsePrimaryConstructor { get; set; } = false;
+  public bool? UsePrimaryConstructor { get; set; } = true;
   public bool? UseRegularConstructor { get; set; } = false;
 }
 
@@ -35,7 +35,7 @@ public class TypeScriptOptions : ILanguageOptions
   public string Language { get; } = "TypeScript";
   public INamingConvention NamingConvention { get; set; } = new AsIsCase();
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
-  public ITypeScriptTypeOption? TypeOption { get; set; } = new InterfaceTypeOption();
+  public ITypeScriptTypeOption? TypeOption { get; set; } = new TypeTypeOption();
   public Array GetCollectionOptions() => Enum.GetValues<TypeScriptCollections>();
 
   public string ParseObject(JNodeClass jnc)
@@ -108,13 +108,13 @@ public class TypeScriptOptions : ILanguageOptions
     {
       typestr += $"  constructor({Environment.NewLine}";
       typestr += ParseProperties(jnc.Kvps, 4, "public ", ",");
-      return typestr + $"  ) {{}}{Environment.NewLine}";
-    }
 
-    typestr += ParseProperties(jnc.Kvps, 2, "", ";");
+      return typestr + $"  ) {{}}{Environment.NewLine}}}{Environment.NewLine}{Environment.NewLine}";
+    }
 
     if (jnc.TypeOption.UseRegularConstructor.GetValueOrDefault() == true)
     {
+      typestr += ParseProperties(jnc.Kvps, 2, "", ";");
       typestr += $"{Environment.NewLine}  constructor({Environment.NewLine}";
       typestr += ParseProperties(jnc.Kvps, 4, "", ",");
       typestr += $"  ) {{{Environment.NewLine}";
@@ -127,10 +127,12 @@ public class TypeScriptOptions : ILanguageOptions
 
         typestr += propLine;
       }
+
+      typestr += $"    }}{Environment.NewLine}";
+      return typestr + $"}}{Environment.NewLine}{Environment.NewLine}";
     }
 
-    typestr += $"    }}{Environment.NewLine}";
-    return typestr + $"}}{Environment.NewLine}{Environment.NewLine}";
+    return ""; // Should not execute
   }
 
   private string ParseProperties(List<JNodeKvp> jncKvps, int indent, string access, string endLine)
@@ -140,14 +142,17 @@ public class TypeScriptOptions : ILanguageOptions
     for (int i = 0; i < jncKvps.Count; i++)
     {
       var kvp = jncKvps[i];
-      var datatype = kvp.Kvp.Value;
-
+      var datatype = "";
+      datatype = kvp.CollectionAs is not null ? kvp.Kvp.Value.Replace("[]", "") : kvp.Kvp.Value;
+      datatype = kvp.CollectionItemNullable is not null || kvp.IsUnion ? datatype.Replace("(", "").Replace(")", "") : datatype;
       datatype = kvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = kvp.CollectionAs is not null ?
-        ConfigureCollection(datatype, kvp.Nullable, kvp.CollectionAs!, kvp.CollectionItemNullable!.Value) : datatype;
+        ConfigureCollection(datatype, kvp.CollectionAs!, kvp.IsUnion, kvp.CollectionItemNullable!.Value, kvp.CollectionItemAllowUndefined!.Value) : datatype;
 
-      datatype = kvp.Nullable && kvp.CollectionAs is null ? $"{datatype} | null" : datatype;
+      datatype = kvp.IsUnion && kvp.CollectionAs is null ? $"({datatype})" : datatype;
+      datatype = kvp.Nullable ? $"{datatype} | null" : datatype;
+      datatype = kvp.AllowUndefined ? $"{datatype} | undefined" : datatype;
 
       var propName = this.NamingConvention.Parse(kvp.Kvp.Key);
       var optional = kvp.Optional ? "?" : "";
@@ -159,6 +164,63 @@ public class TypeScriptOptions : ILanguageOptions
     return typestr;
   }
 
+  public string ConfigureCollection(string datatype, string collection, bool datatypeIsUnion, bool collectionItemNullable, bool collectionItemAllowUndefined)
+  {
+    var _collection = Enum.Parse(typeof(TypeScriptCollections), collection);
+
+    datatype = collectionItemNullable ? $"{datatype} | null" : datatype;
+    datatype = collectionItemAllowUndefined ? $"{datatype} | undefined" : $"{datatype}";
+    datatype = collectionItemNullable || collectionItemAllowUndefined || datatypeIsUnion ? $"({datatype})" : datatype;
+
+    switch (_collection)
+    {
+      case TypeScriptCollections.Set:
+        datatype = $"Set<{datatype}>";
+        break;
+      case TypeScriptCollections.Array:
+        datatype = $"{datatype}[]";
+        break;
+    }
+
+    return datatype;
+  }
+
+  private string ParseInterfaceZodSchema(JNodeClass jnc)
+  {
+    var typename = this.NamingConvention.Parse(jnc.Name);
+    var zodstr = $"const {typename}Schema = z.object({{{Environment.NewLine}";
+    zodstr += ParseZodProperties(jnc.Kvps);
+    zodstr += $";{Environment.NewLine}{Environment.NewLine}";
+    return zodstr;
+  }
+
+  private string ParseTypeZodSchema(JNodeClass jnc)
+  {
+    var zodstr = $"const {this.NamingConvention.Parse(jnc.Name)}Schema = z.object({{{Environment.NewLine}";
+    zodstr += ParseZodProperties(jnc.Kvps);
+    zodstr += $";{Environment.NewLine}{Environment.NewLine}";
+    zodstr += $"type {this.NamingConvention.Parse(jnc.Name)} = z.infer<typeof {this.NamingConvention.Parse(jnc.Name)}Schema>;{Environment.NewLine}";
+    zodstr += Environment.NewLine;
+    return zodstr;
+  }
+
+  private string ParseClassZodSchema(JNodeClass jnc)
+  {
+    var typename = this.NamingConvention.Parse(jnc.Name);
+    var zodstr = $"const {typename}Schema = z.object({{{Environment.NewLine}";
+    zodstr += ParseZodProperties(jnc.Kvps);
+    zodstr += $".transform(d => new {typename}(";
+
+    for (int i = 0; i < jnc.Kvps.Count; i++)
+    {
+      var kvp = jnc.Kvps[i];
+      zodstr += i != jnc.Kvps.Count - 1 ? $"d.{kvp.Kvp.Key}, " : $"d.{kvp.Kvp.Key}));{Environment.NewLine}";
+    }
+
+    zodstr += Environment.NewLine;
+    return zodstr;
+  }
+
   private string ParseZodProperties(List<JNodeKvp> jncKvps)
   {
     var zodstr = "";
@@ -168,17 +230,16 @@ public class TypeScriptOptions : ILanguageOptions
       var kvp = jncKvps[i];
       var rawDatatype = "";
       rawDatatype = kvp.CollectionAs is not null ? kvp.Kvp.Value.Replace("[]", "") : kvp.Kvp.Value;
-      rawDatatype = kvp.CollectionItemNullable is not null ? kvp.Kvp.Value.Replace("(", "").Replace(")", "") : rawDatatype;
-
+      rawDatatype = kvp.CollectionItemNullable is not null ? rawDatatype.Replace("(", "").Replace(")", "") : rawDatatype;
 
       var datatype = $"z.{rawDatatype}()";
       datatype = kvp.Nested ? $"{this.NamingConvention.Parse(rawDatatype)}Schema" : datatype;
 
       datatype = kvp.CollectionAs is not null ?
-        ConfigureZodCollection(datatype, kvp.Nullable, kvp.CollectionAs, kvp.CollectionItemNullable!.Value) : datatype;
+        ConfigureZodCollection(datatype, kvp.Nullable, kvp.CollectionAs, kvp.CollectionItemNullable!.Value, kvp.CollectionItemAllowUndefined!.Value) : datatype;
 
       datatype = kvp.Nullable && kvp.CollectionAs is null ? $"{datatype}.nullable()" : datatype;
-      datatype = kvp.Optional ? $"{datatype}.optional()" : datatype;
+      datatype = kvp.Optional || kvp.AllowUndefined ? $"{datatype}.optional()" : datatype;
 
       var propName = this.NamingConvention.Parse(kvp.Kvp.Key);
       var endLine = i == jncKvps.Count - 1 ? Environment.NewLine : $",{Environment.NewLine}";
@@ -186,10 +247,10 @@ public class TypeScriptOptions : ILanguageOptions
       zodstr += propLine;
     }
 
-    return zodstr + $"}});{Environment.NewLine}{Environment.NewLine}";
+    return zodstr + $"}})";
   }
 
-  public string ConfigureZodCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable)
+  public string ConfigureZodCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable, bool collectionItemAllowUndefined)
   {
     var _collection = Enum.Parse(typeof(TypeScriptCollections), collection);
 
@@ -204,51 +265,8 @@ public class TypeScriptOptions : ILanguageOptions
     }
 
     datatype = collectionItemNullable ? $"{datatype}.nullable()" : datatype;
+    datatype = collectionItemAllowUndefined ? $"{datatype}.optional()" : datatype;
     datatype = datatypeNullable ? $"{datatype}).nullable()" : $"{datatype})";
-    return datatype;
-  }
-
-  private string ParseInterfaceZodSchema(JNodeClass jnc)
-  {
-    var typename = this.NamingConvention.Parse(jnc.Name);
-    var zodstr = $"const {typename}Schema: z.ZodType<{typename}> = z.object({{{Environment.NewLine}";
-    return zodstr + ParseZodProperties(jnc.Kvps);
-  }
-
-  private string ParseTypeZodSchema(JNodeClass jnc)
-  {
-    var zodstr = "";
-    return zodstr;
-  }
-
-  private string ParseClassZodSchema(JNodeClass jnc)
-  {
-    var zodstr = "";
-    return zodstr;
-  }
-
-  public string ConfigureCollection(string datatype, bool datatypeNullable, string collection, bool collectionItemNullable)
-  {
-    var _collection = Enum.Parse(typeof(TypeScriptCollections), collection);
-
-    switch (_collection)
-    {
-      case TypeScriptCollections.Set:
-        datatype = collectionItemNullable ?
-        $"({datatype.Replace("(", "").Replace(")", "")} | null)" :
-        datatype;
-
-        datatype = datatypeNullable ? $"Set<{datatype.Replace("[]", "")}> | null" : $"Set<{datatype.Replace("[]", "")}>";
-        break;
-      case TypeScriptCollections.Array:
-        datatype = collectionItemNullable ?
-        $"({datatype.Replace("(", "").Replace(")", "").Replace("[]", "")} | null)[]" :
-        datatype;
-
-        datatype = datatypeNullable ? $"{datatype} | null" : datatype;
-        break;
-    }
-
     return datatype;
   }
 }

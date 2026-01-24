@@ -34,8 +34,10 @@
           ParentHover="@(IsMouseOver ? "outline-2" : "")"
           ForwardSetNodeNullable="async () => await SetNodeNullable(CurrentNode)"
           ForwardSetNodeOptional="async () => await SetNodeOptional(CurrentNode)"
+          ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(CurrentNode)"
           ForwardSetNodeCollection="@(async arg => await SetNodeCollection(CurrentNode, arg))"
           ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)"
+          ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(CurrentNode)"
           ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
           ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
           ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
@@ -79,8 +81,10 @@
               ParentHover="@(IsMouseOverNode == child ? "outline-3" : "")"
               ForwardSetNodeNullable="async () => await SetNodeNullable(child)"
               ForwardSetNodeOptional="async () => await SetNodeOptional(child)"
+              ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(child)"
               ForwardSetNodeCollection="@(async arg => await SetNodeCollection(child, arg))"
               ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)"
+              ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(child)"
               ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
               ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
               ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
@@ -120,8 +124,10 @@
               ParentHover="@(IsMouseOverKvp == kvp ? "outline-3" : "")"
               ForwardSetKvpNullable="async () => await SetKvpNullable(kvp)"
               ForwardSetKvpOptional="async() => await SetKvpOptional(kvp)"
+              ForwardSetKvpAllowUndefined="async () => await SetKvpAllowUndefined(kvp)"
               ForwardSetKvpCollection="@(async arg => await SetKvpCollection(kvp, arg))"
               ForwardSetKvpCollectionItemNullable="async () => await SetKvpCollectionItemNullable(kvp)"
+              ForwardSetKvpCollectionItemAllowUndefined="async () => await SetKvpCollectionItemAllowUndefined(kvp)"
               OnClose="() => {KvpToggledOptions = null;}" />
           }
         </div>
@@ -220,6 +226,12 @@
     await OnRenderCode.InvokeAsync();
   }
 
+  async Task SetKvpAllowUndefined(JNodeKvp kvp)
+  {
+    kvp.AllowUndefined = !kvp.AllowUndefined;
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task SetKvpCollection(JNodeKvp kvp, string collection)
   {
     kvp.CollectionAs = collection;
@@ -229,6 +241,12 @@
   async Task SetKvpCollectionItemNullable(JNodeKvp kvp)
   {
     kvp.CollectionItemNullable = !kvp.CollectionItemNullable;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetKvpCollectionItemAllowUndefined(JNodeKvp kvp)
+  {
+    kvp.CollectionItemAllowUndefined = !kvp.CollectionItemAllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
 
@@ -250,10 +268,21 @@
     await OnRenderCode.InvokeAsync();
   }
 
-  // TypeScript
+  async Task SetNodeCollectionItemAllowUndefined(JNode node)
+  {
+    node.CollectionItemAllowUndefined = !node.CollectionItemAllowUndefined;
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task SetNodeOptional(JNode node)
   {
     node.Optional = !node.Optional;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeAllowUndefined(JNode node)
+  {
+    node.AllowUndefined = !node.AllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
 
