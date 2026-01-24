@@ -39,7 +39,7 @@
           ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
           ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
           ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
-          ForwardSetNodeClassNoConstructor="async () => await SetNodeClassNoConstructor(CurrentNode)"
+          ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(CurrentNode)"
           OnClose="() => {NodeToggledOptions = null;}" />
       }
     </div>
@@ -84,7 +84,7 @@
               ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
               ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
               ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
-              ForwardSetNodeClassNoConstructor="async () => await SetNodeClassNoConstructor(child)"
+              ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(child)"
               OnClose="() => {NodeToggledOptions = null;}" />
           }
         </div>
@@ -277,10 +277,9 @@
     await OnRenderCode.InvokeAsync();
   }
 
-  async Task SetNodeClassNoConstructor(JNode node)
+  async Task SetNodeZodSchema(JNode node)
   {
-    node.TypeOption!.UsePrimaryConstructor = false;
-    node.TypeOption!.UseRegularConstructor = false;
+    node.TypeOption!.UseZodSchema = !node.TypeOption!.UseZodSchema;
     await OnRenderCode.InvokeAsync();
   }
 

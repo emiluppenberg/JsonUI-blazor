@@ -13,7 +13,6 @@ public enum TypeScriptCollections
 public interface ILanguageOptions
 {
   public string Language { get; }
-  public bool? UseRaw { get; set; }
   public INamingConvention NamingConvention { get; set; }
   public ICSharpJsonOption? CSharpJsonOptions { get; set; }
   public ITypeScriptTypeOption? TypeOption { get; set; }
