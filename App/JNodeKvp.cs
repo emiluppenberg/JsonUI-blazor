@@ -17,6 +17,7 @@ public class JNodeKvp
   public JNodeKvp(KeyValuePair<string, string> kvp, ILanguageOptions langOptions)
   {
     Kvp = kvp;
+    Nullable = kvp.Value.Contains("object") || kvp.Value.Contains("any");
     CollectionAs = kvp.Value.Contains("[]") ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
     CollectionItemNullable = kvp.Value.Contains("[]") ? false : null;
     CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;

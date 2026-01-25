@@ -70,8 +70,8 @@ public static class JNodeMaster
         {
           var currentArray = arrayCurrentParents.Last();
           var currentProperty = currentArray.Key;
-          var currentArrayIndex = currentArray.Value.Count - 2; // currentArray.Value.IndexOf($"{currentArray.Key}[]"); // Parent of array is always the index before this
-          var parentKey = string.Join("-", currentArray.Value.Take(currentArrayIndex));
+          var takeCount = currentArray.Value.Count - 1; // Parent of array is always the index before this - (.Take is not zero based)
+          var parentKey = string.Join("-", currentArray.Value.Take(takeCount));
           var arrayKey = string.Join("-", currentArray.Value);
 
           // First check if current array is an object
@@ -267,6 +267,42 @@ public static class JNodeMaster
 
         foreach (var kvp in model[k])
         {
+          if (kvp.Value.Contains("|") && langOptions.Language == "C#")
+          {
+            var datatypes = new List<JNodeKvp>();
+            var values = kvp.Value.Split('|');
+
+            foreach (var v in values)
+            {
+              var rawValue = v.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("[]", ""); // If array, every union object is an item in the array
+              var key = char.ToUpper(rawValue[0]) + rawValue.Substring(1) + "Value";
+              var newKvp = new KeyValuePair<string, string>(key, rawValue);
+              var new_jNodeKvp = new JNodeKvp(newKvp, langOptions);
+              datatypes.Add(new_jNodeKvp);
+            }
+
+            var newParentKey = lineageKey;
+            var newUnionKey = kvp.Value.Contains("[]") ? $"{kvp.Key}[]" : $"{kvp.Key}{{}}";
+            var newLineageKey = $"{newParentKey}{newUnionKey}";
+            var union_jNode = new JNode(newLineageKey, newParentKey, kvp.Key, datatypes, langOptions);
+
+            if (!childLookup.TryGetValue(newLineageKey, out var _))
+            {
+              childLookup.Add(newLineageKey, new());
+            }
+            if (!childLookup.TryGetValue(newParentKey, out var _))
+            {
+              childLookup.Add(newParentKey, new() { union_jNode });
+            }
+            else if (childLookup.TryGetValue(newParentKey, out var parent))
+            {
+              parent.Add(union_jNode);
+            }
+
+            result.Add(union_jNode);
+            continue;
+          }
+
           var jNodeKvp = new JNodeKvp(kvp, langOptions);
           jNodeKvps.Add(jNodeKvp);
         }
@@ -277,7 +313,6 @@ public static class JNodeMaster
         {
           childLookup.Add(lineageKey, new());
         }
-
         if (!childLookup.TryGetValue(parentKey, out var _))
         {
           childLookup.Add(parentKey, new() { jNode });
@@ -332,7 +367,7 @@ public static class JNodeMaster
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE - {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+      Console.WriteLine($"// ERROR{Environment.NewLine} - {ex.GetBaseException().Message}{Environment.NewLine}// STACKTRACE{Environment.NewLine} - {ex.StackTrace}");
       return null;
     }
   }
