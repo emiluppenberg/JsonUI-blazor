@@ -6,7 +6,7 @@
   "orbit_index": 3,
   "mean_radius_km": 6371.0,
   "mass_earths": 1.0,
-  "significant_dates": ["0001-01-01", "2012-12-21", 1, 2, 3],
+  "significant_dates": ["9999-01-01", "2012-12-21"],
   "atmosphere": {
     "exists": true,
     "gas": [
@@ -48,7 +48,7 @@
     },
     {
       "name": "Antarctica",
-      "population": 0,
+      "population": null,
       "highest_peak": "Vinson Massif",
       "countries": [],
       "major_rivers": [1, 2, 3],
@@ -56,7 +56,7 @@
     },
     {
       "name": "Asia",
-      "population": 4600000000,
+      "population": "4600000000",
       "highest_peak": "Mount Everest",
       "countries": [],
       "major_rivers": ["abc", "abc"],

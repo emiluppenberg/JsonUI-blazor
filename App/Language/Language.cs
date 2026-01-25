@@ -47,7 +47,7 @@ public interface INamingConvention
 
 public class AsIsCase : INamingConvention
 {
-  public string Name => "No naming convention";
+  public string Name => "AsIs";
   public string Parse(string name) => name;
 }
 

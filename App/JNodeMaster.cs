@@ -267,39 +267,41 @@ public static class JNodeMaster
 
         foreach (var kvp in model[k])
         {
+          // Handle C# unions
           if (kvp.Value.Contains("|") && langOptions.Language == "C#")
           {
-            var datatypes = new List<JNodeKvp>();
+            var arraySuffix = kvp.Value.Contains("[]") ? "[]" : "";
             var values = kvp.Value.Split('|');
+            var isNullable = kvp.Value.Contains("object");
+
+            // When the union is only (datatype | null), just assume the datatype is optional
+            if (values.Length == 2 && isNullable)
+            {
+              var rawValue = values.First(x => !x.Contains("object"))!;
+              rawValue = rawValue.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("[]", "");
+              var newValue = $"{rawValue}{arraySuffix}";
+              var newKvp = new KeyValuePair<string, string>(kvp.Key, newValue);
+              var new_jNodeKvp = new JNodeKvp(newKvp, langOptions);
+              new_jNodeKvp.Nullable = isNullable;
+              new_jNodeKvp.DataNullable = true;
+              jNodeKvps.Add(new_jNodeKvp);
+              continue;
+            }
 
             foreach (var v in values)
             {
-              var rawValue = v.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("[]", ""); // If array, every union object is an item in the array
-              var key = char.ToUpper(rawValue[0]) + rawValue.Substring(1) + "Value";
-              var newKvp = new KeyValuePair<string, string>(key, rawValue);
+              var rawValue = v.Replace("(", "").Replace(")", "").Replace(" ", "").Replace("[]", "");
+              var newKey = $"{kvp.Key}_{rawValue}";
+              newKey = langOptions.NamingConvention.Parse(newKey);
+              var newValue = $"{rawValue}{arraySuffix}";
+              var newKvp = new KeyValuePair<string, string>(newKey, newValue);
               var new_jNodeKvp = new JNodeKvp(newKvp, langOptions);
-              datatypes.Add(new_jNodeKvp);
+              new_jNodeKvp.MapFrom = kvp.Key;
+              new_jNodeKvp.Nullable = isNullable;
+              new_jNodeKvp.DataNullable = isNullable ? true : false;
+              jNodeKvps.Add(new_jNodeKvp);
             }
 
-            var newParentKey = lineageKey;
-            var newUnionKey = kvp.Value.Contains("[]") ? $"{kvp.Key}[]" : $"{kvp.Key}{{}}";
-            var newLineageKey = $"{newParentKey}{newUnionKey}";
-            var union_jNode = new JNode(newLineageKey, newParentKey, kvp.Key, datatypes, langOptions);
-
-            if (!childLookup.TryGetValue(newLineageKey, out var _))
-            {
-              childLookup.Add(newLineageKey, new());
-            }
-            if (!childLookup.TryGetValue(newParentKey, out var _))
-            {
-              childLookup.Add(newParentKey, new() { union_jNode });
-            }
-            else if (childLookup.TryGetValue(newParentKey, out var parent))
-            {
-              parent.Add(union_jNode);
-            }
-
-            result.Add(union_jNode);
             continue;
           }
 

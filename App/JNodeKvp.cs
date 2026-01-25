@@ -10,6 +10,9 @@ public class JNodeKvp
   public bool AllowUndefined { get; set; }
   public bool Nested { get; set; }
   public bool IsUnion { get; set; }
+  public bool DataNullable { get; set; }
+  public List<string> JsonLibraryAnnotations { get; set; } = new();
+  public string? MapFrom { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
   public bool? CollectionItemAllowUndefined { get; set; }
@@ -22,6 +25,7 @@ public class JNodeKvp
     CollectionItemNullable = kvp.Value.Contains("[]") ? false : null;
     CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;
     IsUnion = kvp.Value.Contains("|") ? true : false;
+    DataNullable = kvp.Value.Contains("object") || kvp.Value.Contains("any");
   }
 
   public JNodeKvp(JNode node)

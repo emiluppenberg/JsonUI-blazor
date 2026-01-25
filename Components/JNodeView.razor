@@ -104,7 +104,7 @@
           <span class="key font-light">@kvp.Kvp.Key</span>
           <div class="div-value">
             <div class="value italic truncate">
-              @kvp.Kvp.Value</div>
+              @(kvp.Kvp.Value + (kvp.DataNullable && LangOptions.Language == "C#" ? "?" : ""))</div>
           </div>
         </button>
         <div class="relative">

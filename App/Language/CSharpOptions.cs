@@ -36,23 +36,26 @@ public class CSharpOptions : ILanguageOptions
 
     for (int i = 0; i < jnc.Kvps.Count; i++)
     {
-      var jnKvp = jnc.Kvps[i];
-      var datatype = jnKvp.Kvp.Value;
+      var kvp = jnc.Kvps[i];
+      var datatype = kvp.Kvp.Value;
 
       datatype = datatype.Contains("DateTime") ? datatype : datatype.ToLower();
 
-      datatype = jnKvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
+      datatype = kvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
-      datatype = jnKvp.CollectionAs is not null ?
-        ConfigureCollection(datatype, jnKvp.Nullable, jnKvp.CollectionAs!, jnKvp.CollectionItemNullable!.Value) :
+      datatype = kvp.CollectionAs is not null ?
+        ConfigureCollection(datatype, kvp.Nullable, kvp.CollectionAs!, kvp.CollectionItemNullable!.Value) :
         datatype;
 
-      datatype = jnKvp.Nullable ? $"{datatype}?" : datatype;
+      datatype = kvp.Nullable ? $"{datatype}?" : datatype;
 
-      var propName = this.NamingConvention.Parse(jnKvp.Kvp.Key);
-
-      var jsonAnnotation = this.CSharpJsonOptions is not null && this.NamingConvention.Name is not "None" ?
-        $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{jnc.Kvps[i].Kvp.Key}\")]{Environment.NewLine}" : "";
+      var propName = this.NamingConvention.Parse(kvp.Kvp.Key);
+      var jsonAnnotation = "";
+      var mapFrom = kvp.MapFrom is not null ? kvp.MapFrom : kvp.Kvp.Key;
+      jsonAnnotation = this.CSharpJsonOptions is not null && this.NamingConvention.Name is not "AsIs" ?
+      $"  [{this.CSharpJsonOptions.PropertyAnnotation}(\"{mapFrom}\")]{Environment.NewLine}" : "";
+      jsonAnnotation = this.CSharpJsonOptions is null && kvp.MapFrom is not null ?
+      $"  // Use System.Text.Json/Newtonsoft.Json to map this property{Environment.NewLine}" : jsonAnnotation;
 
       var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
       var newLine = jsonAnnotation.Length > 0 && i != jnc.Kvps.Count - 1 ? Environment.NewLine : "";
