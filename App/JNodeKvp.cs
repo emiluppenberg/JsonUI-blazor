@@ -10,6 +10,9 @@ public class JNodeKvp
   public bool AllowUndefined { get; set; }
   public bool Nested { get; set; }
   public bool IsUnion { get; set; }
+  public bool DataNullable { get; set; }
+  public Dictionary<string, List<string>>? JsonLibraryAnnotations { get; set; }
+  public string? MapFrom { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
   public bool? CollectionItemAllowUndefined { get; set; }
@@ -17,10 +20,13 @@ public class JNodeKvp
   public JNodeKvp(KeyValuePair<string, string> kvp, ILanguageOptions langOptions)
   {
     Kvp = kvp;
+    Nullable = kvp.Value.Contains("object") || kvp.Value.Contains("null");
     CollectionAs = kvp.Value.Contains("[]") ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
     CollectionItemNullable = kvp.Value.Contains("[]") ? false : null;
     CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;
     IsUnion = kvp.Value.Contains("|") ? true : false;
+    DataNullable = kvp.Value.Contains("object") || kvp.Value.Contains("null");
+    JsonLibraryAnnotations = langOptions.Language == "C#" ? new() : null;
   }
 
   public JNodeKvp(JNode node)
@@ -34,6 +40,7 @@ public class JNodeKvp
     CollectionAs = node.CollectionAs;
     CollectionItemNullable = node.CollectionItemNullable;
     CollectionItemAllowUndefined = node.CollectionItemAllowUndefined;
+    JsonLibraryAnnotations = node.JsonLibraryAnnotations;
   }
 
   public bool IsArray() => CollectionAs is not null;

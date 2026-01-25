@@ -42,6 +42,7 @@
           ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
           ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
           ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(CurrentNode)"
+          ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, CurrentNode)"
           OnClose="() => {NodeToggledOptions = null;}" />
       }
     </div>
@@ -89,6 +90,7 @@
               ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
               ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
               ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(child)"
+              ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, child)"
               OnClose="() => {NodeToggledOptions = null;}" />
           }
         </div>
@@ -104,7 +106,7 @@
           <span class="key font-light">@kvp.Kvp.Key</span>
           <div class="div-value">
             <div class="value italic truncate">
-              @kvp.Kvp.Value</div>
+              @(kvp.Kvp.Value + (kvp.DataNullable && LangOptions.Language == "C#" ? "?" : ""))</div>
           </div>
         </button>
         <div class="relative">
@@ -128,6 +130,7 @@
               ForwardSetKvpCollection="@(async arg => await SetKvpCollection(kvp, arg))"
               ForwardSetKvpCollectionItemNullable="async () => await SetKvpCollectionItemNullable(kvp)"
               ForwardSetKvpCollectionItemAllowUndefined="async () => await SetKvpCollectionItemAllowUndefined(kvp)"
+              ForwardSetKvpAnnotation="async arg => await SetKvpAnnotation(arg, kvp)"
               OnClose="() => {KvpToggledOptions = null;}" />
           }
         </div>
@@ -250,6 +253,28 @@
     await OnRenderCode.InvokeAsync();
   }
 
+  async Task SetKvpAnnotation(KeyValuePair<string, string> annotation, JNodeKvp kvp)
+  {
+    if (kvp.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var annotationList))
+    {
+      if (annotationList.Contains(annotation.Value))
+      {
+        kvp.JsonLibraryAnnotations.Remove(annotation.Key);
+      }
+      else
+      {
+        annotationList.Clear();
+        annotationList.Add(annotation.Value);
+      }
+    }
+    else if (!kvp.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var _))
+    {
+      kvp.JsonLibraryAnnotations.Add(annotation.Key, new() { annotation.Value });
+    }
+
+    await OnRenderCode.InvokeAsync();
+  }
+
   async Task SetNodeNullable(JNode node)
   {
     node.Nullable = !node.Nullable;
@@ -309,6 +334,28 @@
   async Task SetNodeZodSchema(JNode node)
   {
     node.TypeOption!.UseZodSchema = !node.TypeOption!.UseZodSchema;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeAnnotation(KeyValuePair<string, string> annotation, JNode node)
+  {
+    if (node.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var annotationList))
+    {
+      if (annotationList.Contains(annotation.Value))
+      {
+        node.JsonLibraryAnnotations.Remove(annotation.Key);
+      }
+      else
+      {
+        annotationList.Clear();
+        annotationList.Add(annotation.Value);
+      }
+    }
+    else if (!node.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var _))
+    {
+      node.JsonLibraryAnnotations.Add(annotation.Key, new() { annotation.Value });
+    }
+
     await OnRenderCode.InvokeAsync();
   }
 
