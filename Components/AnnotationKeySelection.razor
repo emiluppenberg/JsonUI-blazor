@@ -1,17 +1,19 @@
-<div class="relative w-20 h-(--inp-h)">
+@using System.Reflection.Metadata.Ecma335
+<div class="transition-opt @Transition relative w-20 h-(--inp-h)">
   <button class="w-full h-(--inp-h) hover:border truncate text-[0.5rem]" id="annotation"
     @onclick="async () => { IsToggled = !IsToggled; }">Json annotations</button>
   <div
-    class="flex flex-col absolute top-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "") @StickyClass"
+    class="transition-opt @Transition flex flex-col absolute top-0 w-20 h-fit text-xs font-medium @(IsToggled ? $"hover:outline-3 {OutlineColor}" : "") @StickyClass"
     style="left:5rem;">
     @if (IsToggled)
     {
       @foreach (var kvp in LangOptions.JsonLibrary!.Annotations)
       {
         <AnnotationValueSelection AnnotationKey="@kvp.Key" Annotations="@kvp.Value" Kvp="Kvp" Node="Node"
-          StickyClass="@StickyClass" BackgroundColor="@BackgroundColor" OutlineColor="@OutlineColor"
-          SelectedColor="@SelectedColor"
-          OnAnnotationSelected="async arg => await ForwardOnAnnotationSelected.InvokeAsync(arg)" />
+          IsToggled="ValueToggles[kvp.Key]" StickyClass="@StickyClass" BackgroundColor="@BackgroundColor"
+          OutlineColor="@OutlineColor" SelectedColor="@SelectedColor"
+          OnAnnotationSelected="async arg => await ForwardOnAnnotationSelected.InvokeAsync(arg)"
+          OnAnnotationValueToggled="async arg => await HandleAnnotationValueToggled(kvp.Key, arg)" />
       }
     }
   </div>
@@ -23,41 +25,87 @@
   [Parameter]
   public required string Target { get; set; }
   [Parameter]
-  public bool IsToggled { get; set; }
-  [Parameter]
   public required JNodeKvp? Kvp { get; set; }
   [Parameter]
   public required JNode? Node { get; set; }
 
   [Parameter]
-  public EventCallback OnToggled { get; set; }
-  [Parameter]
   public EventCallback<KeyValuePair<string, string>> ForwardOnAnnotationSelected { get; set; }
 
+  private Dictionary<string, bool> ValueToggles = new();
+  private Dictionary<string, string> ValueTransitions = new();
+  private bool IsToggled { get; set; }
   private string StickyClass = "";
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
   private string SelectedColor = null!;
 
+  private string Transition = "scale-x-0";
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      await Task.Delay(50);
+      Transition = "scale-x-100";
+      StateHasChanged();
+    }
+  }
+
   protected override void OnInitialized()
   {
+    foreach (var key in LangOptions.JsonLibrary!.Annotations.Keys)
+    {
+      ValueToggles.Add(key, false);
+      ValueTransitions.Add(key, "scale-x-0");
+    }
+
     if (Target == "kvp")
     {
+      BackgroundColor = "bg-(--kvp-sel)";
+      OutlineColor = "outline-(--kvp-sel-hov-ol)";
+      SelectedColor = "bg-(--kvp-selection)";
+    }
+    if (Target == "node")
+    {
+      BackgroundColor = "bg-(--node)";
+      OutlineColor = "outline-(--node-hov-ol)";
+      SelectedColor = "bg-(--node-selection)";
+    }
+    if (Target == "sticky")
+    {
+      BackgroundColor = "bg-(--sticky)";
+      OutlineColor = "outline-(--sticky-hov-ol)";
+      @* StickyClass = "-translate-y-[calc(var(--inp-h)/2)]"; *@
+      SelectedColor = "bg-(--sticky-selection)";
+    }
+    @* if (Target == "kvp")
+    {
       BackgroundColor = "bg-(--kvp-selection)";
-      SelectedColor = "bg-(--kvp-selection-active)";
       OutlineColor = "outline-(--kvp-sel-hov-ol)";
     }
     if (Target == "node")
     {
       BackgroundColor = "bg-(--node-selection)";
-      SelectedColor = "bg-(--node-selection-active)";
       OutlineColor = "outline-(--node-hov-ol)";
     }
     if (Target == "sticky")
     {
       BackgroundColor = "bg-(--sticky-selection)";
-      SelectedColor = "bg-(--sticky-selection-active)";
       OutlineColor = "outline-(--sticky-hov-ol)";
+    } *@
+  }
+
+  async Task HandleAnnotationValueToggled(string key, bool isToggled)
+  {
+    foreach (var _key in LangOptions.JsonLibrary!.Annotations.Keys)
+    {
+      ValueToggles[_key] = false;
+      ValueTransitions[_key] = "scale-x-0";
     }
+
+    await Task.Delay(50);
+    ValueTransitions[key] = "scale-x-100";
+    ValueToggles[key] = isToggled;
   }
 }

@@ -51,15 +51,15 @@
       "population": null,
       "highest_peak": "Vinson Massif",
       "countries": [],
-      "major_rivers": [1, 2, 3],
+      "major_rivers": [],
       "last_census_date": null
     },
     {
       "name": "Asia",
-      "population": "4600000000",
+      "population": 4600000000,
       "highest_peak": "Mount Everest",
       "countries": [],
-      "major_rivers": ["abc", "abc"],
+      "major_rivers": [],
       "last_census_date": "2020-01-01"
     },
     {
@@ -80,7 +80,7 @@
     },
     {
       "name": "South America",
-      "population": "430000000",
+      "population": 430000000,
       "highest_peak": "Aconcagua",
       "countries": [],
       "major_rivers": [],

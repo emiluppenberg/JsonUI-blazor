@@ -195,8 +195,8 @@
         break;
     }
 
-    HandleSetCollection(langOptions.GetCollectionOptions().GetValue(0)!.ToString()!);
     LoadJson();
+    HandleSetCollection(langOptions.GetCollectionOptions().GetValue(0)!.ToString()!);
     HandleRenderCode();
   }
 
@@ -398,5 +398,6 @@
   void HandleRenderCode()
   {
     RenderCode = JNodeMaster.JNodesToCode(JNodes, langOptions);
+    StateHasChanged();
   }
 }

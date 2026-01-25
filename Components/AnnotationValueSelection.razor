@@ -1,17 +1,18 @@
-<div class="relative w-20 h-(--inp-h)">
-  <button class="w-full h-(--inp-h) hover:border truncate text-[0.5rem] @BackgroundColor" id="annotation"
-    @onclick="async () => { IsToggled = !IsToggled; }">@AnnotationKey</button>
+<div class="transition-opt @ButtonTransition relative w-20 h-(--inp-h)">
+  <button class="w-full h-(--inp-h) hover:border truncate text-[0.5rem] @(IsToggled? SelectedColor : BackgroundColor)"
+    id="annotation"
+    @onclick="async () => await OnAnnotationValueToggled.InvokeAsync(!IsToggled)">@AnnotationKey</button>
   @if (IsToggled)
   {
     <div
-      class="flex flex-col absolute top-0 w-20 h-fit text-[0.5rem] font-medium hover:outline-3 @BackgroundColor @OutlineColor @StickyClass"
+      class="flex flex-col absolute top-0 w-20 h-fit text-[0.5rem] font-medium hover:outline-1 @BackgroundColor @OutlineColor @StickyClass"
       style="left:5rem;">
       @foreach (var annotation in Annotations)
       {
         @if (Kvp is not null)
         {
           <button
-            class="z-50 w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
+            class="w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
             id="annotation"
             @onclick="async () => await OnAnnotationSelected.InvokeAsync(new KeyValuePair<string, string>(AnnotationKey, annotation))"
             @onclick:stopPropagation="true">@annotation</button>
@@ -19,7 +20,7 @@
         @if (Node is not null)
         {
           <button
-            class="z-50 w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
+            class="w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
             id="annotation"
             @onclick="async () => await OnAnnotationSelected.InvokeAsync(new KeyValuePair<string, string>(AnnotationKey, annotation))"
             @onclick:stopPropagation="true">@annotation</button>
@@ -42,7 +43,7 @@
   public required bool IsToggled { get; set; }
 
   [Parameter]
-  public EventCallback OnAnnotationValueToggled { get; set; }
+  public EventCallback<bool> OnAnnotationValueToggled { get; set; }
   [Parameter]
   public EventCallback<KeyValuePair<string, string>> OnAnnotationSelected { get; set; }
 
@@ -54,6 +55,18 @@
   public required string OutlineColor { get; set; }
   [Parameter]
   public required string SelectedColor { get; set; }
+
+  private string ButtonTransition = "scale-x-0";
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (firstRender)
+    {
+      await Task.Delay(50);
+      ButtonTransition = "scale-x-100";
+      StateHasChanged();
+    }
+  }
 
   bool IsAnnotationSelected(string annotation)
   {

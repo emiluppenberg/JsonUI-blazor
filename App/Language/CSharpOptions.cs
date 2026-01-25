@@ -185,7 +185,7 @@ public class CSharpOptions : ILanguageOptions
     {
       if (kvp.MapFrom is not null)
       {
-        return $"  // Use System.Text.Json/Newtonsoft.Json to map this property{Environment.NewLine}";
+        return $"  // Use json annotations to map this property{Environment.NewLine}";
       }
 
       return "";
