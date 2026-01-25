@@ -24,7 +24,7 @@ public static class JNodeMaster
     var langNumber = langOptions.Language == "C#" ? "int" : "number";
     var langBoolean = langOptions.Language == "C#" ? "bool" : "boolean";
     var langDate = langOptions.Language == "C#" ? "DateTime" : "Date";
-    var langNull = langOptions.Language == "C#" ? "object" : "any";
+    var langNull = langOptions.Language == "C#" ? "object" : "null";
 
     try
     {
@@ -83,7 +83,8 @@ public static class JNodeMaster
               // If parent does not contain, JSON is an empty array
               if (!parent.ContainsKey(currentProperty))
               {
-                parent.Add(currentProperty, $"{langNull}[]");
+                var nullArr = langNull == "null" ? "unknown[]" : $"{langNull}[]"; // Guard for TypeScript
+                parent.Add(currentProperty, nullArr);
               }
             }
           }
@@ -234,7 +235,7 @@ public static class JNodeMaster
             if (!model[currentObject][currentProperty].Contains(value))
             {
               var oldValueRaw = model[currentObject][currentProperty]
-                .Replace("[]", "").Replace("(", "").Replace(")", "");
+                .Replace("[]", "").Replace("(", "").Replace(")", "").Replace("unknown | ", "");
               model[currentObject][currentProperty] = $"({oldValueRaw} | {value})[]";
               continue;
             }

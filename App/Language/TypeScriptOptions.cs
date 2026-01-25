@@ -135,6 +135,21 @@ public class TypeScriptOptions : ILanguageOptions
     return ""; // Should not execute
   }
 
+  private string ParseUnion(string[] rawUnion)
+  {
+    var union = "";
+
+    for (int i = 0; i < rawUnion.Length; i++)
+    {
+      if (rawUnion[i] != "null")
+      {
+        union += i == rawUnion.Length - 1 ? $"{rawUnion[i]}" : $"{rawUnion[i]} | ";
+      }
+    }
+
+    return union;
+  }
+
   private string ParseProperties(List<JNodeKvp> jncKvps, int indent, string access, string endLine)
   {
     var typestr = "";
@@ -144,13 +159,15 @@ public class TypeScriptOptions : ILanguageOptions
       var kvp = jncKvps[i];
       var datatype = "";
       datatype = kvp.CollectionAs is not null ? kvp.Kvp.Value.Replace("[]", "") : kvp.Kvp.Value;
-      datatype = kvp.CollectionItemNullable is not null || kvp.IsUnion ? datatype.Replace("(", "").Replace(")", "") : datatype;
+      var rawUnion = kvp.IsUnion ? datatype.Replace("(", "").Replace(")", "").Replace(" ", "").Split("|") : null;
+      rawUnion = rawUnion is not null ? rawUnion.Where(x => x != "null").ToArray() : null;
+      datatype = rawUnion is not null && rawUnion.Length > 1 ? ParseUnion(rawUnion) : datatype;
+      datatype = rawUnion is not null && rawUnion.Length == 1 ? rawUnion[0] : datatype;
       datatype = kvp.Nested ? this.NamingConvention.Parse(datatype) : datatype;
 
       datatype = kvp.CollectionAs is not null ?
         ConfigureCollection(datatype, kvp.CollectionAs!, kvp.IsUnion, kvp.CollectionItemNullable!.Value, kvp.CollectionItemAllowUndefined!.Value) : datatype;
 
-      datatype = kvp.IsUnion && kvp.CollectionAs is null ? $"({datatype})" : datatype;
       datatype = kvp.Nullable ? $"{datatype} | null" : datatype;
       datatype = kvp.AllowUndefined ? $"{datatype} | undefined" : datatype;
 
@@ -221,6 +238,18 @@ public class TypeScriptOptions : ILanguageOptions
     return zodstr;
   }
 
+  private string ParseZodUnion(string[] rawUnion)
+  {
+    var union = "z.union([";
+
+    for (int i = 0; i < rawUnion.Length; i++)
+    {
+      union += i == rawUnion.Length - 1 ? $"z.{rawUnion[i]}()])" : $"z.{rawUnion[i]}(), ";
+    }
+
+    return union;
+  }
+
   private string ParseZodProperties(List<JNodeKvp> jncKvps)
   {
     var zodstr = "";
@@ -232,7 +261,12 @@ public class TypeScriptOptions : ILanguageOptions
       rawDatatype = kvp.CollectionAs is not null ? kvp.Kvp.Value.Replace("[]", "") : kvp.Kvp.Value;
       rawDatatype = kvp.CollectionItemNullable is not null ? rawDatatype.Replace("(", "").Replace(")", "") : rawDatatype;
 
-      var datatype = $"z.{rawDatatype}()";
+      var rawUnion = kvp.IsUnion ? rawDatatype.Replace(" ", "").Split("|") : null;
+      rawUnion = rawUnion is not null ? rawUnion.Where(x => x != "null").ToArray() : null;
+
+      var datatype = "";
+      datatype = rawUnion is not null && rawUnion.Length > 1 ? ParseZodUnion(rawUnion) : $"z.{rawDatatype}()";
+      datatype = rawUnion is not null && rawUnion.Length == 1 ? $"z.{rawUnion[0]}()" : datatype;
       datatype = kvp.Nested ? $"{this.NamingConvention.Parse(rawDatatype)}Schema" : datatype;
 
       datatype = kvp.CollectionAs is not null ?

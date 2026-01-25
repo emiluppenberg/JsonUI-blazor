@@ -20,12 +20,12 @@ public class JNodeKvp
   public JNodeKvp(KeyValuePair<string, string> kvp, ILanguageOptions langOptions)
   {
     Kvp = kvp;
-    Nullable = kvp.Value.Contains("object") || kvp.Value.Contains("any");
+    Nullable = kvp.Value.Contains("object") || kvp.Value.Contains("null");
     CollectionAs = kvp.Value.Contains("[]") ? langOptions.GetCollectionOptions().GetValue(0)!.ToString() : null;
     CollectionItemNullable = kvp.Value.Contains("[]") ? false : null;
     CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;
     IsUnion = kvp.Value.Contains("|") ? true : false;
-    DataNullable = kvp.Value.Contains("object") || kvp.Value.Contains("any");
+    DataNullable = kvp.Value.Contains("object") || kvp.Value.Contains("null");
     JsonLibraryAnnotations = langOptions.Language == "C#" ? new() : null;
   }
 
