@@ -13,6 +13,7 @@ public class JNode
   public bool Nullable { get; set; }
   public bool Optional { get; set; }
   public bool AllowUndefined { get; set; }
+  public Dictionary<string, List<string>>? JsonLibraryAnnotations { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
   public bool? CollectionItemAllowUndefined { get; set; }
@@ -31,6 +32,7 @@ public class JNode
     CollectionItemNullable = Type == JNodeType.Array ? false : null;
     CollectionItemAllowUndefined = Type == JNodeType.Array && langOptions.Language == "TypeScript" ? false : null;
     TypeOption = langOptions.Language == "TypeScript" ? langOptions.TypeOption : null;
+    JsonLibraryAnnotations = langOptions.Language == "C#" ? new() : null;
   }
 
   public void SetNullable(bool nullable)
@@ -53,5 +55,19 @@ public class JNode
       .Where(x => x.CollectionAs is not null)
       .ToList()
       .ForEach(x => x.CollectionAs = collectionAs);
+  }
+
+  public void PropagateNameAnnotation(bool isNamingConvention, string key)
+  {
+    if (isNamingConvention)
+    {
+      this.JsonLibraryAnnotations!.TryAdd(key, new() { "Default" });
+      KeyValues.ForEach(x => x.JsonLibraryAnnotations!.TryAdd(key, new() { "Default" }));
+    }
+    else
+    {
+      this.JsonLibraryAnnotations!.Remove(key);
+      KeyValues.ForEach(x => x.JsonLibraryAnnotations!.Remove(key));
+    }
   }
 }

@@ -14,7 +14,7 @@ public interface ILanguageOptions
 {
   public string Language { get; }
   public INamingConvention NamingConvention { get; set; }
-  public ICSharpJsonOption? CSharpJsonOptions { get; set; }
+  public IJsonLibrary? JsonLibrary { get; set; }
   public ITypeScriptTypeOption? TypeOption { get; set; }
 
   string ParseObject(JNodeClass jnc);
@@ -25,12 +25,12 @@ public static class Language
 {
   public static List<INamingConvention> GetNamingConventions()
   {
-    return new List<INamingConvention> { new AsIsCase(), new LowerSnakeCase(), new UpperSnakeCase(), new PascalCase() };
+    return new List<INamingConvention> { new NoCase(), new LowerSnakeCase(), new UpperSnakeCase(), new PascalCase() };
   }
 
-  public static List<ICSharpJsonOption> GetCSharpJsonOptions()
+  public static List<IJsonLibrary> GetJsonLibraries()
   {
-    return new List<ICSharpJsonOption> { new SystemTextJsonOption(), new NewtonsoftJsonOption() };
+    return new List<IJsonLibrary> { new SystemTextJsonLibrary(), new NewtonsoftJsonLibrary() };
   }
 
   public static List<ITypeScriptTypeOption> GetTypeOptions()
@@ -45,9 +45,9 @@ public interface INamingConvention
   public string Parse(string name);
 }
 
-public class AsIsCase : INamingConvention
+public class NoCase : INamingConvention
 {
-  public string Name => "AsIs";
+  public string Name => "No naming convention";
   public string Parse(string name) => name;
 }
 

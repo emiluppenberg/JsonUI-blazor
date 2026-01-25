@@ -1,5 +1,5 @@
 <select class="select-base" @bind="SetNamingConvention" @bind:after="async () => await HandleSetNamingConvention()"
-  disabled="@(LangOptions.CSharpJsonOptions is null)">
+  disabled="@(LangOptions.JsonLibrary is null)">
   @foreach (var nc in Language.GetNamingConventions())
   {
     <option value="@nc.Name">@nc.Name</option>
@@ -16,9 +16,8 @@
   }
 </select>
 
-<select class="select-base" @bind="SetCSharpJsonOption" @bind:after="async () => await HandleSetCSharpJsonOption()">
-  <option selected value="null">No JSON library</option>
-  @foreach (var csjo in Language.GetCSharpJsonOptions())
+<select class="select-base" @bind="SetJsonLibrary" @bind:after="async () => await HandleSetCSharpJsonOption()">
+  @foreach (var csjo in Language.GetJsonLibraries())
   {
     <option value="@csjo.Name">@csjo.Name</option>
   }
@@ -32,7 +31,7 @@
   [Parameter]
   public EventCallback<bool> OnSetNullable { get; set; }
   [Parameter]
-  public EventCallback<ICSharpJsonOption?> OnSetCSharpJsonOption { get; set; }
+  public EventCallback<IJsonLibrary?> OnSetJsonLibrary { get; set; }
   [Parameter]
   public EventCallback<INamingConvention> OnSetNamingConvention { get; set; }
 
@@ -43,18 +42,18 @@
     await OnSetNullable.InvokeAsync(setNullable);
   }
 
-  private string setCSharpJsonOption = null!;
-  public string SetCSharpJsonOption
+  private string setJsonLibrary = null!;
+  public string SetJsonLibrary
   {
-    get => setCSharpJsonOption;
-    set => setCSharpJsonOption = value;
+    get => setJsonLibrary;
+    set => setJsonLibrary = value;
   }
   async Task HandleSetCSharpJsonOption()
   {
-    var cSharpJsonOptions = Language.GetCSharpJsonOptions()
-    .FirstOrDefault(x => x.Name == setCSharpJsonOption);
+    var jsonLibrary = Language.GetJsonLibraries()
+    .FirstOrDefault(x => x.Name == setJsonLibrary);
 
-    if (cSharpJsonOptions is null)
+    if (jsonLibrary is null)
     {
       var namingConvention = Language.GetNamingConventions()
       .First(x => x.Name == "No naming convention");
@@ -63,7 +62,7 @@
       await OnSetNamingConvention.InvokeAsync(namingConvention);
     }
 
-    await OnSetCSharpJsonOption.InvokeAsync(cSharpJsonOptions);
+    await OnSetJsonLibrary.InvokeAsync(jsonLibrary);
   }
 
   private string setNamingConvention = null!;

@@ -11,7 +11,7 @@
     @if (Kvp.IsArray())
     {
       <CollectionSelection LangOptions="LangOptions" CollectionItemNullable="Kvp.CollectionItemNullable"
-        CollectionItemAllowUndefined="Kvp.CollectionItemAllowUndefined" Target="kvp" CurrentSelected="@Kvp.CollectionAs"
+        CollectionItemAllowUndefined="Kvp.CollectionItemAllowUndefined" Target="@Target" CurrentSelected="@Kvp.CollectionAs"
         OnSelected="@(async arg => await ForwardSetKvpCollection.InvokeAsync(arg))"
         OnSetCollectionItemNullable="async () => await ForwardSetKvpCollectionItemNullable.InvokeAsync()"
         OnSetCollectionItemAllowUndefined="async () => await ForwardSetKvpCollectionItemAllowUndefined.InvokeAsync()"
@@ -34,6 +34,11 @@
         <label class="text-[0.5rem] font-medium text-center w-15">Allow undefined</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.AllowUndefined" />
       </button>
+    }
+    @if (LangOptions.Language == "C#")
+    {
+      <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Kvp="Kvp"
+        ForwardOnAnnotationSelected="async arg => await ForwardSetKvpAnnotation.InvokeAsync(arg)" />
     }
   }
 
@@ -89,6 +94,11 @@
         </button>
       }
     }
+    @if (LangOptions.Language == "C#")
+    {
+      <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Node="Node"
+        ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+    }
   }
 
   @if (Node is not null && Node.Parent is null)
@@ -138,6 +148,11 @@
         </button>
       }
     }
+    @if (LangOptions.Language == "C#")
+    {
+      <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Node="Node"
+        ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+    }
   }
 </div>
 
@@ -175,6 +190,8 @@
   public EventCallback ForwardSetKvpCollectionItemNullable { get; set; }
   [Parameter]
   public EventCallback ForwardSetKvpCollectionItemAllowUndefined { get; set; }
+  [Parameter]
+  public EventCallback<KeyValuePair<string, string>> ForwardSetKvpAnnotation { get; set; }
 
   [Parameter]
   public EventCallback ForwardSetNodeNullable { get; set; }
@@ -196,6 +213,8 @@
   public EventCallback ForwardSetNodeClassRegularConstructor { get; set; }
   [Parameter]
   public EventCallback ForwardSetNodeZodSchema { get; set; }
+  [Parameter]
+  public EventCallback<KeyValuePair<string, string>> ForwardSetNodeAnnotation { get; set; }
 
   private string BackgroundColor = null!;
   private string OutlineColor = null!;

@@ -1,0 +1,88 @@
+<div class="relative w-20 h-(--inp-h)">
+  <button class="w-full h-(--inp-h) hover:border truncate text-[0.5rem] @BackgroundColor" id="annotation"
+    @onclick="async () => { IsToggled = !IsToggled; }">@AnnotationKey</button>
+  @if (IsToggled)
+  {
+    <div
+      class="flex flex-col absolute top-0 w-20 h-fit text-[0.5rem] font-medium hover:outline-3 @BackgroundColor @OutlineColor @StickyClass"
+      style="left:5rem;">
+      @foreach (var annotation in Annotations)
+      {
+        @if (Kvp is not null)
+        {
+          <button
+            class="z-50 w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
+            id="annotation"
+            @onclick="async () => await OnAnnotationSelected.InvokeAsync(new KeyValuePair<string, string>(AnnotationKey, annotation))"
+            @onclick:stopPropagation="true">@annotation</button>
+        }
+        @if (Node is not null)
+        {
+          <button
+            class="z-50 w-full h-(--inp-h) hover:border truncate @(IsAnnotationSelected(annotation) ? $"{SelectedColor} text-white" : "")"
+            id="annotation"
+            @onclick="async () => await OnAnnotationSelected.InvokeAsync(new KeyValuePair<string, string>(AnnotationKey, annotation))"
+            @onclick:stopPropagation="true">@annotation</button>
+        }
+      }
+    </div>
+  }
+</div>
+
+@code {
+  [Parameter]
+  public required string AnnotationKey { get; set; }
+  [Parameter]
+  public required List<string> Annotations { get; set; }
+  [Parameter]
+  public required JNodeKvp? Kvp { get; set; }
+  [Parameter]
+  public required JNode? Node { get; set; }
+  [Parameter]
+  public required bool IsToggled { get; set; }
+
+  [Parameter]
+  public EventCallback OnAnnotationValueToggled { get; set; }
+  [Parameter]
+  public EventCallback<KeyValuePair<string, string>> OnAnnotationSelected { get; set; }
+
+  [Parameter]
+  public required string StickyClass { get; set; }
+  [Parameter]
+  public required string BackgroundColor { get; set; }
+  [Parameter]
+  public required string OutlineColor { get; set; }
+  [Parameter]
+  public required string SelectedColor { get; set; }
+
+  bool IsAnnotationSelected(string annotation)
+  {
+    if (Kvp is not null)
+    {
+      if (Kvp.JsonLibraryAnnotations!.TryGetValue(AnnotationKey, out var selectedAnnotations))
+      {
+        if (selectedAnnotations.Contains(annotation))
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    if (Node is not null)
+    {
+      if (Node.JsonLibraryAnnotations!.TryGetValue(AnnotationKey, out var selectedAnnotations))
+      {
+        if (selectedAnnotations.Contains(annotation))
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return false;
+  }
+}

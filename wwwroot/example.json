@@ -80,7 +80,7 @@
     },
     {
       "name": "South America",
-      "population": 430000000,
+      "population": "430000000",
       "highest_peak": "Aconcagua",
       "countries": [],
       "major_rivers": [],

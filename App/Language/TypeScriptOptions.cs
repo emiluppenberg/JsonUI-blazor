@@ -33,8 +33,8 @@ public class ClassTypeOption : ITypeScriptTypeOption
 public class TypeScriptOptions : ILanguageOptions
 {
   public string Language { get; } = "TypeScript";
-  public INamingConvention NamingConvention { get; set; } = new AsIsCase();
-  public ICSharpJsonOption? CSharpJsonOptions { get; set; }
+  public INamingConvention NamingConvention { get; set; } = new NoCase();
+  public IJsonLibrary? JsonLibrary { get; set; }
   public ITypeScriptTypeOption? TypeOption { get; set; } = new TypeTypeOption();
   public Array GetCollectionOptions() => Enum.GetValues<TypeScriptCollections>();
 

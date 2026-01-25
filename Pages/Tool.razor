@@ -117,7 +117,7 @@
         @if (langOptions.Language == "C#")
         {
           <CSharpMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
-            OnSetCSharpJsonOption="HandleSetCSharpJsonOption" OnSetNamingConvention="HandleSetNamingConvention" />
+            OnSetJsonLibrary="HandleSetJsonLibrary" OnSetNamingConvention="HandleSetNamingConvention" />
         }
         @if (langOptions.Language == "TypeScript")
         {
@@ -200,9 +200,15 @@
     HandleRenderCode();
   }
 
-  private void HandleSetCSharpJsonOption(ICSharpJsonOption? cSharpJsonOptions)
+  private void HandleSetJsonLibrary(IJsonLibrary? jsonLibrary)
   {
-    langOptions.CSharpJsonOptions = cSharpJsonOptions;
+    foreach (var jn in JNodes)
+    {
+      jn.JsonLibraryAnnotations!.Clear();
+      jn.KeyValues.ForEach(x => x.JsonLibraryAnnotations!.Clear());
+    }
+
+    langOptions.JsonLibrary = jsonLibrary;
     HandleRenderCode();
   }
 
@@ -243,6 +249,8 @@
   private void HandleSetNamingConvention(INamingConvention namingConvention)
   {
     langOptions.NamingConvention = namingConvention;
+    var isNamingConvention = namingConvention.Name != "No naming convention";
+    JNodes.ForEach(x => x.PropagateNameAnnotation(isNamingConvention, langOptions.JsonLibrary!.NameAnnotation));
     HandleRenderCode();
   }
 

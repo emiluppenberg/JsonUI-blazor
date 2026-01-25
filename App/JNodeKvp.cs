@@ -11,7 +11,7 @@ public class JNodeKvp
   public bool Nested { get; set; }
   public bool IsUnion { get; set; }
   public bool DataNullable { get; set; }
-  public List<string> JsonLibraryAnnotations { get; set; } = new();
+  public Dictionary<string, List<string>>? JsonLibraryAnnotations { get; set; }
   public string? MapFrom { get; set; }
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
@@ -26,6 +26,7 @@ public class JNodeKvp
     CollectionItemAllowUndefined = kvp.Value.Contains("[]") && langOptions.Language == "TypeScript" ? false : null;
     IsUnion = kvp.Value.Contains("|") ? true : false;
     DataNullable = kvp.Value.Contains("object") || kvp.Value.Contains("any");
+    JsonLibraryAnnotations = langOptions.Language == "C#" ? new() : null;
   }
 
   public JNodeKvp(JNode node)
@@ -39,6 +40,7 @@ public class JNodeKvp
     CollectionAs = node.CollectionAs;
     CollectionItemNullable = node.CollectionItemNullable;
     CollectionItemAllowUndefined = node.CollectionItemAllowUndefined;
+    JsonLibraryAnnotations = node.JsonLibraryAnnotations;
   }
 
   public bool IsArray() => CollectionAs is not null;
