@@ -8,16 +8,9 @@
     <Cookie OnCookieConsent="HandleCookieConsent" />
   </div>
 
-  <div class="w-full h-30">
-    @if (CookieConsent)
-    {
-      <GoogleAd Slot="9056333487" Style="display:inline-block;width:300px;height:90px"></GoogleAd>
-    }
-  </div>
-
   <p class="mb-6  italic leading-relaxed">
     Load JSON and get a visual overview of the data structure.<br />
-    Select the key-value-pairs needed for your application.<br />
+    Pick the properties needed for your application.<br />
     Effortlessly configure the generated code.
   </p>
 
@@ -65,12 +58,11 @@
   <img src="docs-header-ex-3.png" class="w-100 mb-6" />
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
-    Select key-value-pairs
+    Pick properties
   </h2>
 
   <p class="mb-4 leading-relaxed">
-    The key-value-pairs for the loaded JSON are rendered as a tree structure.
-    Objects and arrays are rendered as nested branches with their own set of key-value-pairs.
+    The loaded JSON is rendered as a tree structure, with objects and arrays rendered as nested branches.
   </p>
 
   <p class="mb-6 leading-relaxed">
@@ -81,8 +73,8 @@
   <p class="mb-6 leading-relaxed">
     Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
     Primitive types and arrays are noted as-is.<br />
-    When the JSON value is null or an empty array, the type is noted as 'object' or 'object[]' (C#), 'any' or 'any[]'
-    (TypeScript).
+    When the JSON value is null or an empty array, the type is noted as 'object' or 'object[]' (C#), 'null' or
+    'unknown[]' (TypeScript).
   </p>
 
   <h2 class="mt-8 mb-3 text-3xl font-light">
@@ -92,6 +84,16 @@
   <h3 class="mt-6 mb-2 text-lg font-light italic">
     General language options
   </h3>
+
+  <p class="mb-3">
+    Setting an option in the menu will toggle that option for all properties
+  </p>
+  <img src="docs-options-menu.png" class="w-50 mb-6" />
+
+  <p class="mb-3">
+    Setting an option in the tree will toggle that option for the current property
+  </p>
+  <img src="docs-options-tree.png" class="w-100 mb-6" />
 
   <div class="px-6">
 
@@ -109,35 +111,14 @@
         <p>Array, Set</p>
       </div>
 
-      <p class="mt-3 mb-3">
-        Selecting a collection type in the menu will set all collections across all classes
-        to that type.
-      </p>
-
       <p class="mb-3">
-        Selecting a collection type in the rendered tree will set that specific
-        key-value-pair to that type.
-      </p>
-
-      <p class="mb-3">
-        Collections can be set to allow null items
+        Collections can be set to allow null or undefined items
       </p>
     </ul>
 
     <h4 class="mt-4 mb-2 font-light">
       Nullable
     </h4>
-
-    <ul class="mb-6 list-disc space-y-1 pl-6 leading-relaxed">
-      <p class="mb-3">
-        Setting nullable in the menu will toggle nullable for all properties across all classes.
-      </p>
-
-      <p class="mb-3">
-        Setting nullable in the rendered tree will toggle nullable for that specific
-        property.
-      </p>
-    </ul>
   </div>
 
   <h3 class="mt-6 mb-2 text-lg font-light italic">
@@ -165,15 +146,15 @@
       </p>
     </ul>
 
-    @* <h4 class="mt-4 mb-2 font-light">
-      Annotations (coming soon)
+    <h4 class="mt-4 mb-2 font-light">
+      JSON library annotations
     </h4>
 
     <ul class="mb-6 list-disc space-y-1 pl-6">
       <p class="mb-6 leading-relaxed">
-        Select the annotations you need for any key-value-pair.
+        Select the annotations you need for any property.
       </p>
-    </ul> *@
+    </ul>
   </div>
 
   <h3 class="mt-8 mb-2 text-lg font-light italic">
@@ -185,16 +166,85 @@
       Optional
     </h4>
 
-    <ul class="mb-6 list-disc space-y-1 pl-6 leading-relaxed">
-      <p class="mb-3">
-        Setting optional in the menu will toggle optional for all properties across all classes.
-      </p>
+    <h4 class="mt-4 mb-2 font-light">
+      ZodSchema
+    </h4>
+    <p class="mb-6 pl-6">
+      Setting this option will generate a ZodSchema for your class/type/interface
+    </p>
+  </div>
 
-      <p class="mb-6">
-        Setting optional in the rendered tree will toggle optional for that specific
-        property.
-      </p>
+  <h2 class="mt-8 mb-3 text-3xl font-light">
+    Additional information
+  </h2>
+
+  <h3 class="mt-6 mb-2 text-lg font-light italic">
+    C#
+  </h3>
+
+  <div class="px-6">
+    <h4 class="mt-4 mb-2 font-light">
+      Type inconsistency / Unions
+    </h4>
+
+    <p class="mb-6 pl-6">
+      Because C# does not currently support unions, JSON key-value-pairs with type inconsistencies will generate
+      multiple properties that map from the same key.
+    </p>
+    <div class="mb-6 pl-6 flex flex-wrap space-x-5">
+      <pre class="code flex-none">
+"continent": [
+  {
+    "name": "Africa",
+    "population": 1400000000,
+  },
+  {
+    "name": "Antarctica",
+    "population": "0",
+  },
+      </pre>
+      <img src="docs-csharp-unions.png" />
+    </div>
+    <div class="pl-6">
+      <pre class="code flex-none w-100">
+public class continent
+{
+  public string name { get; set; }
+
+  // Use json annotations to map this property
+  public int population_int { get; set; }
+
+  // Use json annotations to map this property
+  public string population_string { get; set; }
+      </pre>
+    </div>
+
+    <h2 class="mt-8 mb-3 text-3xl font-light">
+      Known bugs
+    </h2>
+
+    <ul class="mb-6 list-disc space-y-1 pl-6">
+      <li>
+        <h3 class="mt-6 mb-2 text-lg font-light italic">
+          JSON with keys including a '^' character will parse incorrectly.
+        </h3>
+      </li>
     </ul>
+
+    <p>
+      Help maintain this project by reporting bugs to
+      <a href="mailto:pickjson@outlook.com" class="text-blue-300 underline hover:text-blue-500">
+        pickjson@outlook.com
+      </a>.
+    </p>
+
+  </div>
+
+  <div class="w-full h-30 mt-5">
+    @if (CookieConsent)
+    {
+      <GoogleAd Slot="9056333487" Style="display:inline-block;width:300px;height:90px"></GoogleAd>
+    }
   </div>
 </div>
 

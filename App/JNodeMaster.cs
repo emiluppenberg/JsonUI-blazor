@@ -71,8 +71,8 @@ public static class JNodeMaster
           var currentArray = arrayCurrentParents.Last();
           var currentProperty = currentArray.Key;
           var takeCount = currentArray.Value.Count - 1; // Parent of array is always the index before this - (.Take is not zero based)
-          var parentKey = string.Join("-", currentArray.Value.Take(takeCount));
-          var arrayKey = string.Join("-", currentArray.Value);
+          var parentKey = string.Join("^", currentArray.Value.Take(takeCount));
+          var arrayKey = string.Join("^", currentArray.Value);
 
           // First check if current array is an object
           if (!model.TryGetValue(arrayKey, out var _))
@@ -157,12 +157,12 @@ public static class JNodeMaster
           if (!isArray)
           {
             currentObject = modelCurrentParents.Count() > 1 ?
-            string.Join("-", modelCurrentParents) : modelCurrentParents.Last();
+            string.Join("^", modelCurrentParents) : modelCurrentParents.Last();
           }
 
           if (isArray)
           {
-            currentObject = string.Join("-", arrayCurrentParents.Last().Value);
+            currentObject = string.Join("^", arrayCurrentParents.Last().Value);
           }
 
           if (!model.ContainsKey(currentObject))
@@ -220,10 +220,10 @@ public static class JNodeMaster
 
           string? currentObject = null;
           var currentProperty = arrayCurrentParents.Last().Key;
-          currentObject = string.Join("-", arrayCurrentParents.Last().Value);
+          currentObject = string.Join("^", arrayCurrentParents.Last().Value);
 
-          var lineage = currentObject.Split('-');
-          currentObject = String.Join('-', lineage.Take(lineage.Length - 1));
+          var lineage = currentObject.Split('^');
+          currentObject = String.Join('^', lineage.Take(lineage.Length - 1));
 
           if (!model.ContainsKey(currentObject))
           {
@@ -246,11 +246,6 @@ public static class JNodeMaster
             continue;
           }
         }
-
-        if (reader.TokenType == JsonTokenType.StartObject && rootType == "[]")
-        {
-          // reader.Read();
-        }
       }
 
       var result = new List<JNode>();
@@ -259,7 +254,7 @@ public static class JNodeMaster
 
       foreach (var k in model.Keys)
       {
-        var lineage = k.Split('-');
+        var lineage = k.Split('^');
 
         var parentKey = String.Join("", lineage.Take(lineage.Length - 1));
         var lineageKey = parentKey + lineage.Last();
@@ -340,7 +335,7 @@ public static class JNodeMaster
 
           foreach (var k in model.Keys)
           {
-            var split = k.Split('-');
+            var split = k.Split('^');
             var join = String.Join("", split);
 
             if (join == item.LineageKey)

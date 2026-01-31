@@ -48,7 +48,7 @@
     },
     {
       "name": "Antarctica",
-      "population": null,
+      "population": "0",
       "highest_peak": "Vinson Massif",
       "countries": [],
       "major_rivers": [],
