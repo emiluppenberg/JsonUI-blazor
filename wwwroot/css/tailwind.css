@@ -178,15 +178,11 @@
   }
 
   .main-page {
-    @apply pt-5 pb-12 flex flex-col w-screen h-screen bg-cyan-900;
+    @apply pt-5 pb-12 flex flex-col w-dvw h-dvh bg-cyan-900;
   }
 
   .node-col-container {
     @apply pl-1 flex flex-col;
-  }
-
-  .div-landing {
-    @apply flex flex-col h-full justify-between items-center;
   }
 
   .section-landing {
