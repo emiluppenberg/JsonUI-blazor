@@ -10,10 +10,6 @@
 
 <div class="app-container" id="app-container">
 
-  <div class="div-cookie">
-    <Cookie OnCookieConsent="HandleCookieConsent"></Cookie>
-  </div>
-
   <div class="json-container" id="json-container">
 
     <div class="json-menu">
@@ -157,9 +153,6 @@
 
 
 @code {
-  public bool CookieConsent { get; set; }
-  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
-
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
   public bool IsOptions { get; set; }
