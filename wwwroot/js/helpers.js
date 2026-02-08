@@ -64,6 +64,114 @@ window.loadAdSense = () => {
   (adsbygoogle = window.adsbygoogle || []).push({});
 };
 
+window.initCookieConsent = () => {
+  const banner = document.querySelector("[data-cookie-consent]");
+
+  if (!banner) {
+    return;
+  }
+
+  const storageKey = banner.dataset.storageKey || "cookie-consent";
+
+  const emitConsent = (value) => {
+    window.dispatchEvent(
+      new CustomEvent("cookie-consent-changed", { detail: value }),
+    );
+  };
+
+  const showBanner = () => {
+    banner.classList.remove("scale-0");
+    banner.classList.add("scale-100");
+  };
+
+  const hideBanner = () => {
+    banner.classList.remove("scale-100");
+    banner.classList.add("scale-0");
+  };
+
+  if (banner.dataset.handlersBound !== "true") {
+    banner.querySelectorAll("[data-cookie-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.cookieAction;
+
+        if (!action) {
+          return;
+        }
+
+        localStorage.setItem(storageKey, action);
+        hideBanner();
+        emitConsent(action);
+      });
+    });
+
+    banner.dataset.handlersBound = "true";
+  }
+
+  const consent = localStorage.getItem(storageKey);
+
+  if (consent === "accepted" || consent === "rejected") {
+    hideBanner();
+    emitConsent(consent);
+    return;
+  }
+
+  setTimeout(showBanner, 500);
+};
+
+window.initHomeConsentAd = () => {
+  const container = document.querySelector("[data-home-ad-container]");
+
+  if (!container) {
+    return;
+  }
+
+  const storageKey = container.dataset.storageKey || "cookie-consent";
+
+  const applyConsent = (consent) => {
+    if (consent === "accepted") {
+      container.style.display = "";
+
+      if (container.dataset.adLoaded !== "true") {
+        window.loadAdSense();
+        container.dataset.adLoaded = "true";
+      }
+
+      return;
+    }
+
+    container.style.display = "none";
+  };
+
+  applyConsent(localStorage.getItem(storageKey));
+
+  if (container.dataset.listenerBound === "true") {
+    return;
+  }
+
+  window.addEventListener("cookie-consent-changed", (event) => {
+    applyConsent(event.detail);
+  });
+
+  container.dataset.listenerBound = "true";
+};
+
+window.initConsentUi = () => {
+  window.initCookieConsent();
+  window.initHomeConsentAd();
+};
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    window.initConsentUi();
+  });
+} else {
+  window.initConsentUi();
+}
+
+window.addEventListener("enhancedload", () => {
+  window.initConsentUi();
+});
+
 window.registerClickOutside = (element, dotNetRef) => {
   const handler = (e) => {
     if (!element.contains(e.target) && e.target.id !== "annotation") {

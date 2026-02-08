@@ -1,60 +1,12 @@
-@inject IJSRuntime JS
+<div class="transition-cookie scale-0 cookie-container" data-cookie-consent data-storage-key="@General.StorageKey">
+  <p class="min-w-50 md:min-w-100">
+    This website uses cookies to display advertisements.
+    By accepting, you consent to the use of cookies.<br />
+    <a class="link" href="/privacy">Learn more</a>
+  </p>
 
-@if (!HasConsent)
-{
-  <div class="transition-cookie @(Initialized ? "scale-100" : "scale-0") cookie-container">
-    <p class="min-w-50 md:min-w-100">
-      This website uses cookies to display advertisements.
-      By accepting, you consent to the use of cookies.<br />
-      <NavLink class="link" href="/privacy">Learn more</NavLink>
-    </p>
-
-
-    <div class="cookie-buttons">
-      <button class="transition-gen button-base" @onclick="Accept">Accept</button>
-      <button class="transition-gen button-base" @onclick="Reject">Reject</button>
-    </div>
+  <div class="cookie-buttons">
+    <button type="button" class="transition-gen button-base" data-cookie-action="accepted">Accept</button>
+    <button type="button" class="transition-gen button-base" data-cookie-action="rejected">Reject</button>
   </div>
-}
-
-@code {
-  public bool Initialized { get; set; }
-  private bool HasConsent;
-  [Parameter]
-  public EventCallback<string> OnCookieConsent { get; set; }
-
-  protected override async Task OnAfterRenderAsync(bool firstRender)
-  {
-    if (!firstRender) return;
-
-    await Task.Delay(500);
-
-    Initialized = true;
-    StateHasChanged();
-  }
-
-  protected override async Task OnInitializedAsync()
-  {
-    var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
-    HasConsent = value == "accepted" || value == "rejected";
-    await OnCookieConsent.InvokeAsync(value);
-  }
-
-  private async Task Accept()
-  {
-    Initialized = false;
-    await Task.Delay(500);
-    await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
-    HasConsent = true;
-    await OnCookieConsent.InvokeAsync("accepted");
-  }
-
-  private async Task Reject()
-  {
-    Initialized = false;
-    await Task.Delay(500);
-    await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "rejected");
-    HasConsent = true;
-    await OnCookieConsent.InvokeAsync("rejected");
-  }
-}
+</div>

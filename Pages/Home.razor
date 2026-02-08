@@ -5,7 +5,7 @@
 <div class="w-full flex flex-col flex-1 items-center overflow-y-auto space-y-10 scroll-smooth">
 
   <div class="div-cookie">
-    <Cookie OnCookieConsent="HandleCookieConsent" />
+    <Cookie />
   </div>
 
   <header>
@@ -63,11 +63,9 @@
     </figure>
   </div>
 
-  <div class="w-auto h-30">
-    @if (CookieConsent)
-    {
-      <GoogleAd Slot="9056333487" Style="display:inline-block;width:300px;height:90px"></GoogleAd>
-    }
+  <div class="w-auto h-30" data-home-ad-container data-storage-key="@General.StorageKey" style="display:none;">
+    <ins class="adsbygoogle" data-ad-client="ca-pub-3629979359038521" data-ad-slot="9056333487"
+      style="display:inline-block;width:300px;height:90px"></ins>
   </div>
 
   <section class="w-full md:w-2/3 px-5 text-white scroll-mt-30" id="docs">
@@ -318,7 +316,3 @@
   href="tool">Go
 </NavLink>
 
-@code {
-  public bool CookieConsent { get; set; }
-  private void HandleCookieConsent(string? consent) => CookieConsent = consent == "accepted";
-}
