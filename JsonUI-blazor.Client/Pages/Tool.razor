@@ -1,13 +1,16 @@
 ﻿@page "/tool"
-@rendermode InteractiveServer
-@using JsonUI_blazor.Components
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@using JsonUI_blazor.Client.Components
 @using System.Net.Http.Headers
 @using System.Buffers.Text
 @using System.Text
 @using System.IO.IsolatedStorage
 @inject HttpClient httpClient
+@inject IJSRuntime JS
 
 <PageTitle>PickJSON - Tool</PageTitle>
+
+<div class="page">
 
 <div class="app-container" id="app-container">
 
@@ -152,6 +155,7 @@
   </div>
 </div>
 
+</div>
 
 @code {
   public string Url { get; set; } = "";

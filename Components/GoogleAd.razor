@@ -1,15 +1,13 @@
-@inject IJSRuntime JS
-
-<div class="">
+<div class="w-auto h-30">
   <ins class="adsbygoogle" @attributes="Attributes">
   </ins>
 </div>
 
 @code {
   [Parameter]
-  public string Slot { get; set; } = "";
+  public required string Slot { get; set; }
   [Parameter]
-  public string Style { get; set; } = "";
+  public required string Style { get; set; }
   [Parameter]
   public string? Format { get; set; }
   [Parameter]
@@ -32,13 +30,5 @@
       attrs["data-full-width-responsive"] = "true";
 
     return attrs;
-  }
-
-  protected override async Task OnAfterRenderAsync(bool firstRender)
-  {
-    if (firstRender)
-    {
-      await JS.InvokeVoidAsync("loadAdSense");
-    }
   }
 }
