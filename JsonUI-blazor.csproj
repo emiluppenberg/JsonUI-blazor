@@ -1,14 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.11" PrivateAssets="all" />
+    <ProjectReference Include="JsonUI-blazor.Client\JsonUI-blazor.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="JsonUI-blazor.Client\**\*.cs" />
+    <Content Remove="JsonUI-blazor.Client\**\*" />
+    <EmbeddedResource Remove="JsonUI-blazor.Client\**\*" />
+    <None Remove="JsonUI-blazor.Client\**\*" />
+    <RazorComponent Remove="JsonUI-blazor.Client\**\*.razor" />
   </ItemGroup>
 
 </Project>

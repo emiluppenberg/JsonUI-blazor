@@ -1,4 +1,5 @@
 @inject IJSRuntime JS
+@rendermode @(InteractiveServer)
 
 @if (!HasConsent)
 {
@@ -20,24 +21,22 @@
 @code {
   public bool Initialized { get; set; }
   private bool HasConsent;
-  [Parameter]
-  public EventCallback<string> OnCookieConsent { get; set; }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     if (!firstRender) return;
-
+    
     await Task.Delay(500);
+    var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
+    HasConsent = value == "accepted" || value == "rejected";
+
+    if (value == "accepted")
+    {
+      await JS.InvokeVoidAsync("loadAdSense");
+    }
 
     Initialized = true;
     StateHasChanged();
-  }
-
-  protected override async Task OnInitializedAsync()
-  {
-    var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
-    HasConsent = value == "accepted" || value == "rejected";
-    await OnCookieConsent.InvokeAsync(value);
   }
 
   private async Task Accept()
@@ -45,8 +44,9 @@
     Initialized = false;
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
+          await JS.InvokeVoidAsync("loadAdSense");
+
     HasConsent = true;
-    await OnCookieConsent.InvokeAsync("accepted");
   }
 
   private async Task Reject()
@@ -55,6 +55,5 @@
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "rejected");
     HasConsent = true;
-    await OnCookieConsent.InvokeAsync("rejected");
   }
 }
