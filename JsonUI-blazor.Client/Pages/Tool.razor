@@ -12,150 +12,151 @@
 
 <div class="page">
 
-<div class="app-container" id="app-container">
+  <div class="app-container" id="app-container">
 
-  <div class="json-container" id="json-container">
+    <div class="json-container" id="json-container">
 
-    <div class="json-menu">
-      <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
+      <div class="json-menu">
+        <input type="text" class="load-input w-40" @bind="RootName" placeholder="Root name" />
 
-      <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
-        @onclick="async () => await ToggleLoadUrl()">Load URL</button>
+        <button class="transition gen w-20 @(LoadingUrl ? "button-base-active" : "button-base")"
+                @onclick="async () => await ToggleLoadUrl()">Load URL</button>
 
-      <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
-        @onclick="async () => await ToggleLoadText()">Load TEXT</button>
-    </div>
-
-    <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
-      <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
-      <div class="flex w-full bg-(--bg-primary)">
-        <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson()">OK</button>
-        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
+        <button class="transition-gen w-20 @(LoadingText ? "button-base-active" : "button-base")"
+                @onclick="async () => await ToggleLoadText()">Load TEXT</button>
       </div>
-    </div>
 
-    <div class="transition-input load-menu @(LoadingUrl ? "scale-y-100 h-auto" : "scale-y-0 h-0")">
-      <div class="w-full">
-        <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
-      </div>
-      @foreach (var header in CustomHeaders)
-      {
-        <div class="flex">
-          <div class="w-1/2">
-            <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
-          </div>
-          <div class="w-1/2 flex">
-            <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
-            <button class="load-button" @onclick="() => { header.IsBase64 = !header.IsBase64; }">
-              <label class="load-label">Base64</label>
-              <input type="checkbox" @bind="header.IsBase64" class="load-checkbox" />
-            </button>
-          </div>
+      <div class="transition-input load-menu @(LoadingText ? "scale-y-100 h-full" : "scale-y-0 h-0")">
+        <textarea class="load-textarea" @bind="Json" placeholder="Paste JSON"></textarea>
+        <div class="flex w-full bg-(--bg-primary)">
+          <button class="transition-gen button-base w-1/2" @onclick="() => LoadJson()">OK</button>
+          <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingText = false; }">Cancel</button>
         </div>
-      }
-      <div class="flex w-full bg-(--bg-primary)">
-        <button class="transition-gen button-base w-1/2" @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
-          header</button>
-        <button class="transition-gen button-base w-1/2"
-          @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
-          header</button>
       </div>
-      <div class="flex w-full bg-(--bg-primary)">
-        <button class="transition-gen button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
-        <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
-      </div>
-    </div>
 
-    <div class="transition-gen node-container" id="node-container">
-      @if (Root is not null)
-      {
-        <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
-          OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
-          LangOptions="langOptions" />
-      }
-      else
-      {
-        <div class="h-11/12 w-full flex items-end justify-center">
-          <span class="text-cyan-400 text-xl font-bold">No JSON loaded</span>
+      <div class="transition-input load-menu @(LoadingUrl ? "scale-y-100 h-auto" : "scale-y-0 h-0")">
+        <div class="w-full">
+          <input type="text" @bind="Url" class="load-input" placeholder="Paste url" />
         </div>
-      }
-    </div>
-
-  </div>
-
-  <div class="code-container">
-
-    <div class="code-menu">
-
-      <select class="select-base" @bind="SelectedLanguage" @bind:after="HandleSelectedLanguage">
-        <option selected value="C#">C#</option>
-        <option value="TypeScript">TypeScript</option>
-      </select>
-
-      <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
-        @onclick="() => { IsOptions = !IsOptions; }">Options</button>
-
-    </div>
-
-
-    <div class="flex flex-1 overflow-y-auto">
-
-      @if (RenderCode.Length < 1)
-      {
-        <div class="transition-gen code">
-          <div class="h-11/12 w-full flex items-end justify-center">
-            <span class="text-cyan-400 text-xl font-bold">No properties selected</span>
-          </div>
-        </div>
-      }
-      else
-      {
-        <pre class="transition-gen code">@RenderCode</pre>
-      }
-
-      <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
-        @if (langOptions.Language == "C#")
+        @foreach (var header in CustomHeaders)
         {
-          <CSharpMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
-            OnSetJsonLibrary="HandleSetJsonLibrary" OnSetNamingConvention="HandleSetNamingConvention" />
+          <div class="flex">
+            <div class="w-1/2">
+              <input type="text" @bind="header.Key" class="load-input" placeholder="Header key" />
+            </div>
+            <div class="w-1/2 flex">
+              <input type="text" @bind="header.Value" class="load-input" placeholder="Header value" />
+              <button class="load-button" @onclick="() => { header.IsBase64 = !header.IsBase64; }">
+                <label class="load-label">Base64</label>
+                <input type="checkbox" @bind="header.IsBase64" class="load-checkbox" />
+              </button>
+            </div>
+          </div>
         }
-        @if (langOptions.Language == "TypeScript")
-        {
-          <TypescriptMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection"
-            OnSetNullable="HandleSetNullable" OnSetTypeOption="HandleSetTypeOption"
-            OnSetClassPrimaryConstructor="HandleSetTypeScriptClassPrimaryConstructor"
-            OnSetClassRegularConstructor="HandleSetTypeScriptClassRegularConstructor"
-            OnSetClassNoConstructor="HandleSetTypeScriptClassNoConstructor" />
-        }
+        <div class="flex w-full bg-(--bg-primary)">
+          <button class="transition-gen button-base w-1/2"
+                  @onclick="() => { CustomHeaders.Add(new CustomHeader()); }">Add
+            header</button>
+            <button class="transition-gen button-base w-1/2"
+                    @onclick="() => { CustomHeaders.RemoveAt(CustomHeaders.Count - 1); }">Remove
+              header</button>
+            </div>
+            <div class="flex w-full bg-(--bg-primary)">
+              <button class="transition-gen button-base w-1/2" @onclick="async () => await FetchRequest()">OK</button>
+              <button class="transition-gen button-base w-1/2" @onclick="() => { LoadingUrl = false; }">Cancel</button>
+            </div>
+          </div>
+
+          <div class="transition-gen node-container" id="node-container">
+            @if (Root is not null)
+            {
+              <JNodeView CurrentNode="Root" RootName="@Root.Name" ContainerHeight="NodeContainerHeight"
+                         OnNodeToggled="HandleNodeToggled" OnKvpSelected="HandleKvpSelected" OnRenderCode="HandleRenderCode"
+                         LangOptions="langOptions" />
+            }
+            else
+            {
+              <div class="h-11/12 w-full flex items-end justify-center">
+                <span class="text-cyan-400 text-xl font-bold">No JSON loaded</span>
+              </div>
+            }
+          </div>
+
+        </div>
+
+        <div class="code-container">
+
+          <div class="code-menu">
+
+            <select class="select-base" @bind="SelectedLanguage" @bind:after="HandleSelectedLanguage">
+              <option selected value="C#">C#</option>
+              <option value="TypeScript">TypeScript</option>
+            </select>
+
+            <button class="transition-base @(IsOptions ? "button-base-active" : "button-base")"
+                    @onclick="() => { IsOptions = !IsOptions; }">Options</button>
+
+          </div>
+
+
+          <div class="flex flex-1 overflow-y-auto">
+
+            @if (RenderCode.Length < 1)
+            {
+              <div class="transition-gen code">
+                <div class="h-11/12 w-full flex items-end justify-center">
+                  <span class="text-cyan-400 text-xl font-bold">No properties selected</span>
+                </div>
+              </div>
+            }
+            else
+            {
+              <pre class="transition-gen code">@RenderCode</pre>
+            }
+
+            <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
+              @if (langOptions.Language == "C#")
+              {
+                <CSharpMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection" OnSetNullable="HandleSetNullable"
+                            OnSetJsonLibrary="HandleSetJsonLibrary" OnSetNamingConvention="HandleSetNamingConvention" />
+              }
+              @if (langOptions.Language == "TypeScript")
+              {
+                <TypescriptMenu LangOptions="langOptions" OnSetCollection="HandleSetCollection"
+                                OnSetNullable="HandleSetNullable" OnSetTypeOption="HandleSetTypeOption"
+                                OnSetClassPrimaryConstructor="HandleSetTypeScriptClassPrimaryConstructor"
+                                OnSetClassRegularConstructor="HandleSetTypeScriptClassRegularConstructor"
+                                OnSetClassNoConstructor="HandleSetTypeScriptClassNoConstructor" />
+              }
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-container">
+        <div class="bottom-content text-xs text-cyan-400 md:text-base md:justify-between">
+          <h1 class="ml-2 text-xl font-medium">PickJSON</h1>
+
+          <div class="mx-0 flex flex-none flex-col scale-50 md:scale-100 md:flex-row md:space-x-10">
+            <p class="text-start italic">
+              Visualize JSON data
+            </p>
+
+            <p class="ml-5 md:ml-0 text-start italic">
+              Pick properties interactively
+            </p>
+
+            <p class="ml-10 md:ml-0 text-start italic">
+              Generate clean, configurable code
+            </p>
+          </div>
+
+          <img src="pickjson.png" class="w-10 md:w-12 md:mr-2" />
+        </div>
       </div>
 
     </div>
-  </div>
-</div>
-
-<div class="bottom-container">
-  <div class="bottom-content text-xs text-cyan-400 md:text-base md:justify-between">
-    <h1 class="ml-2 text-xl font-medium">PickJSON</h1>
-
-    <div class="mx-0 flex flex-none flex-col scale-50 md:scale-100 md:flex-row md:space-x-10">
-      <p class="text-start italic">
-        Visualize JSON data
-      </p>
-
-      <p class="ml-5 md:ml-0 text-start italic">
-        Pick properties interactively
-      </p>
-
-      <p class="ml-10 md:ml-0 text-start italic">
-        Generate clean, configurable code
-      </p>
-    </div>
-
-    <img src="pickjson.png" class="w-10 md:w-12 md:mr-2" />
-  </div>
-</div>
-
-</div>
 
 @code {
   public string Url { get; set; } = "";
