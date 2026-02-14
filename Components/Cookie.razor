@@ -25,14 +25,14 @@
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     if (!firstRender) return;
-    
+
     await Task.Delay(500);
     var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
     HasConsent = value == "accepted" || value == "rejected";
 
     if (value == "accepted")
     {
-      await JS.InvokeVoidAsync("loadAdSense");
+      @* await JS.InvokeVoidAsync("loadAdSense"); *@
     }
 
     Initialized = true;
@@ -44,7 +44,7 @@
     Initialized = false;
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
-          await JS.InvokeVoidAsync("loadAdSense");
+    @* await JS.InvokeVoidAsync("loadAdSense"); *@
 
     HasConsent = true;
   }
