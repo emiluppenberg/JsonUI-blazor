@@ -1,5 +1,4 @@
 @inject IJSRuntime JS
-@rendermode @(InteractiveServer)
 
 @if (!HasInteracted)
 {
@@ -29,7 +28,7 @@
     await Task.Delay(500);
     var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
     HasInteracted = value == "accepted";
-    await JS.InvokeVoidAsync("initializeAds");
+    await JS.InvokeVoidAsync("initializeAds_tool");
     Initialized = true;
     StateHasChanged();
   }
@@ -39,11 +38,11 @@
     Initialized = false;
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
-    await JS.InvokeVoidAsync("initializeAds");
+    await JS.InvokeVoidAsync("initializeAds_tool");
     HasInteracted = true;
   }
 
-  private async Task Close()
+    private async Task Close()
   {
     Initialized = false;
     await Task.Delay(500);
