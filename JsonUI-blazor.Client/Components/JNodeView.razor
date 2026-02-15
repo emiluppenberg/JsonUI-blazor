@@ -2,13 +2,13 @@
 @using System.Threading.Tasks
 
 <div class="transition-gen node-col"
-  style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
+     style="top: @(RowOffset* General.RowHeightPx)px; height: @(ContainerHeight - (RowOffset * General.RowHeightPx))px;">
 
   <div class="sentinel" @ref="_sentinel"></div>
   <div class="@GetDivStickyClass()" @onmouseover="() => { IsMouseOver = true; }"
-    @onmouseleave="() => { IsMouseOver = false; }">
+       @onmouseleave="() => { IsMouseOver = false; }">
     <button class="@GetButtonStickyClass() @(NodeToggledOptions == CurrentNode ? "border-r-0" : "")"
-      @onclick="() => ToggleNode(CurrentNode, 0)">
+            @onclick="() => ToggleNode(CurrentNode, 0)">
       <span class="key font-bold">@CurrentNode.Name</span>
       <div class="div-value">
         <div class="value text-base">@(CurrentNode.Type == JNodeType.Object ? "{}" : "[]")</div>
@@ -19,10 +19,10 @@
     </button>
     <div class="relative">
       <button id="toggle-options"
-        class="-translate-y-[calc(var(--inp-h)/2)] button-options bg-(--sticky-btn-opt) transition-val @(IsMouseOver && AnyNestedSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-        @onclick="() => { NodeToggledOptions = CurrentNode; }">
+              class="-translate-y-[calc(var(--inp-h)/2)] button-options bg-(--sticky-btn-opt) transition-val @(IsMouseOver && AnyNestedSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+              @onclick="() => { NodeToggledOptions = CurrentNode; }">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+             stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <line x1="4" y1="7" x2="20" y2="7" />
           <line x1="4" y1="12" x2="20" y2="12" />
           <line x1="4" y1="17" x2="20" y2="17" />
@@ -31,19 +31,23 @@
       @if (NodeToggledOptions == CurrentNode)
       {
         <NodeKvpOptions LangOptions="LangOptions" Node="CurrentNode" Target="sticky"
-          ParentHover="@(IsMouseOver ? "outline-2" : "")"
-          ForwardSetNodeNullable="async () => await SetNodeNullable(CurrentNode)"
-          ForwardSetNodeOptional="async () => await SetNodeOptional(CurrentNode)"
-          ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(CurrentNode)"
-          ForwardSetNodeCollection="@(async arg => await SetNodeCollection(CurrentNode, arg))"
-          ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)"
-          ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(CurrentNode)"
-          ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
-          ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
-          ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
-          ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(CurrentNode)"
-          ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, CurrentNode)"
-          OnClose="() => {NodeToggledOptions = null;}" />
+                        ParentHover="@(IsMouseOver ? "outline-2" : "")"
+                        ForwardSetNodeNullable="async () => await SetNodeNullable(CurrentNode)"
+                        ForwardSetNodeOptional="async () => await SetNodeOptional(CurrentNode)"
+                        ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(CurrentNode)"
+                        ForwardSetNodeIsPrivate="async () => await SetNodeIsPrivate(CurrentNode)"
+                        ForwardSetNodeHasField="async () => await SetNodeHasField(CurrentNode)"
+                        ForwardSetNodeHasGet="async () => await SetNodeHasGet(CurrentNode)"
+                        ForwardSetNodeHasSet="async () => await SetNodeHasSet(CurrentNode)"
+                        ForwardSetNodeCollection="@(async arg => await SetNodeCollection(CurrentNode, arg))"
+                        ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(CurrentNode)"
+                        ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(CurrentNode)"
+                        ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(CurrentNode, arg))"
+                        ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(CurrentNode)"
+                        ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(CurrentNode)"
+                        ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(CurrentNode)"
+                        ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, CurrentNode)"
+                        OnClose="() => {NodeToggledOptions = null;}" />
       }
     </div>
   </div>
@@ -56,7 +60,7 @@
         class="transition-node @(child.TotalNestedSelected > 0 ? "div-node-selected" : "div-node") @(child.IsExpanded ? "scale-x-0" : "")"
         @onmouseover="() => { IsMouseOverNode = child; }" @onmouseleave="() => { IsMouseOverNode = null; }">
         <button @key="child" class="transition-gen button-node"
-          @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
+                @onclick="() => ToggleNode(child, CurrentNode.Children.IndexOf(child))">
           <span class="key font-bold">@child.Name</span>
           <div class="div-value">
             <div class="value text-base">@(child.Type == JNodeType.Object ? "{}" : "[]")</div>
@@ -67,10 +71,10 @@
         </button>
         <div class="relative">
           <button id="toggle-options"
-            class="button-options bg-(--node-btn-opt) transition-val @(IsMouseOverNode == child && child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-            @onclick="() => { NodeToggledOptions = child; }">
+                  class="button-options bg-(--node-btn-opt) transition-val @(IsMouseOverNode == child && child.TotalNestedSelected > 0 ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+                  @onclick="() => { NodeToggledOptions = child; }">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round">
               <line x1="4" y1="7" x2="20" y2="7" />
               <line x1="4" y1="12" x2="20" y2="12" />
               <line x1="4" y1="17" x2="20" y2="17" />
@@ -79,19 +83,23 @@
           @if (NodeToggledOptions == child)
           {
             <NodeKvpOptions LangOptions="LangOptions" Node="child" Target="node"
-              ParentHover="@(IsMouseOverNode == child ? "outline-3" : "")"
-              ForwardSetNodeNullable="async () => await SetNodeNullable(child)"
-              ForwardSetNodeOptional="async () => await SetNodeOptional(child)"
-              ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(child)"
-              ForwardSetNodeCollection="@(async arg => await SetNodeCollection(child, arg))"
-              ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)"
-              ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(child)"
-              ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
-              ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
-              ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
-              ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(child)"
-              ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, child)"
-              OnClose="() => {NodeToggledOptions = null;}" />
+                            ParentHover="@(IsMouseOverNode == child ? "outline-3" : "")"
+                            ForwardSetNodeNullable="async () => await SetNodeNullable(child)"
+                            ForwardSetNodeOptional="async () => await SetNodeOptional(child)"
+                            ForwardSetNodeAllowUndefined="async () => await SetNodeAllowUndefined(child)"
+                            ForwardSetNodeIsPrivate="async () => await SetNodeIsPrivate(child)"
+                            ForwardSetNodeHasField="async () => await SetNodeHasField(child)"
+                            ForwardSetNodeHasGet="async () => await SetNodeHasGet(child)"
+                            ForwardSetNodeHasSet="async () => await SetNodeHasSet(child)"
+                            ForwardSetNodeCollection="@(async arg => await SetNodeCollection(child, arg))"
+                            ForwardSetNodeCollectionItemNullable="async () => await SetNodeCollectionItemNullable(child)"
+                            ForwardSetNodeCollectionItemAllowUndefined="async () => await SetNodeCollectionItemAllowUndefined(child)"
+                            ForwardSetNodeTypeOption="@(async arg => await SetNodeTypeOption(child, arg))"
+                            ForwardSetNodeClassPrimaryConstructor="async () => await SetNodeClassPrimaryConstructor(child)"
+                            ForwardSetNodeClassRegularConstructor="async () => await SetNodeClassRegularConstructor(child)"
+                            ForwardSetNodeZodSchema="async () => await SetNodeZodSchema(child)"
+                            ForwardSetNodeAnnotation="async arg => await SetNodeAnnotation(arg, child)"
+                            OnClose="() => {NodeToggledOptions = null;}" />
           }
         </div>
       </div>
@@ -100,52 +108,56 @@
     @foreach (var kvp in CurrentNode.KeyValues)
     {
       <div class="transition-gen @(kvp.IsSelected ? "div-kvp-selected" : "div-kvp")"
-        @onmouseover="() => { IsMouseOverKvp = kvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
+           @onmouseover="() => { IsMouseOverKvp = kvp; }" @onmouseleave="() => { IsMouseOverKvp = null; }">
         <button @key="kvp" class="transition-gen @(kvp.IsSelected ? "button-kvp-selected" : "button-kvp")"
-          @onclick='async () => await SetKvpSelected(kvp)'>
+                @onclick='async () => await SetKvpSelected(kvp)'>
           <span class="key font-light">@kvp.Kvp.Key</span>
           <div class="div-value">
             <div class="value italic truncate">
               @(kvp.Kvp.Value + (kvp.DataNullable && LangOptions.Language == "C#" ? "?" : ""))</div>
-          </div>
-        </button>
-        <div class="relative">
-          <button id="toggle-options"
-            class="button-options transition-val bg-(--kvp-btn-opt) @(IsMouseOverKvp == kvp && kvp.IsSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
-            @onclick="() => { KvpToggledOptions = kvp; }">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="4" y1="7" x2="20" y2="7" />
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="17" x2="20" y2="17" />
-            </svg>
+            </div>
           </button>
-          @if (KvpToggledOptions == kvp)
-          {
-            <NodeKvpOptions LangOptions="LangOptions" Kvp="kvp" Target="kvp"
-              ParentHover="@(IsMouseOverKvp == kvp ? "outline-3" : "")"
-              ForwardSetKvpNullable="async () => await SetKvpNullable(kvp)"
-              ForwardSetKvpOptional="async() => await SetKvpOptional(kvp)"
-              ForwardSetKvpAllowUndefined="async () => await SetKvpAllowUndefined(kvp)"
-              ForwardSetKvpCollection="@(async arg => await SetKvpCollection(kvp, arg))"
-              ForwardSetKvpCollectionItemNullable="async () => await SetKvpCollectionItemNullable(kvp)"
-              ForwardSetKvpCollectionItemAllowUndefined="async () => await SetKvpCollectionItemAllowUndefined(kvp)"
-              ForwardSetKvpAnnotation="async arg => await SetKvpAnnotation(arg, kvp)"
-              OnClose="() => {KvpToggledOptions = null;}" />
-          }
+          <div class="relative">
+            <button id="toggle-options"
+                    class="button-options transition-val bg-(--kvp-btn-opt) @(IsMouseOverKvp == kvp && kvp.IsSelected ? "scale-x-100" : "scale-x-0 pointer-events-none")"
+                    @onclick="() => { KvpToggledOptions = kvp; }">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+              </svg>
+            </button>
+            @if (KvpToggledOptions == kvp)
+            {
+              <NodeKvpOptions LangOptions="LangOptions" Kvp="kvp" Target="kvp"
+                              ParentHover="@(IsMouseOverKvp == kvp ? "outline-3" : "")"
+                              ForwardSetKvpNullable="async () => await SetKvpNullable(kvp)"
+                              ForwardSetKvpOptional="async() => await SetKvpOptional(kvp)"
+                              ForwardSetKvpAllowUndefined="async () => await SetKvpAllowUndefined(kvp)"
+                              ForwardSetKvpIsPrivate="async () => await SetKvpIsPrivate(kvp)"
+                              ForwardSetKvpHasField="async () => await SetKvpHasField(kvp)"
+                              ForwardSetKvpHasGet="async () => await SetKvpHasGet(kvp)"
+                              ForwardSetKvpHasSet="async () => await SetKvpHasSet(kvp)"
+                              ForwardSetKvpCollection="@(async arg => await SetKvpCollection(kvp, arg))"
+                              ForwardSetKvpCollectionItemNullable="async () => await SetKvpCollectionItemNullable(kvp)"
+                              ForwardSetKvpCollectionItemAllowUndefined="async () => await SetKvpCollectionItemAllowUndefined(kvp)"
+                              ForwardSetKvpAnnotation="async arg => await SetKvpAnnotation(arg, kvp)"
+                              OnClose="() => {KvpToggledOptions = null;}" />
+            }
+          </div>
         </div>
-      </div>
-    }
+      }
 
+    </div>
   </div>
-</div>
 
-@if (NextNode is not null && NextNode.IsExpanded)
-{
-  <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
-    OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" OnRenderCode="ForwardRenderCode"
-    LangOptions="LangOptions" />
-}
+  @if (NextNode is not null && NextNode.IsExpanded)
+  {
+    <JNodeView CurrentNode="NextNode" RowOffset="NextRowOffset" ContainerHeight="ContainerHeight"
+               OnNodeToggled="ForwardNodeToggled" OnKvpSelected="ForwardKvpSelected" OnRenderCode="ForwardRenderCode"
+               LangOptions="LangOptions" />
+  }
 
 @code {
   [Parameter]
@@ -216,43 +228,58 @@
     await OnKvpSelected.InvokeAsync(args);
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpNullable(JNodeKvp kvp)
   {
     kvp.Nullable = !kvp.Nullable;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpOptional(JNodeKvp kvp)
   {
     kvp.Optional = !kvp.Optional;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpAllowUndefined(JNodeKvp kvp)
   {
     kvp.AllowUndefined = !kvp.AllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
+  async Task SetKvpIsPrivate(JNodeKvp kvp)
+  {
+    kvp.IsPrivate = !kvp.IsPrivate;
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetKvpHasField(JNodeKvp kvp)
+  {
+    kvp.HasField = !kvp.HasField;
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetKvpHasGet(JNodeKvp kvp)
+  {
+    kvp.HasGet = !kvp.HasGet;
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetKvpHasSet(JNodeKvp kvp)
+  {
+    kvp.HasSet = !kvp.HasSet;
+    await OnRenderCode.InvokeAsync();
+  }
+
 
   async Task SetKvpCollection(JNodeKvp kvp, string collection)
   {
     kvp.CollectionAs = collection;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpCollectionItemNullable(JNodeKvp kvp)
   {
     kvp.CollectionItemNullable = !kvp.CollectionItemNullable;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpCollectionItemAllowUndefined(JNodeKvp kvp)
   {
     kvp.CollectionItemAllowUndefined = !kvp.CollectionItemAllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetKvpAnnotation(KeyValuePair<string, string> annotation, JNodeKvp kvp)
   {
     if (kvp.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var annotationList))
@@ -274,69 +301,58 @@
 
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeNullable(JNode node)
   {
     node.Nullable = !node.Nullable;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeCollection(JNode node, string collection)
   {
     node.CollectionAs = collection;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeCollectionItemNullable(JNode node)
   {
     node.CollectionItemNullable = !node.CollectionItemNullable;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeCollectionItemAllowUndefined(JNode node)
   {
     node.CollectionItemAllowUndefined = !node.CollectionItemAllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeOptional(JNode node)
   {
     node.Optional = !node.Optional;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeAllowUndefined(JNode node)
   {
     node.AllowUndefined = !node.AllowUndefined;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeTypeOption(JNode node, ITypeScriptTypeOption typeOption)
   {
     node.TypeOption = typeOption;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeClassPrimaryConstructor(JNode node)
   {
     node.TypeOption!.UsePrimaryConstructor = true;
     node.TypeOption!.UseRegularConstructor = false;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeClassRegularConstructor(JNode node)
   {
     node.TypeOption!.UseRegularConstructor = true;
     node.TypeOption!.UsePrimaryConstructor = false;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeZodSchema(JNode node)
   {
     node.TypeOption!.UseZodSchema = !node.TypeOption!.UseZodSchema;
     await OnRenderCode.InvokeAsync();
   }
-
   async Task SetNodeAnnotation(KeyValuePair<string, string> annotation, JNode node)
   {
     if (node.JsonLibraryAnnotations!.TryGetValue(annotation.Key, out var annotationList))
@@ -356,6 +372,27 @@
       node.JsonLibraryAnnotations.Add(annotation.Key, new() { annotation.Value });
     }
 
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetNodeIsPrivate(JNode node)
+  {
+    node.IsPrivate = !node.IsPrivate;
+    await OnRenderCode.InvokeAsync();
+  }
+
+  async Task SetNodeHasField(JNode node)
+  {
+    node.HasField = !node.HasField;
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetNodeHasGet(JNode node)
+  {
+    node.HasGet = !node.HasGet;
+    await OnRenderCode.InvokeAsync();
+  }
+  async Task SetNodeHasSet(JNode node)
+  {
+    node.HasSet = !node.HasSet;
     await OnRenderCode.InvokeAsync();
   }
 

@@ -43,12 +43,14 @@ public interface INamingConvention
 {
   public string Name { get; }
   public string Parse(string name);
+  public string ParseField(string name);
 }
 
 public class NoCase : INamingConvention
 {
   public string Name => "No naming convention";
   public string Parse(string name) => name;
+  public string ParseField(string name) => $"_{name}";
 }
 
 public class LowerSnakeCase : INamingConvention
@@ -65,6 +67,8 @@ public class LowerSnakeCase : INamingConvention
 
     return parsed.Replace("__", "_");
   }
+
+  public string ParseField(string name) => $"_{name}";
 }
 
 public class UpperSnakeCase : INamingConvention
@@ -81,6 +85,8 @@ public class UpperSnakeCase : INamingConvention
 
     return parsed.Replace("__", "_");
   }
+
+  public string ParseField(string name) => $"_{name}";
 }
 
 public class PascalCase : INamingConvention
@@ -96,4 +102,6 @@ public class PascalCase : INamingConvention
       m => m.Groups[1].Value.ToUpperInvariant()
     );
   }
+
+  public string ParseField(string name) => "_" + name.Substring(0, 1).ToLowerInvariant() + name.Substring(1, name.Length - 1);
 }

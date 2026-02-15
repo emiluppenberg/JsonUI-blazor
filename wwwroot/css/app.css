@@ -337,9 +337,6 @@
   .flex {
     display: flex;
   }
-  .hidden {
-    display: none;
-  }
   .h-\(--inp-h\) {
     height: var(--inp-h);
   }

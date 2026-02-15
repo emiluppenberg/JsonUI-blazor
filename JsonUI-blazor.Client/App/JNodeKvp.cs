@@ -16,6 +16,10 @@ public class JNodeKvp
   public string? CollectionAs { get; set; }
   public bool? CollectionItemNullable { get; set; }
   public bool? CollectionItemAllowUndefined { get; set; }
+  public bool IsPrivate { get; set; }
+  public bool HasField { get; set; }
+  public bool HasGet { get; set; } = true;
+  public bool HasSet { get; set; } = true;
 
   public JNodeKvp(KeyValuePair<string, string> kvp, ILanguageOptions langOptions)
   {
@@ -41,6 +45,10 @@ public class JNodeKvp
     CollectionItemNullable = node.CollectionItemNullable;
     CollectionItemAllowUndefined = node.CollectionItemAllowUndefined;
     JsonLibraryAnnotations = node.JsonLibraryAnnotations;
+    IsPrivate = node.IsPrivate;
+    HasField = node.HasField;
+    HasGet = node.HasGet;
+    HasSet = node.HasSet;
   }
 
   public bool IsArray() => CollectionAs is not null;
