@@ -167,6 +167,7 @@ public class CSharpOptions : ILanguageOptions
 
       var propName = this.NamingConvention.Parse(kvp.Kvp.Key);
       var propNamePlural = kvp.CollectionAs is not null && propName.EndsWith("s") ? "es" : "s";
+      propNamePlural = kvp.CollectionAs is not null && propName.EndsWith("es") ? "" : propNamePlural;
       propName = kvp.CollectionAs is not null ? $"{propName}{propNamePlural}" : propName;
 
       var fieldName = this.NamingConvention.ParseField(propName);
@@ -179,7 +180,7 @@ public class CSharpOptions : ILanguageOptions
       get = kvp.HasField && kvp.HasGet ? $"    get {{ return {fieldName}; }}{Environment.NewLine}" : get;
       set = kvp.HasField && kvp.HasSet ? $"    set {{ {fieldName} = value; }}{Environment.NewLine}" : set;
 
-      if (kvp.CollectionAs is not null && !kvp.JsonLibraryAnnotations!.TryGetValue(this.JsonLibrary!.NameAnnotation, out _))
+      if (!kvp.Kvp.Key.Equals(propName) && !kvp.JsonLibraryAnnotations!.TryGetValue(this.JsonLibrary!.NameAnnotation, out _))
       {
         kvp.JsonLibraryAnnotations.Add(this.JsonLibrary!.NameAnnotation, new() { "Default" });
       }

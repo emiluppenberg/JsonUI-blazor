@@ -1365,7 +1365,7 @@
     padding: calc(var(--spacing) * 2);
     font-size: var(--text-xs);
     line-height: var(--tw-leading, var(--text-xs--line-height));
-    color: var(--color-cyan-400);
+    color: var(--color-cyan-200);
   }
   .select-base {
     height: var(--inp-h);
