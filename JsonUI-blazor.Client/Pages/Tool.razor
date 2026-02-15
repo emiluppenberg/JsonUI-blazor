@@ -111,7 +111,10 @@
             }
             else
             {
-              <pre class="transition-gen code">@RenderCode</pre>
+              <pre class="transition-gen code">
+                @RenderCode
+                <CopyButton Code="@RenderCode"/>
+              </pre>
             }
 
             <div class="transition-gen code-options @(IsOptions ? "pl-2 w-25" : "overflow-hidden")">
@@ -138,11 +141,11 @@
 
         <div class="flex h-full w-full bg-(--bg-primary) justify-center items-center overflow-y-auto">
 
-            <div class="justify-center items-center w-full h-auto flex">
-              <div id="tool-ad-desktop-1"></div>
-              <div id="tool-ad-desktop-2"></div>
-              <div id="tool-ad-mobile-1"></div>
-            </div>
+          <div class="justify-center items-center w-full h-auto flex">
+            <div id="tool-ad-desktop-1"></div>
+            <div id="tool-ad-desktop-2"></div>
+            <div id="tool-ad-mobile-1"></div>
+          </div>
 
         </div>
 
@@ -154,7 +157,6 @@
   public string Url { get; set; } = "";
   public List<CustomHeader> CustomHeaders { get; set; } = new();
   public bool IsOptions { get; set; }
-
   public string RenderCode { get; set; } = "";
   public string Json { get; set; } = "";
   public bool LoadingText { get; set; } = true;
@@ -163,9 +165,9 @@
   public List<JNode> JNodes { get; set; } = new();
   public JNode? Root { get; set; }
   public string? RootName { get; set; }
-
   private string SelectedLanguage { get; set; } = "C#";
   private ILanguageOptions langOptions = new CSharpOptions();
+  private bool ShowCopyNotification { get; set; }
 
   protected override async Task OnInitializedAsync()
   {
@@ -175,7 +177,7 @@
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     if (!firstRender) return;
-    await RenderAdsAsync(); 
+    await RenderAdsAsync();
   }
 
   private async Task RenderAdsAsync()

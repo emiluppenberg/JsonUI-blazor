@@ -12,8 +12,8 @@
       <h1 class="text-center text-xl font-medium my-2 text-cyan-400 select-none">PickJSON - Easy code from JSON</h1>
 
       <div
-        class="flex flex-col min-w-50 md:min-w-200 space-y-2 md:space-y-5 leading-relaxed text-cyan-400 select-none text-sm md:text-base">
-        <div class="flex px-5 justify-evenly md:h-5">
+        class="flex flex-col min-w-50 md:min-w-200 space-y-2 md:space-y-5 leading-relaxed text-cyan-400 text-sm md:text-base">
+        <div class="flex px-5 justify-evenly md:h-5 select-none">
           <p class="text-center md:text-start italic">
             Visualize JSON data
           </p>
@@ -41,282 +41,291 @@
               </div>
               <div class="flex space-x-2">
                 <p>15/02</p>
-                <p class="text-wrap wrap-anywhere">Added C# support for backing fields, customizing get/set, customizing
-                  public/private</p>
-                </div>
+                <p class="text-wrap wrap-anywhere">C# support for backing fields, customizing get/set, customizing
+                  public/private
+                </p>
               </div>
-            </article>
-          </div>
-        </div>
-      </header>
-
-      <div
-        class="mx-5 bg-cyan-700 flex flex-col min-h-80 md:flex-row md:min-h-120 md:items-center md:space-x-5 p-5 md:px-10 font-bold line-clamp-1 text-cyan-400 text-center overflow-y-auto md:overflow-hidden">
-        <figure class="flex flex-col items-center">
-          <figcaption class="mb-2">1. Paste JSON</figcaption>
-          <img src="landing-example-json.png" class="opacity-70 w-100 md:w-auto" />
-        </figure>
-
-        <figure class="flex flex-col items-center">
-          <figcaption class="mb-2 ">2. Pick properties</figcaption>
-          <img src="landing-example-jnodes.png" class="opacity-70 w-100 md:w-auto" />
-        </figure>
-
-        <figure class="flex flex-col items-center">
-          <figcaption class="mb-2 ">3. Configure code</figcaption>
-          <img src="landing-example-code.png" class="opacity-70 w-100 md:w-auto" />
-        </figure>
-      </div>
-
-      <div class="flex justify-center w-full h-auto">
-        <div id="home-ad-desktop-1"></div>
-        <div id="home-ad-desktop-2"></div>
-        <div id="home-ad-mobile-1"></div>
-      </div>
-
-      <section class="w-full md:w-2/3 px-5 text-white scroll-mt-30" id="docs">
-
-        <h2 class="mb-3 text-4xl font-light">Documentation</h2>
-
-        <div class="flex justify-between md:items-center">
-          <div class="flex-col">
-            <p class="mb-6  italic leading-relaxed">
-              Load JSON and get a visual overview of the data structure.<br />
-              Pick the properties needed for your application.<br />
-              Effortlessly configure the generated code.
-            </p>
-
-            <div class="flex flex-col space-y-5">
-              <NavLink href="#load-json" class="link font-normal">1. Load JSON</NavLink>
-              <NavLink href="#pick-properties" class="link font-normal">2. Pick properties</NavLink>
-              <NavLink href="#configure-generated-code" class="link font-normal">3. Configure generated code</NavLink>
-              <NavLink href="#additional-information" class="link font-normal">4. Additional information</NavLink>
-              <NavLink href="#known-bugs" class="link font-normal">5. Known bugs</NavLink>
+              <div class="flex space-x-2">
+                <p>15/02</p>
+                <p class="text-wrap wrap-anywhere">C# handles plural naming for collections grammatically</p>
+              </div>
+              <div class="flex space-x-2">
+                <p>15/02</p>
+                <p class="text-wrap wrap-anywhere">Added copy-to-clipboard button</p>
+              </div>
             </div>
-          </div>
+          </article>
+        </div>
+      </div>
+    </header>
 
-          <figure>
-            <img src="pickjson.png" class="w-50 md:w-100" />
-          </figure>
+    <div
+      class="mx-5 bg-cyan-700 flex flex-col min-h-80 md:flex-row md:min-h-120 md:items-center md:space-x-5 p-5 md:px-10 font-bold line-clamp-1 text-cyan-400 text-center overflow-y-auto md:overflow-hidden">
+      <figure class="flex flex-col items-center">
+        <figcaption class="mb-2">1. Paste JSON</figcaption>
+        <img src="landing-example-json.png" class="opacity-70 w-100 md:w-auto" />
+      </figure>
+
+      <figure class="flex flex-col items-center">
+        <figcaption class="mb-2 ">2. Pick properties</figcaption>
+        <img src="landing-example-jnodes.png" class="opacity-70 w-100 md:w-auto" />
+      </figure>
+
+      <figure class="flex flex-col items-center">
+        <figcaption class="mb-2 ">3. Configure code</figcaption>
+        <img src="landing-example-code.png" class="opacity-70 w-100 md:w-auto" />
+      </figure>
+    </div>
+
+    <div class="flex justify-center w-full h-auto">
+      <div id="home-ad-desktop-1"></div>
+      <div id="home-ad-desktop-2"></div>
+      <div id="home-ad-mobile-1"></div>
+    </div>
+
+    <section class="w-full md:w-2/3 px-5 text-white scroll-mt-30" id="docs">
+
+      <h2 class="mb-3 text-4xl font-light">Documentation</h2>
+
+      <div class="flex justify-between md:items-center">
+        <div class="flex-col">
+          <p class="mb-6  italic leading-relaxed">
+            Load JSON and get a visual overview of the data structure.<br />
+            Pick the properties needed for your application.<br />
+            Effortlessly configure the generated code.
+          </p>
+
+          <div class="flex flex-col space-y-5">
+            <NavLink href="#load-json" class="link font-normal">1. Load JSON</NavLink>
+            <NavLink href="#pick-properties" class="link font-normal">2. Pick properties</NavLink>
+            <NavLink href="#configure-generated-code" class="link font-normal">3. Configure generated code</NavLink>
+            <NavLink href="#additional-information" class="link font-normal">4. Additional information</NavLink>
+            <NavLink href="#known-bugs" class="link font-normal">5. Known bugs</NavLink>
+          </div>
         </div>
 
-        <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="load-json">
-          1. Load JSON
+        <figure>
+          <img src="pickjson.png" class="w-50 md:w-100" />
+        </figure>
+      </div>
+
+      <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="load-json">
+        1. Load JSON
+      </h3>
+
+      <h4 class="mt-6 mb-2 text-lg font-light">
+        Load JSON from text
+      </h4>
+
+      <p class="mb-6 leading-relaxed">
+        Press <strong>Load TEXT</strong> and paste JSON text into the textarea field.<br />
+        Press <strong>OK</strong>.
+      </p>
+
+      <h4 class="mt-6 mb-2 text-lg font-light">
+        Load JSON from URL
+      </h4>
+
+      <p class="mb-6 leading-relaxed">
+        Press <strong>Load URL</strong> and paste a URL into the input field.<br />
+        If needed, provide any additional headers required for authorization etc.
+      </p>
+
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+        <p class="leading-relaxed">
+          <strong>Example bearer: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Bearer
+          -your-token-</i>
+        </p>
+        <img src="docs-header-ex-1.png" class="w-100" />
+      </div>
+
+      <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+        <p class="leading-relaxed">
+          <strong>Example basic username/password: </strong><br /> Header key: <i>Authorization</i>, Header value:
+          <i>Basic
+            -username:password-</i>
+          </p>
+          <img src="docs-header-ex-2.png" class="w-100" />
+        </div>
+
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <p class="leading-relaxed">
+            <strong>Example basic base64: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Basic
+            -base64-key-</i>,
+            <u>check Base64</u>
+          </p>
+          <img src="docs-header-ex-3.png" class="w-100" />
+        </div>
+
+        <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="pick-properties">
+          2. Pick properties
         </h3>
 
-        <h4 class="mt-6 mb-2 text-lg font-light">
-          Load JSON from text
-        </h4>
-
-        <p class="mb-6 leading-relaxed">
-          Press <strong>Load TEXT</strong> and paste JSON text into the textarea field.<br />
-          Press <strong>OK</strong>.
+        <p class="mb-4 leading-relaxed">
+          The loaded JSON is rendered as a tree structure, with objects and arrays rendered as nested branches.
         </p>
 
-        <h4 class="mt-6 mb-2 text-lg font-light">
-          Load JSON from URL
-        </h4>
+        <p class="mb-6 leading-relaxed">
+          Selecting key-value-pairs will generate properties for the type it belongs to
+          and all necessary ancestor relationships if the type is a descendant of root.
+        </p>
 
         <p class="mb-6 leading-relaxed">
-          Press <strong>Load URL</strong> and paste a URL into the input field.<br />
-          If needed, provide any additional headers required for authorization etc.
+          Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
+          Primitive types and arrays are noted as-is.<br />
+          When the JSON value is null or an empty array, the type is noted as 'object' or 'object[]' (C#), 'null' or
+          'unknown[]' (TypeScript).
         </p>
+
+        <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="configure-generated-code">
+          3. Configure generated code
+        </h3>
 
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-          <p class="leading-relaxed">
-            <strong>Example bearer: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Bearer
-            -your-token-</i>
+          <p class="mb-3">
+            Setting an option in the menu will toggle that option for all properties
           </p>
-          <img src="docs-header-ex-1.png" class="w-100" />
+          <img src="docs-options-menu.png" class="w-50" />
         </div>
 
         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-          <p class="leading-relaxed">
-            <strong>Example basic username/password: </strong><br /> Header key: <i>Authorization</i>, Header value:
-            <i>Basic
-              -username:password-</i>
+          <p class="mb-3">
+            Setting an option in the tree will toggle that option for the current property
+          </p>
+          <img src="docs-options-tree.png" class="w-100" />
+        </div>
+
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
+          <p class="mb-3">
+            Collections can be set to allow null or undefined items
+          </p>
+          <img src="docs-options-collections-allow.png" class="w-100" />
+        </div>
+
+        <h4 class="mt-6 mb-2 text-lg font-light italic">
+          C# options
+        </h4>
+
+        <div class="px-6">
+
+          <h5 class="mt-4 mb-2 font-light">Backing field</h5>
+          <h5 class="mt-4 mb-2 font-light">Getter / Setter</h5>
+          <h5 class="mt-4 mb-2 font-light">Public / Private</h5>
+          <h5 class="mt-4 mb-2 font-light">JSON library annotations</h5>
+
+          <h5 class="mt-4 mb-2 font-light">
+            JSON library
+          </h5>
+
+          <ul class="mb-6 list-disc space-y-1 pl-6">
+            <li>System.Text.Json</li>
+            <li>Newtonsoft.Json</li>
+          </ul>
+
+          <h5 class="mt-4 mb-2 font-light">
+            Naming convention
+          </h5>
+
+          <ul class="mb-6 list-disc space-y-1 pl-6">
+            <p class="mb-6 leading-relaxed">
+              Selecting a naming convention will generate a
+              JsonProperty / JsonPropertyName annotation for all properties.
             </p>
-            <img src="docs-header-ex-2.png" class="w-100" />
-          </div>
+          </ul>
 
-          <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-            <p class="leading-relaxed">
-              <strong>Example basic base64: </strong><br /> Header key: <i>Authorization</i>, Header value: <i>Basic
-              -base64-key-</i>,
-              <u>check Base64</u>
-            </p>
-            <img src="docs-header-ex-3.png" class="w-100" />
-          </div>
+        </div>
 
-          <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="pick-properties">
-            2. Pick properties
-          </h3>
+        <h4 class="mt-8 mb-2 text-lg font-light italic">
+          TypeScript options
+        </h4>
 
-          <p class="mb-4 leading-relaxed">
-            The loaded JSON is rendered as a tree structure, with objects and arrays rendered as nested branches.
+        <div class="px-6">
+          <h5 class="mt-4 mb-2 font-light">
+            Optional
+          </h5>
+
+          <h5 class="mt-4 mb-2 font-light">
+            ZodSchema
+          </h5>
+          <p class="mb-6 pl-6">
+            Setting this option will generate a ZodSchema for your class/type/interface
+          </p>
+        </div>
+
+        <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="additional-information">
+          Additional information
+        </h3>
+
+        <h4 class="mt-6 mb-2 text-lg font-light italic">
+          C#
+        </h4>
+
+        <div class="px-6">
+          <h5 class="mt-4 mb-2 font-light">
+            Type inconsistency / Unions
+          </h5>
+
+          <p class="mb-6 pl-6">
+            Because C# does not currently support unions, JSON key-value-pairs with type inconsistencies will generate
+            multiple properties that map from the same key.
           </p>
 
-          <p class="mb-6 leading-relaxed">
-            Selecting key-value-pairs will generate properties for the type it belongs to
-            and all necessary ancestor relationships if the type is a descendant of root.
-          </p>
+          <div class="pl-6">
+            <div class="flex flex-col md:flex-row md:space-x-10">
+              <pre class="code flex-none px-0 w-auto mb-5 text-[0.5rem]">
+                "continent": [
+                {
+                "name": "Africa",
+                "population": 1400000000,
+                },
+                {
+                "name": "Antarctica",
+                "population": "0",
+                },
+              </pre>
+              <pre class="code flex-none px-0 w-auto text-[0.5rem] mb-5">
+                public class continent
+                {
+                public string name { get; set; }
 
-          <p class="mb-6 leading-relaxed">
-            Complex types are noted as '{}' and '[]' for objects and arrays respectively.<br />
-            Primitive types and arrays are noted as-is.<br />
-            When the JSON value is null or an empty array, the type is noted as 'object' or 'object[]' (C#), 'null' or
-            'unknown[]' (TypeScript).
-          </p>
+                // Use json annotations to map this property
+                public int population_int { get; set; }
 
-          <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="configure-generated-code">
-            3. Configure generated code
-          </h3>
-
-          <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-            <p class="mb-3">
-              Setting an option in the menu will toggle that option for all properties
-            </p>
-            <img src="docs-options-menu.png" class="w-50" />
-          </div>
-
-          <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-            <p class="mb-3">
-              Setting an option in the tree will toggle that option for the current property
-            </p>
-            <img src="docs-options-tree.png" class="w-100" />
-          </div>
-
-          <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
-            <p class="mb-3">
-              Collections can be set to allow null or undefined items
-            </p>
-            <img src="docs-options-collections-allow.png" class="w-100" />
-          </div>
-
-          <h4 class="mt-6 mb-2 text-lg font-light italic">
-            C# options
-          </h4>
-
-          <div class="px-6">
-
-            <h5 class="mt-4 mb-2 font-light">Backing field</h5>
-            <h5 class="mt-4 mb-2 font-light">Getter / Setter</h5>
-            <h5 class="mt-4 mb-2 font-light">Public / Private</h5>
-            <h5 class="mt-4 mb-2 font-light">JSON library annotations</h5>
-
-            <h5 class="mt-4 mb-2 font-light">
-              JSON library
-            </h5>
-
-            <ul class="mb-6 list-disc space-y-1 pl-6">
-              <li>System.Text.Json</li>
-              <li>Newtonsoft.Json</li>
-            </ul>
-
-            <h5 class="mt-4 mb-2 font-light">
-              Naming convention
-            </h5>
-
-            <ul class="mb-6 list-disc space-y-1 pl-6">
-              <p class="mb-6 leading-relaxed">
-                Selecting a naming convention will generate a
-                JsonProperty / JsonPropertyName annotation for all properties.
-              </p>
-            </ul>
-
-          </div>
-
-          <h4 class="mt-8 mb-2 text-lg font-light italic">
-            TypeScript options
-          </h4>
-
-          <div class="px-6">
-            <h5 class="mt-4 mb-2 font-light">
-              Optional
-            </h5>
-
-            <h5 class="mt-4 mb-2 font-light">
-              ZodSchema
-            </h5>
-            <p class="mb-6 pl-6">
-              Setting this option will generate a ZodSchema for your class/type/interface
-            </p>
-          </div>
-
-          <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="additional-information">
-            Additional information
-          </h3>
-
-          <h4 class="mt-6 mb-2 text-lg font-light italic">
-            C#
-          </h4>
-
-          <div class="px-6">
-            <h5 class="mt-4 mb-2 font-light">
-              Type inconsistency / Unions
-            </h5>
-
-            <p class="mb-6 pl-6">
-              Because C# does not currently support unions, JSON key-value-pairs with type inconsistencies will generate
-              multiple properties that map from the same key.
-            </p>
-
-            <div class="pl-6">
-              <div class="flex flex-col md:flex-row md:space-x-10">
-                <pre class="code flex-none px-0 w-auto mb-5 text-[0.5rem]">
-                  "continent": [
-                  {
-                  "name": "Africa",
-                  "population": 1400000000,
-                  },
-                  {
-                  "name": "Antarctica",
-                  "population": "0",
-                  },
-                </pre>
-                <pre class="code flex-none px-0 w-auto text-[0.5rem] mb-5">
-                  public class continent
-                  {
-                  public string name { get; set; }
-
-                  // Use json annotations to map this property
-                  public int population_int { get; set; }
-
-                  // Use json annotations to map this property
-                  public string population_string { get; set; }
-                </pre>
-              </div>
-
-              <img src="docs-csharp-unions.png" class="mb-5" />
+                // Use json annotations to map this property
+                public string population_string { get; set; }
+              </pre>
             </div>
 
-            <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="known-bugs">
-              Known bugs
-            </h3>
-
-            <ul class="mb-6 list-disc space-y-1 pl-6">
-              <li>
-                <p class="mt-6 mb-2 text-lg font-light italic">
-                  JSON with keys including a '^' character will parse incorrectly.
-                </p>
-              </li>
-            </ul>
-
-            <p class="mb-6">
-              Help maintain this project by reporting bugs to
-              <a href="mailto:pickjson@outlook.com" class="text-blue-300 underline hover:text-blue-500">
-                pickjson@outlook.com
-              </a>.
-            </p>
-
+            <img src="docs-csharp-unions.png" class="mb-5" />
           </div>
-        </section>
 
-      </div>
+          <h3 class="mt-8 mb-3 text-3xl font-light scroll-mt-10" id="known-bugs">
+            Known bugs
+          </h3>
 
-      <NavLink
-        class="w-full h-12 font-medium text-3xl italic text-center text-white p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95"
-        href="tool">Go
-      </NavLink>
+          <ul class="mb-6 list-disc space-y-1 pl-6">
+            <li>
+              <p class="mt-6 mb-2 text-lg font-light italic">
+                JSON with keys including a '^' character will parse incorrectly.
+              </p>
+            </li>
+          </ul>
+
+          <p class="mb-6">
+            Help maintain this project by reporting bugs to
+            <a href="mailto:pickjson@outlook.com" class="text-blue-300 underline hover:text-blue-500">
+              pickjson@outlook.com
+            </a>.
+          </p>
+
+        </div>
+      </section>
 
     </div>
+
+    <NavLink
+      class="w-full h-12 font-medium text-3xl italic text-center text-white p-1 bg-(--bluebutton) hover:bg-(--bluebutton-h) active:scale-95"
+      href="tool">Go
+    </NavLink>
+
+  </div>
