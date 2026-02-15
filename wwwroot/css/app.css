@@ -337,6 +337,9 @@
   .flex {
     display: flex;
   }
+  .hidden {
+    display: none;
+  }
   .h-\(--inp-h\) {
     height: var(--inp-h);
   }
@@ -828,11 +831,6 @@
   .md\:w-2\/3 {
     @media (width >= 48rem) {
       width: calc(2/3 * 100%);
-    }
-  }
-  .md\:w-3\/5 {
-    @media (width >= 48rem) {
-      width: calc(3/5 * 100%);
     }
   }
   .md\:w-80 {

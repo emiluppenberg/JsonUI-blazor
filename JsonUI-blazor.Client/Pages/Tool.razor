@@ -12,7 +12,7 @@
 
   <div class="app-container" id="app-container">
 
-    <Cookie />
+    <Cookie OnConsentValue="async () => await RenderAdsAsync()" />
 
     <div class="json-container" id="json-container">
 
@@ -136,9 +136,13 @@
 
       <div class="bottom-container">
 
-        <div class="flex h-full w-full bg-(--bg-primary) justify-center items-center overflow-hidden">
+        <div class="flex h-full w-full bg-(--bg-primary) justify-center items-center overflow-y-auto">
 
-          <div class="flex justify-center items-center w-full md:w-3/5 h-full" id="tool-ad"></div>
+            <div class="justify-center items-center w-full h-auto flex">
+              <div id="tool-ad-desktop-1"></div>
+              <div id="tool-ad-desktop-2"></div>
+              <div id="tool-ad-mobile-1"></div>
+            </div>
 
         </div>
 
@@ -166,6 +170,17 @@
   protected override async Task OnInitializedAsync()
   {
     Json = await httpClient.GetStringAsync("example.json");
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    if (!firstRender) return;
+    await RenderAdsAsync(); 
+  }
+
+  private async Task RenderAdsAsync()
+  {
+    await JS.InvokeVoidAsync("window.initializeAds", "tool");
   }
 
   private void HandleSelectedLanguage()
@@ -339,7 +354,7 @@
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"// BASE - {ex.GetBaseException().Message} // INNER - {ex.InnerException?.Message} // SOURCE -  {ex.Source} // STACKTRACE - {ex.StackTrace} // TARGETSITE - {ex.TargetSite}");
+      Console.WriteLine($"{Environment.NewLine}ERROR - {ex.GetBaseException().Message}{Environment.NewLine}STACKTRACE - {ex.StackTrace}");
     }
   }
 

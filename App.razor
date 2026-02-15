@@ -46,57 +46,12 @@
         "image": "https://www.pickjson.com/pickjson.png"
         }
     </script>
-    <script>
-        window._isMobile = window.matchMedia("(max-width: 767px)").matches;
-
-        if (window._isMobile) {
-            window._bannerKey = "1a7b6ee059605baf5f741848a58df24e"
-            window._bannerH = 50;
-            window._bannerW = 320;
-        } else {
-            window._bannerKey = "ca82a623b5aee2f099b48fef189e5c09"
-            window._bannerH = 90;
-            window._bannerW = 728;
-        }
-
-        window._bannerSrc = `https://www.highperformanceformat.com/${window._bannerKey}/invoke.js`;
-
-        window.initializeAds = async () => {
-            const consent = localStorage.getItem("cookie-consent");
-
-            if (consent !== "accepted") return;
-
-            const num = window._isMobile ? 1 : 2;
-
-            await Promise.resolve(setTimeout(() => {
-                const home_ad = document.getElementById("home-ad");
-
-                if (home_ad) {
-                    window.atOptions = {
-                        'key': window._bannerKey,
-                        'format': 'iframe',
-                        'height': window._bannerH,
-                        'width': window._bannerW,
-                        'params': {}
-                    };
-
-                    for (let i = 0; i < num; i++) {
-                        const script = document.createElement("script");
-                        script.src = window._bannerSrc;
-                        script.async = true;
-                        home_ad.appendChild(script);
-                    }
-                }
-            }, 50));
-        }
-
-        window.isMobile = () => window._isMobile;
-    </script>
     <HeadOutlet />
 </head>
 
 <body>
     <Routes />
+    <script src="site.js"></script>
     <script src="js/tool.js"></script>
     <script src="_framework/blazor.web.js"></script>
 </body>

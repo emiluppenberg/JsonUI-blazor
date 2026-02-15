@@ -20,6 +20,8 @@
 @code {
   public bool Initialized { get; set; }
   private bool HasInteracted;
+  [Parameter]
+  public EventCallback OnConsentValue { get; set; }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -28,7 +30,6 @@
     await Task.Delay(500);
     var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
     HasInteracted = value == "accepted";
-    await JS.InvokeVoidAsync("initializeAds_tool");
     Initialized = true;
     StateHasChanged();
   }
@@ -38,11 +39,11 @@
     Initialized = false;
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
-    await JS.InvokeVoidAsync("initializeAds_tool");
     HasInteracted = true;
+    await OnConsentValue.InvokeAsync();
   }
 
-    private async Task Close()
+  private async Task Close()
   {
     Initialized = false;
     await Task.Delay(500);

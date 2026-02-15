@@ -365,7 +365,7 @@ public static class JNodeMaster
     }
     catch (Exception ex)
     {
-      Console.WriteLine($"// ERROR{Environment.NewLine} - {ex.GetBaseException().Message}{Environment.NewLine}// STACKTRACE{Environment.NewLine} - {ex.StackTrace}");
+      Console.WriteLine($"{Environment.NewLine}ERROR - {ex.GetBaseException().Message}{Environment.NewLine}STACKTRACE - {ex.StackTrace}");
       return null;
     }
   }
