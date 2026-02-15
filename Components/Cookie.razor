@@ -21,6 +21,8 @@
 @code {
   public bool Initialized { get; set; }
   private bool HasInteracted;
+  [Parameter]
+  public required string Page {get;set;}
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
@@ -29,9 +31,10 @@
     await Task.Delay(500);
     var value = await JS.InvokeAsync<string>("localStorage.getItem", General.StorageKey);
     HasInteracted = value == "accepted";
-    await JS.InvokeVoidAsync("initializeAds");
     Initialized = true;
     StateHasChanged();
+
+    await JS.InvokeVoidAsync("initializeAds", Page);
   }
 
   private async Task Accept()
@@ -39,7 +42,7 @@
     Initialized = false;
     await Task.Delay(500);
     await JS.InvokeVoidAsync("localStorage.setItem", General.StorageKey, "accepted");
-    await JS.InvokeVoidAsync("initializeAds");
+    await JS.InvokeVoidAsync("initializeAds", Page);
     HasInteracted = true;
   }
 
