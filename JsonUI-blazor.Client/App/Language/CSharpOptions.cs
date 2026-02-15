@@ -203,10 +203,12 @@ public class CSharpOptions : ILanguageOptions
     {
       if (kvp.MapFrom is not null)
       {
-        return $"  // Use json annotations to map this property{Environment.NewLine}";
+        kvp.JsonLibraryAnnotations.Add(this.JsonLibrary!.NameAnnotation, new() { "Default" });
       }
-
-      return "";
+      else
+      {
+        return "";
+      }
     }
 
     var mapFrom = kvp.MapFrom is not null ? kvp.MapFrom : kvp.Kvp.Key;
