@@ -166,9 +166,27 @@ public class CSharpOptions : ILanguageOptions
       datatype = kvp.Nullable ? $"{datatype}?" : datatype;
 
       var propName = this.NamingConvention.Parse(kvp.Kvp.Key);
+      var propNamePlural = kvp.CollectionAs is not null && propName.EndsWith("s") ? "es" : "s";
+      propName = kvp.CollectionAs is not null ? $"{propName}{propNamePlural}" : propName;
+
+      var fieldName = this.NamingConvention.ParseField(propName);
+      var field = kvp.HasField ? $"  private {datatype} {fieldName};{Environment.NewLine}" : null;
+      var startBracket = kvp.HasField ? $"{Environment.NewLine}  {{{Environment.NewLine}" : $"{{ ";
+      var endBracket = kvp.HasField ? $"  }}" : $"}}";
+      var access = kvp.IsPrivate ? "private" : "public";
+      var get = kvp.HasGet ? "get; " : "";
+      var set = kvp.HasSet ? "set; " : "";
+      get = kvp.HasField && kvp.HasGet ? $"    get {{ return {fieldName}; }}{Environment.NewLine}" : get;
+      set = kvp.HasField && kvp.HasSet ? $"    set {{ {fieldName} = value; }}{Environment.NewLine}" : set;
+
+      if (kvp.CollectionAs is not null && !kvp.JsonLibraryAnnotations!.TryGetValue(this.JsonLibrary!.NameAnnotation, out _))
+      {
+        kvp.JsonLibraryAnnotations.Add(this.JsonLibrary!.NameAnnotation, new() { "Default" });
+      }
+
       var jsonAnnotation = ParseAnnotations(kvp);
-      var propLine = $"  public {datatype} {propName} {{ get; set; }}{Environment.NewLine}";
-      propertyStrings.Add(jsonAnnotation + propLine);
+      var propLine = $"{field}{jsonAnnotation}  {access} {datatype} {propName} {startBracket}{get}{set}{endBracket}{Environment.NewLine}";
+      propertyStrings.Add(propLine);
     }
 
     var oneliners = propertyStrings.Where(x => x.Count(x => x == '\n' || x == '\r') < 2).ToList();
@@ -192,14 +210,13 @@ public class CSharpOptions : ILanguageOptions
     }
 
     var mapFrom = kvp.MapFrom is not null ? kvp.MapFrom : kvp.Kvp.Key;
-    var propertyNameKey = this.JsonLibrary!.Name == "System.Text.Json" ? "JsonPropertyName" : "JsonProperty";
     var jsonAnnotation = "";
 
     foreach (var annotationKvp in kvp.JsonLibraryAnnotations)
     {
-      if (annotationKvp.Key == propertyNameKey)
+      if (annotationKvp.Key == this.JsonLibrary!.NameAnnotation)
       {
-        jsonAnnotation += $"  [{propertyNameKey}(\"{mapFrom}\")]{Environment.NewLine}";
+        jsonAnnotation += $"  [{this.JsonLibrary!.NameAnnotation}(\"{mapFrom}\")]{Environment.NewLine}";
         continue;
       }
 

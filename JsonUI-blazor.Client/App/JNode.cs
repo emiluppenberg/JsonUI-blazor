@@ -19,6 +19,10 @@ public class JNode
   public bool? CollectionItemAllowUndefined { get; set; }
   public int TotalNestedSelected { get; set; }
   public ITypeScriptTypeOption? TypeOption { get; set; }
+  public bool IsPrivate { get; set; }
+  public bool HasField { get; set; }
+  public bool HasGet { get; set; } = true;
+  public bool HasSet { get; set; } = true;
 
   public JNode(string lineageKey, string parentKey, string name, List<JNodeKvp> keyValues, ILanguageOptions langOptions)
   {

@@ -4,33 +4,33 @@
 <div class="transition-opt h-fit w-1 @Transition @BackgroundColor @StickyClass">
 </div>
 <div tabindex="0" @ref="Ref"
-  class="transition-opt @Transition flex flex-col z-30 space-y-[3px] absolute top-0 left-1 w-20 h-fit text-xs font-medium hover:@ParentHover @ParentHover @HoverColor @OutlineColor @BackgroundColor @StickyClass">
+     class="transition-opt @Transition flex flex-col z-30 space-y-[3px] absolute top-0 left-1 w-20 h-fit text-xs font-medium hover:@ParentHover @ParentHover @HoverColor @OutlineColor @BackgroundColor @StickyClass">
 
   @if (Kvp is not null)
   {
     @if (Kvp.IsArray())
     {
       <CollectionSelection LangOptions="LangOptions" CollectionItemNullable="Kvp.CollectionItemNullable"
-        CollectionItemAllowUndefined="Kvp.CollectionItemAllowUndefined" Target="@Target" CurrentSelected="@Kvp.CollectionAs"
-        OnSelected="@(async arg => await ForwardSetKvpCollection.InvokeAsync(arg))"
-        OnSetCollectionItemNullable="async () => await ForwardSetKvpCollectionItemNullable.InvokeAsync()"
-        OnSetCollectionItemAllowUndefined="async () => await ForwardSetKvpCollectionItemAllowUndefined.InvokeAsync()"
-        IsToggled="KvpCollectionToggled" OnToggled="HandleKvpCollectionToggled" />
+                           CollectionItemAllowUndefined="Kvp.CollectionItemAllowUndefined" Target="@Target" CurrentSelected="@Kvp.CollectionAs"
+                           OnSelected="@(async arg => await ForwardSetKvpCollection.InvokeAsync(arg))"
+                           OnSetCollectionItemNullable="async () => await ForwardSetKvpCollectionItemNullable.InvokeAsync()"
+                           OnSetCollectionItemAllowUndefined="async () => await ForwardSetKvpCollectionItemAllowUndefined.InvokeAsync()"
+                           IsToggled="KvpCollectionToggled" OnToggled="HandleKvpCollectionToggled" />
     }
     <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-      @onclick="async () => await ForwardSetKvpNullable.InvokeAsync()">
+            @onclick="async () => await ForwardSetKvpNullable.InvokeAsync()">
       <label class="text-xs font-medium text-center w-15">Nullable</label>
       <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.Nullable" />
     </button>
     @if (LangOptions.Language == "TypeScript")
     {
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetKvpOptional.InvokeAsync()">
+              @onclick="async () => await ForwardSetKvpOptional.InvokeAsync()">
         <label class="text-xs font-medium text-center w-15">Optional</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.Optional" />
       </button>
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetKvpAllowUndefined.InvokeAsync()">
+              @onclick="async () => await ForwardSetKvpAllowUndefined.InvokeAsync()">
         <label class="text-[0.5rem] font-medium text-center w-15">Allow undefined</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.AllowUndefined" />
       </button>
@@ -38,7 +38,27 @@
     @if (LangOptions.Language == "C#")
     {
       <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Kvp="Kvp"
-        ForwardOnAnnotationSelected="async arg => await ForwardSetKvpAnnotation.InvokeAsync(arg)" />
+                              ForwardOnAnnotationSelected="async arg => await ForwardSetKvpAnnotation.InvokeAsync(arg)" />
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetKvpIsPrivate.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">IsPrivate</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.IsPrivate" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetKvpHasField.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasField</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.HasField" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetKvpHasGet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasGet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.HasGet" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetKvpHasSet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasSet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Kvp.HasSet" />
+      </button>
     }
   }
 
@@ -47,57 +67,77 @@
     @if (Node.Type == JNodeType.Array)
     {
       <CollectionSelection LangOptions="LangOptions" CollectionItemNullable="Node.CollectionItemNullable"
-        CollectionItemAllowUndefined="Node.CollectionItemAllowUndefined" Target="@Target"
-        CurrentSelected="@Node.CollectionAs" OnSelected="@(async arg => await ForwardSetNodeCollection.InvokeAsync( arg))"
-        OnSetCollectionItemNullable="async () => await ForwardSetNodeCollectionItemNullable.InvokeAsync()"
-        OnSetCollectionItemAllowUndefined="async () => await ForwardSetNodeCollectionItemAllowUndefined.InvokeAsync()"
-        IsToggled="NodeCollectionToggled" OnToggled="HandleNodeCollectionToggled" />
+                           CollectionItemAllowUndefined="Node.CollectionItemAllowUndefined" Target="@Target"
+                           CurrentSelected="@Node.CollectionAs" OnSelected="@(async arg => await ForwardSetNodeCollection.InvokeAsync( arg))"
+                           OnSetCollectionItemNullable="async () => await ForwardSetNodeCollectionItemNullable.InvokeAsync()"
+                           OnSetCollectionItemAllowUndefined="async () => await ForwardSetNodeCollectionItemAllowUndefined.InvokeAsync()"
+                           IsToggled="NodeCollectionToggled" OnToggled="HandleNodeCollectionToggled" />
     }
     <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-      @onclick="async () => await ForwardSetNodeNullable.InvokeAsync()">
+            @onclick="async () => await ForwardSetNodeNullable.InvokeAsync()">
       <label class="text-xs font-medium text-center w-15">Nullable</label>
       <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.Nullable" />
     </button>
     @if (LangOptions.Language == "TypeScript")
     {
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeOptional.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeOptional.InvokeAsync()">
         <label class="text-xs font-medium text-center w-15">Optional</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.Optional" />
       </button>
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeAllowUndefined.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeAllowUndefined.InvokeAsync()">
         <label class="text-[0.5rem] font-medium text-center w-15">Allow undefined</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.AllowUndefined" />
       </button>
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeZodSchema.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeZodSchema.InvokeAsync()">
         <label class="text-[0.5rem] font-medium text-center w-15">ZodSchema</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.TypeOption!.UseZodSchema" />
       </button>
       <TypeSelection Types="Language.GetTypeOptions()" Target="@Target" CurrentSelected="@Node.TypeOption!.Name"
-        OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" IsToggled="NodeTypeToggled"
-        OnToggled="HandleNodeTypeToggled" />
+                     OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" IsToggled="NodeTypeToggled"
+                     OnToggled="HandleNodeTypeToggled" />
       @if (Node.TypeOption!.Name == "class")
       {
         <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-          @onclick="async () => await ForwardSetNodeClassPrimaryConstructor.InvokeAsync()">
+                @onclick="async () => await ForwardSetNodeClassPrimaryConstructor.InvokeAsync()">
           <label class="text-[0.5rem] font-medium text-center w-15">Primary constructor</label>
           <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled
-            @bind="Node.TypeOption!.UsePrimaryConstructor" />
+                 @bind="Node.TypeOption!.UsePrimaryConstructor" />
         </button>
         <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-          @onclick="async () => await ForwardSetNodeClassRegularConstructor.InvokeAsync()">
+                @onclick="async () => await ForwardSetNodeClassRegularConstructor.InvokeAsync()">
           <label class="text-[0.5rem] font-medium text-center w-15">Regular constructor</label>
           <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled
-            @bind="Node.TypeOption!.UseRegularConstructor" />
+                 @bind="Node.TypeOption!.UseRegularConstructor" />
         </button>
       }
     }
     @if (LangOptions.Language == "C#")
     {
       <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Node="Node"
-        ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+                              ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeIsPrivate.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">IsPrivate</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.IsPrivate" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasField.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasField</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasField" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasGet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasGet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasGet" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasSet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasSet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasSet" />
+      </button>
     }
   }
 
@@ -106,52 +146,72 @@
     @if (Node.Type == JNodeType.Array)
     {
       <CollectionSelection LangOptions="LangOptions" CollectionItemNullable="Node.CollectionItemNullable"
-        CollectionItemAllowUndefined="Node.CollectionItemAllowUndefined" Target="@Target"
-        CurrentSelected="@Node.CollectionAs" OnSelected="@(async arg => await ForwardSetNodeCollection.InvokeAsync( arg))"
-        OnSetCollectionItemNullable="async () => await ForwardSetNodeCollectionItemNullable.InvokeAsync()"
-        OnSetCollectionItemAllowUndefined="async () => await ForwardSetNodeCollectionItemAllowUndefined.InvokeAsync()"
-        IsToggled="NodeCollectionToggled" OnToggled="HandleNodeCollectionToggled" />
+                           CollectionItemAllowUndefined="Node.CollectionItemAllowUndefined" Target="@Target"
+                           CurrentSelected="@Node.CollectionAs" OnSelected="@(async arg => await ForwardSetNodeCollection.InvokeAsync( arg))"
+                           OnSetCollectionItemNullable="async () => await ForwardSetNodeCollectionItemNullable.InvokeAsync()"
+                           OnSetCollectionItemAllowUndefined="async () => await ForwardSetNodeCollectionItemAllowUndefined.InvokeAsync()"
+                           IsToggled="NodeCollectionToggled" OnToggled="HandleNodeCollectionToggled" />
     }
     @if (LangOptions.Language == "TypeScript")
     {
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeOptional.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeOptional.InvokeAsync()">
         <label class="text-xs font-medium text-center w-15">Optional</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.Optional" />
       </button>
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeAllowUndefined.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeAllowUndefined.InvokeAsync()">
         <label class="text-[0.5rem] font-medium text-center w-15">Allow undefined</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.AllowUndefined" />
       </button>
       <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-        @onclick="async () => await ForwardSetNodeZodSchema.InvokeAsync()">
+              @onclick="async () => await ForwardSetNodeZodSchema.InvokeAsync()">
         <label class="text-[0.5rem] font-medium text-center w-15">ZodSchema</label>
         <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.TypeOption!.UseZodSchema" />
       </button>
       <TypeSelection Types="Language.GetTypeOptions()" Target="@Target" CurrentSelected="@Node.TypeOption!.Name"
-        OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" IsToggled="NodeTypeToggled"
-        OnToggled="HandleNodeTypeToggled" />
+                     OnSelected="@(async arg => await ForwardSetNodeTypeOption.InvokeAsync(arg))" IsToggled="NodeTypeToggled"
+                     OnToggled="HandleNodeTypeToggled" />
       @if (Node.TypeOption!.Name == "class")
       {
         <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-          @onclick="async () => await ForwardSetNodeClassPrimaryConstructor.InvokeAsync()">
+                @onclick="async () => await ForwardSetNodeClassPrimaryConstructor.InvokeAsync()">
           <label class="text-[0.5rem] font-medium text-center w-15">Primary constructor</label>
           <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled
-            @bind="Node.TypeOption!.UsePrimaryConstructor" />
+                 @bind="Node.TypeOption!.UsePrimaryConstructor" />
         </button>
         <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
-          @onclick="async () => await ForwardSetNodeClassRegularConstructor.InvokeAsync()">
+                @onclick="async () => await ForwardSetNodeClassRegularConstructor.InvokeAsync()">
           <label class="text-[0.5rem] font-medium text-center w-15">Regular constructor</label>
           <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled
-            @bind="Node.TypeOption!.UseRegularConstructor" />
+                 @bind="Node.TypeOption!.UseRegularConstructor" />
         </button>
       }
     }
     @if (LangOptions.Language == "C#")
     {
       <AnnotationKeySelection LangOptions="LangOptions" Target="@Target" Node="Node"
-        ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+                              ForwardOnAnnotationSelected="async arg => await ForwardSetNodeAnnotation.InvokeAsync(arg)" />
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeIsPrivate.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">IsPrivate</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.IsPrivate" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasField.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasField</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasField" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasGet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasGet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasGet" />
+      </button>
+      <button class="px-1 flex h-(--inp-h) w-20 items-center justify-center hover:border"
+              @onclick="async () => await ForwardSetNodeHasSet.InvokeAsync()">
+        <label class="text-xs font-medium text-center w-15">HasSet</label>
+        <input class="w-5 h-(--inp-h) pointer-events-none" type="checkbox" disabled @bind="Node.HasSet" />
+      </button>
     }
   }
 </div>
@@ -192,6 +252,14 @@
   public EventCallback ForwardSetKvpCollectionItemAllowUndefined { get; set; }
   [Parameter]
   public EventCallback<KeyValuePair<string, string>> ForwardSetKvpAnnotation { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpIsPrivate { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpHasField { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpHasGet { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetKvpHasSet { get; set; }
 
   [Parameter]
   public EventCallback ForwardSetNodeNullable { get; set; }
@@ -215,6 +283,14 @@
   public EventCallback ForwardSetNodeZodSchema { get; set; }
   [Parameter]
   public EventCallback<KeyValuePair<string, string>> ForwardSetNodeAnnotation { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeIsPrivate { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeHasField { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeHasGet { get; set; }
+  [Parameter]
+  public EventCallback ForwardSetNodeHasSet { get; set; }
 
   private string BackgroundColor = null!;
   private string OutlineColor = null!;
