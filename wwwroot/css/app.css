@@ -340,9 +340,6 @@
   .block {
     display: block;
   }
-  .contents {
-    display: contents;
-  }
   .flex {
     display: flex;
   }
@@ -1508,7 +1505,6 @@
     flex-direction: column;
     background-color: var(--color-cyan-900);
     padding-top: calc(var(--spacing) * 5);
-    padding-bottom: calc(var(--spacing) * 12);
   }
   .node-col-container {
     display: flex;
@@ -1613,9 +1609,6 @@
     }
   }
   @media (min-width: 768px) {
-    .page {
-      padding-bottom: calc(var(--spacing) * 0);
-    }
     .app-container {
       flex-direction: row;
     }

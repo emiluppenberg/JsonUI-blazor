@@ -178,7 +178,7 @@
   }
 
   .page {
-    @apply z-10 pt-5 pb-12 flex flex-col w-full h-full bg-cyan-900;
+    @apply z-10 pt-5 flex flex-col w-full h-full bg-cyan-900;
   }
 
   .node-col-container {
@@ -214,10 +214,6 @@
   }
 
   @media (min-width: 768px) {
-    .page {
-      @apply pb-0;
-    }
-
     .app-container {
       @apply flex-row;
     }
