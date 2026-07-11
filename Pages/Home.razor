@@ -9,7 +9,31 @@
     <Cookie Page="home" />
 
     <header>
-      <h1 class="text-center text-xl font-medium my-2 text-cyan-400 select-none">JSONfn - Easy code from JSON</h1>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-labelledby="title desc">
+        <title id="title">JSONfn() logo</title>
+        <desc id="desc">Tight stylized JSONfn function-call text logo using blue and cyan colors inspired by the
+          reference image.</desc>
+          <defs>
+            <linearGradient id="textGradient" x1="24" y1="28" x2="536" y2="124" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#10b0d0" />
+              <stop offset="0.34" stop-color="#0080c0" />
+              <stop offset="0.7" stop-color="#0060b0" />
+              <stop offset="1" stop-color="#005090" />
+            </linearGradient>
+            <filter id="softShadow" x="-4%" y="-16%" width="108%" height="138%">
+              <feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#003d66" flood-opacity="0.18" />
+            </filter>
+          </defs>
+
+          <rect x="6" y="6" width="548" height="138" rx="28" fill="#f7fcff" />
+
+          <text x="285" y="80" filter="url(#softShadow)" text-anchor="middle" dominant-baseline="middle"
+                fill="url(#textGradient)" font-family="Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="130"
+                font-weight="820" letter-spacing="-7">JSON<tspan font-weight="650" font-style="italic" letter-spacing="-9">fn</tspan><tspan font-size="104" font-weight="520" letter-spacing="12" fill="#10b0d0">()</tspan>
+        </text>
+      </svg>
+
+      <h1 class="text-center text-xl font-medium my-2 text-cyan-400 select-none">Easy code from JSON</h1>
 
       <div
         class="flex flex-col min-w-50 md:min-w-200 space-y-2 md:space-y-5 leading-relaxed text-cyan-400 text-sm md:text-base">
